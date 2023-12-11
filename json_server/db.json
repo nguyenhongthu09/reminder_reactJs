@@ -1,0 +1,66 @@
+{
+  "listNote": [
+    {
+      "name": "ddđ",
+      "isColor": "#00FFFF",
+      "id": "P597K0iR"
+    },
+    {
+      "name": "thu",
+      "isColor": "#00FF00",
+      "id": "P597K0iRc"
+    }
+  ],
+  "reminder": [
+    {
+      "title": "eee",
+      "status": false,
+      "idlist": "8cy61og",
+      "id": "oI_h5fG"
+    },
+    {
+      "title": "2",
+      "status": false,
+      "idlist": "P597K0iR",
+      "id": "7H_A7Ma"
+    },
+    {
+      "title": "3",
+      "status": false,
+      "idlist": "P597K0iR",
+      "id": "adLOES_"
+    }
+  ],
+  "color": [
+    {
+      "color": "#FF0000"
+    },
+    {
+      "color": "#00FF00"
+    },
+    {
+      "color": "#0000FF"
+    },
+    {
+      "color": "#FFFF00"
+    },
+    {
+      "color": "#FF00FF"
+    },
+    {
+      "color": "#00FFFF"
+    },
+    {
+      "color": "#FFA500"
+    },
+    {
+      "color": "#808080"
+    },
+    {
+      "color": "#800080"
+    },
+    {
+      "color": "#008000"
+    }
+  ]
+}

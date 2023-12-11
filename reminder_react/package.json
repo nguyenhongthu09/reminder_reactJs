@@ -15,7 +15,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "api": "json-server db.json -p 8000 --delay 1500"
   },
   "eslintConfig": {
     "extends": [

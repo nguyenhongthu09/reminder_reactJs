@@ -1,0 +1,418 @@
+@media screen and (max-width: 480px) {
+    body {
+      background-repeat: no-repeat;
+      font-family: 'Urbanist', sans-serif;
+      font-size: 20px;
+      background-color: papayawhip;
+    }
+  
+    .menu-list-notes {
+      display: block;
+    }
+  
+    .listnote {
+      display: flex;
+      border-bottom: 1px solid black;
+    }
+  
+    .menu-list-note {
+      margin-top: 15px;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+  
+    .list-note {
+      width: 300px;
+      height: 50px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  
+    .delete-icon {
+      display: inline;
+    }
+  
+    .icon-home-list-del {
+      margin-top: 10px;
+      margin-left: 5px;
+    }
+  
+    .item-list-none-left {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .icon-list-note {
+      position: relative;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+    }
+  
+    .icon-list {
+      position: absolute;
+      left: 5px;
+      top: 4px;
+    }
+  
+    .name-list {
+      padding-left: 10px;
+      border: none;
+      width: 230px;
+      font-size: 23px !important;
+    }
+  
+  .button-home {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      padding: 10px;
+      box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.2);
+    }
+  
+    .form-add-list,
+    .form-edit-list {
+      display: none;
+      text-align: center;
+      background-color: antiquewhite;
+      width: 100%;
+      height: 100vh;
+      padding-top: 100px;
+    }
+    .form-add-list.visible {
+      display: block;
+    }
+    
+    .form-add-list.hidden {
+      display: none;
+    }
+    .form_add_list_name,
+    .form_edit_list_name {
+      margin: 20px 10px;
+      width: 95%;
+      height: 150px;
+      background-color: #ccc;
+    }
+  
+    .form_add_list_name input {
+      width: 300px;
+      height: 50px;
+      text-align: center;
+      border: none;
+      border-radius: 7px;
+    }
+  
+    .form_edit_list_name input {
+      width: 300px;
+      height: 50px;
+      text-align: center;
+      border: none;
+      border-radius: 7px;
+    }
+  
+    .form__add__list,
+    .button-detail-list,
+    .form__edit__list {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+  
+    .detail-list-note {
+      display: none;
+  
+    }
+  
+    .note {
+      max-height: 600px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+    }
+  
+    .detail-list-note h1 {
+      padding-top: 90px;
+      text-align: center;
+      font-size: 35px !important;
+    }
+  
+    .detail-list-note .items-list-reminder {
+      margin-left: 20px;
+      margin-right: 10px;
+    }
+  
+    .detail-list-note .reminder__detail {
+      border-bottom: 1px solid black;
+    }
+  
+    .detail-list-note .item-reminder {
+      margin-top: 20px;
+    }
+  
+    .detail-list-note .form-check-name {
+      padding-left: 10px;
+      border: none;
+      margin-bottom: 10px;
+      outline: none;
+    }
+  
+    .button-detail-list {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .detail-list-note .add__reminders {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      margin: 0px 0px 10px 10px;
+    }
+  
+    .error-message {
+      display: none;
+      color: rgb(99, 99, 224);
+      font-size: 15px !important;
+    }
+  
+    .detail-list-note .new-reminder {
+      display: none;
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+  
+    .item-list-none-right {
+      width: 45px;
+      display: inline-flex;
+    }
+  
+    .form--add__notes {
+      display: none;
+      margin-top: 90px;
+    }
+  
+    .form--add__notes h1 {
+      text-align: center;
+    }
+  
+    .form--add__notes input {
+      padding-left: 10px;
+      width: 95%;
+      height: 50px;
+      margin: 20px 10px 0px 10px;
+      border-radius: 8px;
+    }
+  
+    .form--add__notes .map-list {
+      margin: 20px 10px;
+      display: flex;
+      justify-content: space-between;
+      border-radius: 5px;
+      flex-direction: column
+    }
+  
+    .title-list-name-choose {
+      background-color: aquamarine;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 40px;
+      border: 1px solid black;
+      border-radius: 10px;
+  
+    }
+  
+    .tieude {
+      margin-left: 10px;
+      font-size: 22px;
+    }
+  
+    .name-list-choose {
+      margin-right: 10px;
+  
+    }
+  
+    .form--edit__notes {
+      display: none;
+    }
+  
+    .input_eidt_note {
+      width: 90%;
+      height: 30%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #000;
+      border-radius: 5px;
+    }
+  
+    .input_eidt_note input {
+      margin: 5px 0;
+      width: 100%;
+      padding-left: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+  
+    .input_edit_note_description {
+      height: 130px;
+    }
+  
+    .color-list-icon {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-gap: 1px 7px;
+      width: 100%;
+      background-color: rgb(63, 66, 66);
+      border-radius: 7px;
+      padding: 0px 10px;
+    }
+  
+    .color-swatch {
+      margin: 10px 0px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+    }
+  
+    .selected {
+      border: 2px solid black;
+      transform: scale(1.3);
+    }
+  
+    .fill-icon-color {
+      background-color: antiquewhite;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px 0px 20px 155px;
+  
+    }
+  
+    ul.dropdown-menu.width {
+      width: 50px !important;
+    }
+  
+    .thuthu,
+    .form-check-input {
+      border-radius: 50% !important;
+    }
+  
+    .reminder__detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+  
+    .form-check-name {
+      transition: none !important;
+    }
+  
+    .thong-bao {
+      color: rgb(137, 202, 202);
+      font-size: 25px;
+      display: none;
+      position: absolute;
+      left: 35%;
+      top: 41%;
+  
+    }
+  
+    .doimau.checked {
+      color: #C0C0C0;
+    }
+  
+    .btn__add--reminder {
+      margin-right: 110px;
+    }
+  
+    .width-drop {
+      width: 50px !important;
+      background-color: #C0C0C0;
+      margin: 0px;
+    }
+  
+    .text-center {
+      margin-top: 10px;
+      font-size: 30px !important;
+    }
+  
+    .dropdown-menu.width-drop {
+      width: 45px !important;
+      max-width: 50px !important;
+    }
+  
+    .loader__common {
+      position: fixed;
+      top: 45%;
+      left: 45%;
+      transition: opacity 0.75s, visibility 0.75s;
+    }
+  
+    .loader-hidden {
+      opacity: 0;
+      visibility: hidden;
+  
+    }
+  
+    .loader {
+      border: 5px solid #b6a9a9;
+      border-radius: 50%;
+      border-top: 5px solid rgb(18, 18, 218);
+      border-right: 5px solid rgb(30, 190, 30);
+      border-bottom: 5px solid rgb(212, 20, 20);
+      width: 40px;
+      height: 40px;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+  
+    }
+  
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+  
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+  
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+  
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 999;
+    }
+ 
+  }
