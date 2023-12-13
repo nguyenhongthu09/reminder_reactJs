@@ -1,29 +1,74 @@
 import React , {Component} from "react";
 import "../style/style.css";
+import RenderColorOnUi from "./renderColorUi";
+import { addNewList } from "../fetchApi/fetchApiList";
+import ListNoteRender from "./listNoteHome";
 class AddListForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedColor: "",
+      form: {
+        name: "",
+       
+      },
+      isFormSubmitted: false,
+    };
+  }
+  handleColorClick = (selectedColor) => {
+    console.log(selectedColor, "selce");
+    this.setState({ selectedColor });
+  };
+
+  handleChange = (e) =>{
+        const data = {...this.state.form};
+        data[e.target.name] = e.target.value;
+        this.setState({form : data,})
+  }
+
+  handleSubmit = async(e) =>{
+      e.preventDefault();
+      const {name} = this.state.form;
+      const {selectedColor} = this.state;
+      try {
+       await addNewList({ name, isColor: selectedColor });
+      this.setState({ isFormSubmitted: true });
+      } catch (error) {
+        console.error("Lỗi khi gửi dữ liệu:", error.message);
+      }
+  }
+ 
     render(){
+      const { selectedColor , isFormSubmitted  } = this.state;
+
+      if (isFormSubmitted) {
+        return <ListNoteRender></ListNoteRender>;
+      }
+
         return (
-            <form id="form_add_list" action=""  className={`form-add-list ${this.props.showForm ? 'visible' : 'hidden'}`}>
+            <form  onSubmit={this.handleSubmit} id="form_add_list" action=""  className={`form-add-list ${this.props.showForm ? 'visible' : 'hidden'}`}>
               <div className="form__add__list">
                 <button
                   type="button"
                   id="btn-cancel"
                   className="btn btn-primary button-cancel"
+                  onClick={this.props.onCancelClick}
                 >
                   Cancel
                 </button>
                 <button
-                  type="button"
+                  type="submit"
                   id="btnSubmit"
                   className="btn btn-primary button-done"
-                  disabled
+                  
+                 
                 >
                   Done
                 </button>
               </div>
               <h1>New List</h1>
               <div className="form_add_list_name">
-                <div className="fill-icon-color" id="icon-color">
+                <div className="fill-icon-color" id="icon-color"  onChange={this.handleChange} style={{ backgroundColor: selectedColor }}>
                   <span className="fill-color">
                     <svg
                       width="40"
@@ -71,12 +116,15 @@ class AddListForm extends Component {
                     </svg>
                   </span>
                 </div>
-                <input type="text" id="name_icon" placeholder="List Name " />
+                <input type="text" name="name" id="name_icon" placeholder="List Name " required  onChange={this.handleChange} />
                 <p id="name_error" className="error-message">
                   Please enter a list name.
                 </p>
               </div>
-              <div className="color-list-icon" id="color-list"></div>
+              <div className="color-list-icon" id="color-list">
+              <RenderColorOnUi onColorClick={this.handleColorClick} />
+              </div>
+              
             </form>
           );  
     }

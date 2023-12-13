@@ -1,41 +1,66 @@
-import React, { Component } from 'react';
-import getAllList from '../fetchApi/fetchApiList';
-import "../style/style.css"
+import React, { Component } from "react";
+import getAllList, { delList } from "../fetchApi/fetchApiList";
+import "../style/style.css";
+import EditListForm from "./editListForm";
+
 class ParentComponent extends Component {
- constructor(){
-  super();
-  this.state = {
-    listNote: [],
+  constructor() {
+    super();
+    this.state = {
+      listNote: [],
+      isEditFormVisible: false,
+      selectedListId: null,
+    };
+    this.handleEditClick = this.handleEditClick.bind(this);
+    
+  }
+  getListNote = async () => {
+    try {
+      const listData = await getAllList();
+      this.setState({
+        listNote: listData,
+      });
+    } catch (error) {
+      console.error("Error fetching listNote:", error.message);
+    }
+  };
+  handleEditClick(listId) {
+    this.props.handleEditClick(listId);
+  }
+ 
+  handleDele = async (id) => {
+    try {
+      await delList(id);
+      this.getListNote();
+    } catch (error) {
+      console.error("Error fetching listNote:", error.message);
+    }
   };
 
- }
- getListNote = async () =>{
-  try {
-    const listData = await getAllList();
-    this.setState({
-      listNote: listData,
-    });
-  } catch (error) {
-    console.error('Error fetching listNote:', error.message);
-  }
- };
 
-componentDidMount = () =>{
-  this.getListNote();
-}
+  componentDidMount = () => {
+    this.getListNote();
+  };
 
   render() {
-    const { listNote } = this.state;
+    const { listNote, selectedListId } = this.state;
+    if (this.props.isEditFormVisible) {
+      return (
+        <div>
+          <EditListForm listId={selectedListId} />
+        </div>
+      );
+    }
     return (
-          <div>
-            <h1>My list</h1>
-            {listNote.map((list) => (
+      <div>
+        <h1>My list</h1>
+        {listNote.map((list) => (
           <div className="listnote" id={list.id} key={list.id}>
             <div className="list-note">
               <div className="item-list-none-left">
                 <div
                   className="icon-list-note"
-                  style={{backgroundColor: list.isColor }}
+                  style={{ backgroundColor: list.isColor }}
                 >
                   <span className="icon-list">
                     <svg
@@ -85,7 +110,7 @@ componentDidMount = () =>{
                   className="number-items-notes"
                   id={`total-done-${list.id}`}
                 >
-                 0
+                  0
                 </span>
                 <span
                   className="number-items-note"
@@ -127,8 +152,14 @@ componentDidMount = () =>{
                   aria-labelledby={`dropdownMenuButton${list.id}`}
                 >
                   <li>
-                    <a className="dropdown-item delete" href="google.com">
-                      <span className="delete-icon"  id={list.id}>
+                    <a
+                      className="dropdown-item delete"
+                      href="#"
+                      onClick={() => {
+                        this.handleDele(list.id);
+                      }}
+                    >
+                      <span className="delete-icon">
                         <svg
                           width="16"
                           height="16"
@@ -145,8 +176,12 @@ componentDidMount = () =>{
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item edit" href="google.com">
-                      <span className="edit-icon edit-list"  id={list.id}>
+                    <a
+                      className="dropdown-item edit"
+                      href="#"
+                      onClick={() => this.handleEditClick(list.id)}
+                    >
+                      <span className="edit-icon edit-list" id={list.id}>
                         <svg
                           width="16"
                           height="16"
@@ -167,7 +202,7 @@ componentDidMount = () =>{
             </div>
           </div>
         ))}
-          </div>
+      </div>
     );
   }
 }
