@@ -3,6 +3,7 @@ import "../style/style.css";
 import RenderColorOnUi from "./renderColorUi";
 import { addNewList } from "../fetchApi/fetchApiList";
 import ListNoteRender from "./listNoteHome";
+
 class AddListForm extends Component {
   constructor(props) {
     super(props);

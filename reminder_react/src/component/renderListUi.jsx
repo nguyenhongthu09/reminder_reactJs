@@ -12,7 +12,7 @@ class ParentComponent extends Component {
       selectedListId: null,
     };
     this.handleEditClick = this.handleEditClick.bind(this);
-    
+    this.handleEditFormCancelClick = this.handleEditFormCancelClick.bind(this);
   }
   getListNote = async () => {
     try {
@@ -24,10 +24,27 @@ class ParentComponent extends Component {
       console.error("Error fetching listNote:", error.message);
     }
   };
+
   handleEditClick(listId) {
-    this.props.handleEditClick(listId);
+    const selectedList = this.state.listNote.find((list) => list.id === listId);
+    this.setState({
+      isEditFormVisible: true,
+      selectedListId: listId,
+      selectedList: selectedList,
+    });
+    if (this.props.onEditClick) {
+      this.props.onEditClick(selectedList);
+    }
   }
- 
+  handleEditFormCancelClick() {
+    this.setState({
+      isEditFormVisible: false,
+    });
+    if (this.props.onShowButtons) {
+      this.props.onShowButtons(true);
+    }
+  }
+
   handleDele = async (id) => {
     try {
       await delList(id);
@@ -37,17 +54,22 @@ class ParentComponent extends Component {
     }
   };
 
-
   componentDidMount = () => {
     this.getListNote();
   };
 
   render() {
-    const { listNote, selectedListId } = this.state;
-    if (this.props.isEditFormVisible) {
+    const { listNote, selectedListId, isEditFormVisible, selectedList } =
+      this.state;
+    if (isEditFormVisible) {
       return (
         <div>
-          <EditListForm listId={selectedListId} />
+          <EditListForm
+            listId={selectedListId}
+            onCancelEdit={this.handleEditFormCancelClick}
+            onShowButtons={this.handleShowButtons}
+            selectedList={selectedList}
+          />
         </div>
       );
     }
@@ -181,7 +203,7 @@ class ParentComponent extends Component {
                       href="#"
                       onClick={() => this.handleEditClick(list.id)}
                     >
-                      <span className="edit-icon edit-list" id={list.id}>
+                      <span className="edit-icon edit-list">
                         <svg
                           width="16"
                           height="16"

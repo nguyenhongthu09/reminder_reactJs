@@ -1,26 +1,30 @@
 import React, { Component } from "react";
 import ParentComponent from "./renderListUi";
 import AddListForm from "./addListForm";
-import EditListForm from "./editListForm";
+
+
 class ListNoteRender extends Component {
   constructor() {
     super();
     this.state = {
       showAddListForm: false,
-      isEditFormVisible: false,
+      showButtons: true,
     };
 
     this.handleAddListClick = this.handleAddListClick.bind(this);
     this.handleCancelClick = this.handleCancelClick.bind(this);
     this.handleAddSuccess = this.handleAddSuccess.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
-    this.handleEditFormCancelClick = this.handleEditFormCancelClick.bind(this);
   }
-
+  handleEditClick() {
+    this.setState({
+      showButtons: false, 
+    });
+  }
   handleAddListClick() {
-    this.setState((prevState) => ({
-      showAddListForm: !prevState.showAddListForm,
-    }));
+    this.setState({
+      showAddListForm: true,
+    });
   }
   handleCancelClick() {
     this.setState({
@@ -28,64 +32,57 @@ class ListNoteRender extends Component {
     });
   }
   handleAddSuccess() {
+    this.setState(() => ({
+      showAddListForm: false,
+    }));
    
-      this.setState(() => ({
-        showAddListForm: false,
-      }));
-    
   }
-  handleEditClick(listId) {
+  handleShowButtons(value) {
     this.setState({
-      isEditFormVisible: true,
-      selectedListId: listId,
-    });
-    console.log("Edit clicked for listId:", listId);
-  }
-  handleEditFormCancelClick() {
-    this.setState({
-      isEditFormVisible: false,
+      showButtons: value,
+    }, () => {
+      this.handleShowButtons();
+      console.log("ok hien thi");
     });
   }
 
   render() {
-    const { showAddListForm  ,isEditFormVisible} = this.state;
+    const { showAddListForm ,showButtons} = this.state;
     return (
       <>
         <div
           className="menu-list-notes"
-          style={{ display: (showAddListForm  || isEditFormVisible) ? "none" : "block" }}
+          style={{ display: showAddListForm ? "none" : "block" }}
         >
           <div className="menu-list-note" id="renderlist-home">
-            <ParentComponent  handleEditClick={this.handleEditClick}
-            isEditFormVisible={isEditFormVisible}></ParentComponent>
+            <ParentComponent onEditClick={this.handleEditClick}
+           onShowButtons={showButtons}
+             ></ParentComponent>
           </div>
-          <div className="button-home">
-            <button
-              type="button"
-              className="btn btn-primary add-reminder btn__add--reminder"
-            >
-              New Reminder
-            </button>
-            <button
-              type=" button"
-              className="btn btn-primary add-list"
-              id="add-list-new"
-              onClick={this.handleAddListClick}
-            >
-              Add List
-            </button>
-          </div>
+          {/* {showButtons && ( */}
+            <div className="button-home">
+              <button
+                type="button"
+                className="btn btn-primary add-reminder btn__add--reminder"
+              >
+                New Reminder
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary add-list"
+                id="add-list-new"
+                onClick={this.handleAddListClick}
+              >
+                Add List
+              </button>
+            </div>
+          {/* )} */}
         </div>
-        {isEditFormVisible && <EditListForm listId={this.state.selectedListId}
-        onCancelEdit = {this.handleEditFormCancelClick}
-         />}
-        {!isEditFormVisible && (
-          <AddListForm
-            showForm={showAddListForm}
-            onCancelClick={this.handleCancelClick}
-            onSuccess={this.handleAddSuccess}
-          />
-        )}
+        <AddListForm
+          showForm={showAddListForm}
+          onCancelClick={this.handleCancelClick}
+          onSuccess={this.handleAddSuccess}
+        />
       </>
     );
   }

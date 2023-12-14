@@ -58,17 +58,26 @@ export const delList = async (id) => {
 };
 
 export const updateListData = async (id, newName, newColor) => {
-  const response = await fetch(`${API_URL}/listNote/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: newName,
-      isColor: newColor,
-    }),
-  });
-  if (response.ok) {
-    console.log("da update");
+  console.log("Updating list data:", id, newName, newColor);
+
+  try {
+    const response = await fetch(`${API_URL}/listNote/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: newName,
+        isColor: newColor,
+      }),
+    });
+
+    if (response.ok) {
+      console.log("Update successful");
+    } else {
+      console.error("Update failed:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error during update:", error);
   }
 };
