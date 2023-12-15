@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import getAllList, { delList } from "../fetchApi/fetchApiList";
 import "../style/style.css";
 import EditListForm from "./editListForm";
-
+import ButtonGroup from "./buttonGroup";
 class ParentComponent extends Component {
   constructor() {
     super();
@@ -10,9 +10,11 @@ class ParentComponent extends Component {
       listNote: [],
       isEditFormVisible: false,
       selectedListId: null,
+     
     };
     this.handleEditClick = this.handleEditClick.bind(this);
     this.handleEditFormCancelClick = this.handleEditFormCancelClick.bind(this);
+    
   }
   getListNote = async () => {
     try {
@@ -31,19 +33,22 @@ class ParentComponent extends Component {
       isEditFormVisible: true,
       selectedListId: listId,
       selectedList: selectedList,
+      
     });
     if (this.props.onEditClick) {
       this.props.onEditClick(selectedList);
+   
     }
+    // this.setState({ isButtonGroupVisible: false });
+    // console.log("an button" , this.state.isButtonGroupVisible);
   }
   handleEditFormCancelClick() {
     this.setState({
       isEditFormVisible: false,
+     
     });
-    if (this.props.onShowButtons) {
-      this.props.onShowButtons(true);
-    }
   }
+ 
 
   handleDele = async (id) => {
     try {
@@ -61,20 +66,22 @@ class ParentComponent extends Component {
   render() {
     const { listNote, selectedListId, isEditFormVisible, selectedList } =
       this.state;
+   
     if (isEditFormVisible) {
       return (
         <div>
           <EditListForm
             listId={selectedListId}
             onCancelEdit={this.handleEditFormCancelClick}
-            onShowButtons={this.handleShowButtons}
             selectedList={selectedList}
           />
+             
         </div>
       );
     }
     return (
       <div>
+         
         <h1>My list</h1>
         {listNote.map((list) => (
           <div className="listnote" id={list.id} key={list.id}>

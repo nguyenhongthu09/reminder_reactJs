@@ -3,6 +3,7 @@ import "../style/style.css";
 import RenderColorOnUi from "./renderColorUi";
 import { updateListData } from "../fetchApi/fetchApiList";
 import ParentComponent from "./renderListUi";
+import ButtonGroup from "./buttonGroup";
 class EditListForm extends Component {
   constructor(props) {
     super(props);
@@ -12,6 +13,7 @@ class EditListForm extends Component {
         name: "",
       },
       isFormSubmitted: false,
+      
     };
   }
   handleChange = (e) => {
@@ -26,6 +28,10 @@ class EditListForm extends Component {
   handleColorClick = (selectedColor) => {
     console.log(selectedColor, "selce");
     this.setState({ selectedColor });
+  };
+
+  handleCancelClick = () => {
+    this.props.onCancelEdit();
   };
 
   handleEditClick = async () => {
@@ -57,6 +63,7 @@ class EditListForm extends Component {
     if (isFormSubmitted) {
       return <ParentComponent></ParentComponent>;
     }
+
     return (
       <form id="form_edit_list" action="" className="form-edit-list">
         <div className="form__edit__list">
