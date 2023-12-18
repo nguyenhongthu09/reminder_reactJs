@@ -11,7 +11,7 @@ class HtmlComponents extends Component {
 
         <ListNoteRender></ListNoteRender>
 
-        <div className="detail-list-note">
+        {/* <div className="detail-list-note">
           <div>
             <div className="loader  loader__reminder  loader-hidden  loader__common  "></div>
           </div>
@@ -45,7 +45,7 @@ class HtmlComponents extends Component {
           <button className="btn btn-primary add__reminders" id="btnNewNote">
             New Reminder
           </button>
-        </div>
+        </div> */}
         <form action="" id="form__add__note" className="form--add__notes">
           <div className="button-detail-list">
             <button type="button" className="btn btn-primary btn-back-note">

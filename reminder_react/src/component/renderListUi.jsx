@@ -10,17 +10,19 @@ class ParentComponent extends Component {
       listNote: [],
       isEditFormVisible: false,
       selectedListId: null,
-     
+      isListUpdated: false, 
+      
     };
     this.handleEditClick = this.handleEditClick.bind(this);
     this.handleEditFormCancelClick = this.handleEditFormCancelClick.bind(this);
     
   }
-  getListNote = async () => {
+  getListNote = async (shouldUpdate = false) => {
     try {
       const listData = await getAllList();
       this.setState({
         listNote: listData,
+        isListUpdated: shouldUpdate, // Cập nhật trạng thái khi cần render lại
       });
     } catch (error) {
       console.error("Error fetching listNote:", error.message);
@@ -39,8 +41,7 @@ class ParentComponent extends Component {
       this.props.onEditClick(selectedList);
    
     }
-    // this.setState({ isButtonGroupVisible: false });
-    // console.log("an button" , this.state.isButtonGroupVisible);
+    
   }
   handleEditFormCancelClick() {
     this.setState({
@@ -59,22 +60,40 @@ class ParentComponent extends Component {
     }
   };
 
+  updateButtonGroupVisibility = (isVisible) => {
+    this.setState({
+      isButtonGroupVisible: isVisible,
+    });
+  };
+
   componentDidMount = () => {
+    console.log("render hompage");
     this.getListNote();
   };
 
   render() {
-    const { listNote, selectedListId, isEditFormVisible, selectedList } =
+    const { listNote, selectedListId, isEditFormVisible, selectedList , isButtonGroupVisible } =
       this.state;
    
     if (isEditFormVisible) {
       return (
         <div>
+            <ButtonGroup
+          onAddListClick={this.handleAddListClick}
+          isButtonGroupVisible={isButtonGroupVisible}
+        />
+
+          {isEditFormVisible && (
           <EditListForm
             listId={selectedListId}
-            onCancelEdit={this.handleEditFormCancelClick}
+            onCancelEdit={() => {
+              this.handleEditFormCancelClick();
+              this.updateButtonGroupVisibility(true); // Set isButtonGroupVisible to true on cancel
+            }}
             selectedList={selectedList}
+            updateButtonGroupVisibility={this.updateButtonGroupVisibility} // Pass the callback
           />
+        )}
              
         </div>
       );

@@ -18,11 +18,13 @@ class EditListForm extends Component {
   }
   handleChange = (e) => {
     const { value } = e.target;
+    const isButtonDisabled = value.trim() === "";
     this.setState((prevState) => ({
       form: {
         ...prevState.form,
         name: value,
       },
+      isButtonDisabled,
     }));
   };
   handleColorClick = (selectedColor) => {
@@ -32,6 +34,7 @@ class EditListForm extends Component {
 
   handleCancelClick = () => {
     this.props.onCancelEdit();
+    this.props.updateButtonGroupVisibility(true);
   };
 
   handleEditClick = async () => {
@@ -47,6 +50,16 @@ class EditListForm extends Component {
       console.error("Lỗi khi cập nhật:", error);
     }
   };
+
+  handleInputFocus = () => {
+    this.setState({ isButtonDisabled: false });
+  };
+  handleInputBlur = () => {
+    const { form } = this.state;
+    if (form.name.trim() === "") {
+      this.setState({ isButtonDisabled: true });
+    }
+  };
   componentDidMount() {
     if (this.props.selectedList) {
       this.setState({
@@ -59,7 +72,7 @@ class EditListForm extends Component {
   }
 
   render() {
-    const { isFormSubmitted } = this.state;
+    const { isFormSubmitted  } = this.state;
     if (isFormSubmitted) {
       return <ParentComponent></ParentComponent>;
     }
@@ -78,6 +91,8 @@ class EditListForm extends Component {
             Cancel
           </button>
           <button
+          
+           disabled={this.state.isButtonDisabled}
             type="button"
             id="btnsubedit"
             className="btn btn-primary button-done"
@@ -148,6 +163,8 @@ class EditListForm extends Component {
             placeholder="Tên Danh Sách"
             value={this.state.form.name}
             onChange={this.handleChange}
+            onFocus={this.handleInputFocus} 
+            onBlur={this.handleInputBlur}
           />
           <p id="name_error" className="error-message">
             Please enter a list name.

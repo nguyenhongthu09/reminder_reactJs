@@ -8,6 +8,7 @@ const getAllList = async () => {
 
     if (response.status === 200) {
       const listData = await response.json();
+      console.log(listData, " log");
       return listData;
     }
   } catch (error) {

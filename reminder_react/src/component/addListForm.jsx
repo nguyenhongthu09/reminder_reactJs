@@ -3,7 +3,7 @@ import "../style/style.css";
 import RenderColorOnUi from "./renderColorUi";
 import { addNewList } from "../fetchApi/fetchApiList";
 import ListNoteRender from "./listNoteHome";
-
+import ParentComponent from "./renderListUi";
 class AddListForm extends Component {
   constructor(props) {
     super(props);
@@ -33,18 +33,19 @@ class AddListForm extends Component {
     try {
       await addNewList({ name, isColor: selectedColor });
       this.setState({ isFormSubmitted: true });
+      this.props.updateListNote(true);
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
     }
   };
 
   render() {
-    const { selectedColor, isFormSubmitted } = this.state;
+    const { selectedColor, isFormSubmitted , form } = this.state;
 
     if (isFormSubmitted) {
       return <ListNoteRender></ListNoteRender>;
     }
-
+    const isButtonDisabled = form.name.trim() === "";
     return (
       <form
         onSubmit={this.handleSubmit}
@@ -64,6 +65,7 @@ class AddListForm extends Component {
             Cancel
           </button>
           <button
+        disabled={isButtonDisabled}
             type="submit"
             id="btnSubmit"
             className="btn btn-primary button-done"

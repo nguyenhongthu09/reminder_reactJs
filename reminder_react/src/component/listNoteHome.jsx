@@ -31,7 +31,11 @@ class ListNoteRender extends Component {
       showAddListForm: false,
     }));
   }
-
+  updateListNote = (shouldUpdate) => {
+    if (shouldUpdate) {
+      this.setState({ isListUpdated: true });
+    }
+  };
   render() {
     const { showAddListForm } = this.state;
     return (
@@ -43,6 +47,7 @@ class ListNoteRender extends Component {
           <div className="menu-list-note" id="renderlist-home">
             <ParentComponent
               onEditClick={this.handleEditClick}
+              isListUpdated={this.state.isListUpdated} 
             ></ParentComponent>
           </div>
           {/* {showButtons && ( */}
@@ -54,6 +59,7 @@ class ListNoteRender extends Component {
         </div>
         <AddListForm
           showForm={showAddListForm}
+          updateListNote={this.updateListNote} 
           onCancelClick={this.handleCancelClick}
           onSuccess={this.handleAddSuccess}
         />
