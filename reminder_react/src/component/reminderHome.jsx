@@ -1,43 +1,27 @@
 import React, { Component } from "react";
-import { getReminder } from "../fetchApi/fetchApiREminder";
+
 import "../style/style.css";
 
 class RenderReminderUi extends Component {
-    constructor() {
-        super();
-        this.state = {
-            reminder:[],
-        }
-    }
+  constructor() {
+    super();
+    this.state = {
+      reminder: [],
+    };
+  }
 
-    getReminder = async () => {
-        try {
-            const reminderData = await getReminder();
-            this.setState({
-              reminder: reminderData,
-           
-            });
-          } catch (error) {
-            console.error("Error fetching reminder:", error.message);
-          }
-    }
-    componentDidMount = () => {
-        console.log("render reminder");
-        this.getReminder();
-      };
-    render() {
-        const {reminder} = this.state;
-
-        return (
-            <div>
-                <h1>thu ne</h1>
-                <div className="detail-list-note">
-          <div>
+  render() {
+    return (
+      <div className="render-reminder-ui">
+        <h1>thu ne</h1>
+        <div className="detail-list-note">
+          {/* <div>
             <div className="loader  loader__reminder  loader-hidden  loader__common  "></div>
-          </div>
-          <div className="thong-bao">Empty list !!!</div>
+          </div> */}
+          {/* <div className="thong-bao">Empty list !!!</div> */}
           <div className="note">
             <div className="tieu-de"></div>
+            <h1>danh sach reminder</h1>
           </div>
           <div className="new-reminder">
             <div className="form-check  item-reminders">
@@ -66,10 +50,9 @@ class RenderReminderUi extends Component {
             New Reminder
           </button>
         </div>
-            </div>
-        )
-    }
-    
+      </div>
+    );
+  }
 }
 
 export default RenderReminderUi;

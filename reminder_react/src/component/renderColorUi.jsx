@@ -7,6 +7,7 @@ class RenderColorOnUi extends Component {
     super();
     this.state = {
       color: [],
+      
     };
   }
   getColors = async () => {
@@ -21,6 +22,7 @@ class RenderColorOnUi extends Component {
   };
 
   componentDidMount = () => {
+    console.log("render mau");
     this.getColors();
   };
   render() {

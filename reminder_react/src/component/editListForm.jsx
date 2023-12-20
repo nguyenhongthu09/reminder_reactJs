@@ -3,7 +3,7 @@ import "../style/style.css";
 import RenderColorOnUi from "./renderColorUi";
 import { updateListData } from "../fetchApi/fetchApiList";
 import ParentComponent from "./renderListUi";
-import ButtonGroup from "./buttonGroup";
+import ListNoteRender from "./listNoteHome";
 class EditListForm extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +13,7 @@ class EditListForm extends Component {
         name: "",
       },
       isFormSubmitted: false,
-      
+      selectedListId: null,
     };
   }
   handleChange = (e) => {
@@ -28,7 +28,6 @@ class EditListForm extends Component {
     }));
   };
   handleColorClick = (selectedColor) => {
-    console.log(selectedColor, "selce");
     this.setState({ selectedColor });
   };
 
@@ -40,7 +39,6 @@ class EditListForm extends Component {
   handleEditClick = async () => {
     const { selectedColor, form } = this.state;
     const { listId } = this.props;
-    console.log("listId", listId);
 
     try {
       await updateListData(listId, form.name, selectedColor);
@@ -61,20 +59,20 @@ class EditListForm extends Component {
     }
   };
   componentDidMount() {
-    if (this.props.selectedList) {
-      this.setState({
-        form: {
-          name: this.props.selectedList.name,
-        },
-        selectedColor: this.props.selectedList.isColor,
-      });
-    }
+    const { formData } = this.props;
+    console.log(formData, "data");
+    this.setState({
+      form: {
+        name: formData.name,
+      },
+      selectedColor: formData.isColor,
+    });
   }
 
   render() {
-    const { isFormSubmitted  } = this.state;
+    const { isFormSubmitted } = this.state;
     if (isFormSubmitted) {
-      return <ParentComponent></ParentComponent>;
+      return <ListNoteRender></ListNoteRender>;
     }
 
     return (
@@ -91,8 +89,7 @@ class EditListForm extends Component {
             Cancel
           </button>
           <button
-          
-           disabled={this.state.isButtonDisabled}
+            disabled={this.state.isButtonDisabled}
             type="button"
             id="btnsubedit"
             className="btn btn-primary button-done"
@@ -163,7 +160,7 @@ class EditListForm extends Component {
             placeholder="Tên Danh Sách"
             value={this.state.form.name}
             onChange={this.handleChange}
-            onFocus={this.handleInputFocus} 
+            onFocus={this.handleInputFocus}
             onBlur={this.handleInputBlur}
           />
           <p id="name_error" className="error-message">
@@ -176,7 +173,7 @@ class EditListForm extends Component {
         >
           <RenderColorOnUi
             onColorClick={this.handleColorClick}
-          ></RenderColorOnUi>
+          />
         </div>
       </form>
     );

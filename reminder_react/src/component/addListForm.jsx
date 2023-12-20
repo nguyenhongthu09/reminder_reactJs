@@ -33,7 +33,6 @@ class AddListForm extends Component {
     try {
       await addNewList({ name, isColor: selectedColor });
       this.setState({ isFormSubmitted: true });
-      this.props.updateListNote(true);
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
     }

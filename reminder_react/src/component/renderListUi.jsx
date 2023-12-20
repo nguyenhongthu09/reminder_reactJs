@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import getAllList, { delList } from "../fetchApi/fetchApiList";
 import "../style/style.css";
-import EditListForm from "./editListForm";
-import ButtonGroup from "./buttonGroup";
+import RenderReminderUi from "./reminderHome";
 class ParentComponent extends Component {
   constructor() {
     super();
@@ -10,46 +9,47 @@ class ParentComponent extends Component {
       listNote: [],
       isEditFormVisible: false,
       selectedListId: null,
-      isListUpdated: false, 
-      
+       isReminderVisible: false,
+       isParentComponentVisible: true,
     };
+
     this.handleEditClick = this.handleEditClick.bind(this);
     this.handleEditFormCancelClick = this.handleEditFormCancelClick.bind(this);
-    
   }
-  getListNote = async (shouldUpdate = false) => {
+  getListNote = async () => {
     try {
       const listData = await getAllList();
       this.setState({
         listNote: listData,
-        isListUpdated: shouldUpdate, // Cập nhật trạng thái khi cần render lại
       });
     } catch (error) {
       console.error("Error fetching listNote:", error.message);
     }
   };
 
-  handleEditClick(listId) {
-    const selectedList = this.state.listNote.find((list) => list.id === listId);
-    this.setState({
-      isEditFormVisible: true,
-      selectedListId: listId,
-      selectedList: selectedList,
-      
-    });
-    if (this.props.onEditClick) {
-      this.props.onEditClick(selectedList);
-   
-    }
+  handleListNoteClick = (list) => {
     
+    if (this.props.onListNoteClick) {
+      this.props.onListNoteClick(list);
+    
+    }
+  };
+handleClickReminder = (list) =>{
+  console.log("mo note");
+      this.setState({
+        selectedListId: list.id,
+        isReminderVisible: true,
+        isParentComponentVisible: false,
+      });
+}
+  handleEditClick(listId) {
+    this.handleEditClickParent(listId);
   }
   handleEditFormCancelClick() {
     this.setState({
       isEditFormVisible: false,
-     
     });
   }
- 
 
   handleDele = async (id) => {
     try {
@@ -60,50 +60,19 @@ class ParentComponent extends Component {
     }
   };
 
-  updateButtonGroupVisibility = (isVisible) => {
-    this.setState({
-      isButtonGroupVisible: isVisible,
-    });
-  };
-
   componentDidMount = () => {
-    console.log("render hompage");
     this.getListNote();
   };
 
   render() {
-    const { listNote, selectedListId, isEditFormVisible, selectedList , isButtonGroupVisible } =
-      this.state;
-   
-    if (isEditFormVisible) {
-      return (
-        <div>
-            <ButtonGroup
-          onAddListClick={this.handleAddListClick}
-          isButtonGroupVisible={isButtonGroupVisible}
-        />
-
-          {isEditFormVisible && (
-          <EditListForm
-            listId={selectedListId}
-            onCancelEdit={() => {
-              this.handleEditFormCancelClick();
-              this.updateButtonGroupVisibility(true); // Set isButtonGroupVisible to true on cancel
-            }}
-            selectedList={selectedList}
-            updateButtonGroupVisibility={this.updateButtonGroupVisibility} // Pass the callback
-          />
-        )}
-             
-        </div>
-      );
-    }
+    const { listNote , isReminderVisible , selectedListId} = this.state;
     return (
+      
       <div>
-         
         <h1>My list</h1>
         {listNote.map((list) => (
-          <div className="listnote" id={list.id} key={list.id}>
+          <div    className={`listnote ${selectedListId === list.id ? "selected" : ""}`} id={list.id} key={list.id}
+          onClick={() => this.handleClickReminder(list)}>
             <div className="list-note">
               <div className="item-list-none-left">
                 <div
@@ -227,7 +196,7 @@ class ParentComponent extends Component {
                     <a
                       className="dropdown-item edit"
                       href="#"
-                      onClick={() => this.handleEditClick(list.id)}
+                      onClick={() => this.handleListNoteClick(list)}
                     >
                       <span className="edit-icon edit-list">
                         <svg
@@ -250,6 +219,7 @@ class ParentComponent extends Component {
             </div>
           </div>
         ))}
+        {isReminderVisible && <RenderReminderUi />}
       </div>
     );
   }
