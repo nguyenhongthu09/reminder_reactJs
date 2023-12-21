@@ -60,7 +60,6 @@ class EditListForm extends Component {
   };
   componentDidMount() {
     const { formData } = this.props;
-    console.log(formData, "data");
     this.setState({
       form: {
         name: formData.name,
@@ -171,9 +170,7 @@ class EditListForm extends Component {
           className="color-list-icon  render-list-color-edit"
           id="color-list-add-list"
         >
-          <RenderColorOnUi
-            onColorClick={this.handleColorClick}
-          />
+          <RenderColorOnUi onColorClick={this.handleColorClick} />
         </div>
       </form>
     );

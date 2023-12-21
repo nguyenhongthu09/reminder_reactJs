@@ -8,7 +8,7 @@ const getAllList = async () => {
 
     if (response.status === 200) {
       const listData = await response.json();
-      console.log(listData, " log");
+
       return listData;
     }
   } catch (error) {
@@ -53,7 +53,7 @@ export const delList = async (id) => {
 };
 
 export const updateListData = async (id, newName, newColor) => {
-  console.log(id,newName , newColor , "log api");
+  console.log(id, newName, newColor, "log api");
   try {
     const response = await fetch(`${API_URL}/listNote/${id}`, {
       method: "PUT",

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import getAllList, { delList } from "../fetchApi/fetchApiList";
 import "../style/style.css";
-import RenderReminderUi from "./reminderHome";
+
 class ParentComponent extends Component {
   constructor() {
     super();
@@ -9,8 +9,6 @@ class ParentComponent extends Component {
       listNote: [],
       isEditFormVisible: false,
       selectedListId: null,
-       isReminderVisible: false,
-       isParentComponentVisible: true,
     };
 
     this.handleEditClick = this.handleEditClick.bind(this);
@@ -28,20 +26,24 @@ class ParentComponent extends Component {
   };
 
   handleListNoteClick = (list) => {
-    
     if (this.props.onListNoteClick) {
       this.props.onListNoteClick(list);
-    
     }
   };
-handleClickReminder = (list) =>{
-  console.log("mo note");
-      this.setState({
-        selectedListId: list.id,
-        isReminderVisible: true,
-        isParentComponentVisible: false,
-      });
-}
+
+  handleClickName = (list) => {
+    console.log(list, "name list");
+    if (this.props.onClickName) {
+      this.props.onClickName(list);
+    }
+  };
+
+  handleCLickReminder = (id) => {
+    if (this.props.onClickReminder) {
+      this.props.onClickReminder(id);
+    }
+  };
+
   handleEditClick(listId) {
     this.handleEditClickParent(listId);
   }
@@ -65,16 +67,21 @@ handleClickReminder = (list) =>{
   };
 
   render() {
-    const { listNote , isReminderVisible , selectedListId} = this.state;
+    const { listNote } = this.state;
     return (
-      
       <div>
         <h1>My list</h1>
         {listNote.map((list) => (
-          <div    className={`listnote ${selectedListId === list.id ? "selected" : ""}`} id={list.id} key={list.id}
-          onClick={() => this.handleClickReminder(list)}>
-            <div className="list-note">
-              <div className="item-list-none-left">
+          <div className="listnote" id={list.id} key={list.id}>
+            <div
+              className="list-note"
+              id={list.id}
+              onClick={() => this.handleCLickReminder(list)}
+            >
+              <div
+                className="item-list-none-left"
+                onClick={() => this.handleClickName(list)}
+              >
                 <div
                   className="icon-list-note"
                   style={{ backgroundColor: list.isColor }}
@@ -219,7 +226,6 @@ handleClickReminder = (list) =>{
             </div>
           </div>
         ))}
-        {isReminderVisible && <RenderReminderUi />}
       </div>
     );
   }

@@ -3,7 +3,7 @@ import "../style/style.css";
 import RenderColorOnUi from "./renderColorUi";
 import { addNewList } from "../fetchApi/fetchApiList";
 import ListNoteRender from "./listNoteHome";
-import ParentComponent from "./renderListUi";
+
 class AddListForm extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +39,7 @@ class AddListForm extends Component {
   };
 
   render() {
-    const { selectedColor, isFormSubmitted , form } = this.state;
+    const { selectedColor, isFormSubmitted, form } = this.state;
 
     if (isFormSubmitted) {
       return <ListNoteRender></ListNoteRender>;
@@ -64,7 +64,7 @@ class AddListForm extends Component {
             Cancel
           </button>
           <button
-        disabled={isButtonDisabled}
+            disabled={isButtonDisabled}
             type="submit"
             id="btnSubmit"
             className="btn btn-primary button-done"

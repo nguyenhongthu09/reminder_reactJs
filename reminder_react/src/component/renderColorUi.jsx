@@ -22,7 +22,7 @@ class RenderColorOnUi extends Component {
   };
 
   componentDidMount = () => {
-    console.log("render mau");
+ 
     this.getColors();
   };
   render() {

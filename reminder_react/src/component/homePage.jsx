@@ -46,7 +46,7 @@ class HtmlComponents extends Component {
             New Reminder
           </button>
         </div> */}
-        <form action="" id="form__add__note" className="form--add__notes">
+        {/* <form action="" id="form__add__note" className="form--add__notes">
           <div className="button-detail-list">
             <button type="button" className="btn btn-primary btn-back-note">
               Cancel
@@ -81,7 +81,7 @@ class HtmlComponents extends Component {
             </div>
             <div className="render" id="renderlist"></div>
           </div>
-        </form>
+        </form> */}
       </>
     );
   }

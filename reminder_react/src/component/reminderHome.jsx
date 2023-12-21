@@ -1,27 +1,32 @@
 import React, { Component } from "react";
-
 import "../style/style.css";
-
-class RenderReminderUi extends Component {
+import RenderReminderUi from "./renderReminderUi";
+class ReminderHome extends Component {
   constructor() {
     super();
     this.state = {
       reminder: [],
     };
   }
+  handleListsButtonClick = () => {
+    if (this.props.onListsButtonClick) {
+      this.props.onListsButtonClick();
+    }
+  };
 
   render() {
     return (
-      <div className="render-reminder-ui">
-        <h1>thu ne</h1>
+      <div>
         <div className="detail-list-note">
           {/* <div>
             <div className="loader  loader__reminder  loader-hidden  loader__common  "></div>
           </div> */}
-          {/* <div className="thong-bao">Empty list !!!</div> */}
+
           <div className="note">
-            <div className="tieu-de"></div>
-            <h1>danh sach reminder</h1>
+            <RenderReminderUi
+              selectedListId={this.props.selectedListId}
+              selectedListName={this.props.selectedListName}
+            ></RenderReminderUi>
           </div>
           <div className="new-reminder">
             <div className="form-check  item-reminders">
@@ -35,13 +40,18 @@ class RenderReminderUi extends Component {
             </div>
           </div>
           <div className="button-detail-list">
-            <button type="button" className="btn btn-primary btn-back-list">
+            <button
+              type="button"
+              className="btn btn-primary btn-back-list"
+              onClick={this.handleListsButtonClick}
+            >
               Lists
             </button>
             <button
               type="button"
               className="btn btn-primary add-reminder"
               id="btnsubmit-note"
+              disabled
             >
               Add
             </button>
@@ -55,4 +65,4 @@ class RenderReminderUi extends Component {
   }
 }
 
-export default RenderReminderUi;
+export default ReminderHome;

@@ -1,10 +1,10 @@
 import HtmlComponents from "./component/homePage";
-
+import ListNoteRender from "./component/listNoteHome";
 function App() {
   
   return (
     <div className="App">
-      <HtmlComponents />
+      <ListNoteRender />
     </div>
   );
 }

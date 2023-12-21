@@ -7,7 +7,7 @@ export const getReminder = async (listId) => {
   
     if (response.status === 200) {
       const reminderData = await response.json();
-      console.log(reminderData, "danh sach reminder");
+      // console.log(reminderData, "danh sach reminder");
       return reminderData;
     }
   };
