@@ -1,73 +1,36 @@
 import React, { Component } from "react";
-import getAllList, { delList } from "../fetchApi/fetchApiList";
+import { delList } from "../fetchApi/fetchApiList";
 import "../style/style.css";
 
 class ParentComponent extends Component {
   constructor() {
     super();
     this.state = {
-      listNote: [],
-      isEditFormVisible: false,
-      selectedListId: null,
+      isFormCommonListNoteVisible: false,
+      selectedListForEdit: null,
     };
-
-    this.handleEditClick = this.handleEditClick.bind(this);
-    this.handleEditFormCancelClick = this.handleEditFormCancelClick.bind(this);
   }
-  getListNote = async () => {
-    try {
-      const listData = await getAllList();
-      this.setState({
-        listNote: listData,
-      });
-    } catch (error) {
-      console.error("Error fetching listNote:", error.message);
-    }
-  };
 
   handleListNoteClick = (list) => {
     if (this.props.onListNoteClick) {
       this.props.onListNoteClick(list);
     }
   };
-
-  handleClickName = (list) => {
-    console.log(list, "name list");
-    if (this.props.onClickName) {
-      this.props.onClickName(list);
-    }
-  };
-
-  handleCLickReminder = (id) => {
-    if (this.props.onClickReminder) {
-      this.props.onClickReminder(id);
-    }
-  };
-
-  handleEditClick(listId) {
-    this.handleEditClickParent(listId);
-  }
-  handleEditFormCancelClick() {
-    this.setState({
-      isEditFormVisible: false,
-    });
-  }
-
   handleDele = async (id) => {
     try {
       await delList(id);
-      this.getListNote();
+      console.log("xoa thanh cong");
+      if (this.props.onListDeleteSuccess) {
+        this.props.onListDeleteSuccess();
+      }
     } catch (error) {
       console.error("Error fetching listNote:", error.message);
     }
   };
 
-  componentDidMount = () => {
-    this.getListNote();
-  };
-
   render() {
-    const { listNote } = this.state;
+    const { listNote } = this.props;
+
     return (
       <div>
         <h1>My list</h1>
@@ -76,7 +39,7 @@ class ParentComponent extends Component {
             <div
               className="list-note"
               id={list.id}
-              onClick={() => this.handleCLickReminder(list)}
+              onClick={() => this.handleListNoteClick(list)}
             >
               <div
                 className="item-list-none-left"

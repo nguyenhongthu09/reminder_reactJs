@@ -53,7 +53,6 @@ export const delList = async (id) => {
 };
 
 export const updateListData = async (id, newName, newColor) => {
-  console.log(id, newName, newColor, "log api");
   try {
     const response = await fetch(`${API_URL}/listNote/${id}`, {
       method: "PUT",

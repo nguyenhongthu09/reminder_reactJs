@@ -1,134 +1,121 @@
 import React, { Component } from "react";
 import ParentComponent from "./renderListUi";
-import AddListForm from "./addListForm";
-import EditListForm from "./editListForm";
-import ReminderHome from "./reminderHome";
-import AddReminderForm from "./addFormReminder";
+import getAllList from "../fetchApi/fetchApiList";
+import getColor from "../fetchApi/fetchColor";
+import FormCommonListNote from "./formComon";
+
 class ListNoteRender extends Component {
   constructor() {
     super();
     this.state = {
       listNote: [],
-      selectedListId: null,
-      showAddListForm: false,
-      isEditFormVisible: false,
-      showRenderReminderUi: false,
-      showAddReminderForm: false,
-      selectedListName: "",
+      color: [],
+      showFormCommonListNote: false,
+      formType: "",
     };
 
     this.handleAddListClick = this.handleAddListClick.bind(this);
     this.handleCancelClick = this.handleCancelClick.bind(this);
-    this.handleAddSuccess = this.handleAddSuccess.bind(this);
-    this.handleEditFormCancelClick = this.handleEditFormCancelClick.bind(this);
+    this.setFormType = this.setFormType.bind(this);
+    this.handleFormSubmitSuccess = this.handleFormSubmitSuccess.bind(this);
   }
-  handleEditFormCancelClick() {
+  setFormType(formType) {
     this.setState({
-      isEditFormVisible: false,
+      showFormCommonListNote: formType === "add" || formType === "edit",
+      formType: formType,
     });
   }
-  handleListNoteClick = (listNote) => {
-    const { id, name, isColor } = listNote;
-    this.handleEditClickParent({ id, name, isColor });
+
+  getListNote = async () => {
+    try {
+      const listData = await getAllList();
+      this.setState((prevState) => ({
+        listNote: listData,
+      }));
+    } catch (error) {
+      console.error("Error fetching listNote:", error.message);
+    }
   };
 
-  handleCLickReminder = (listNote) => {
+  getColors = async () => {
+    try {
+      const colorData = await getColor();
+      this.setState({
+        colorData: colorData.map((colors) => colors.color),
+      });
+    } catch (error) {
+      console.error("Error fetching colorData:", error.message);
+    }
+  };
+
+  handleFormSubmitSuccess = async () => {
     this.setState({
-      showRenderReminderUi: true,
-      showAddListForm: false,
-      isEditFormVisible: false,
-      selectedListId: listNote.id,
-      selectedListName: listNote.name,
+      showFormCommonListNote: false,
+    });
+    await this.getListNote();
+  };
+
+  handleListNoteClick = (listNote) => {
+    this.setFormType("edit");
+
+    const { id, name, isColor } = listNote;
+    this.setState({
+      selectedListData: {
+        id,
+        name,
+        isColor,
+      },
+      showFormCommonListNote: true,
     });
   };
-  handleListsButtonClick = () => {
-    this.setState({
-      showRenderReminderUi: false,
-    });
-  };
-  handleAddListClick() {
-    this.setState({
-      showAddListForm: true,
-    });
+
+  handleAddListClick(source) {
+    this.setFormType("add");
+
+    if (source === "button" || source === "dropdown") {
+      this.setState({
+        showFormCommonListNote: true,
+      });
+    }
   }
   handleCancelClick() {
     this.setState({
-      showAddListForm: false,
+      showFormCommonListNote: false,
     });
   }
-  handleCancelFormAddReminder = () => {
-    this.setState({ showAddReminderForm: false });
+  handleListDeleteSuccess = async () => {
+    await this.getListNote();
   };
-  handleAddSuccess() {
-    this.setState(() => ({
-      showAddListForm: false,
-    }));
-  }
-  handleEditClickParent = (listData) => {
-    const { id, name, isColor } = listData;
-    this.setState({
-      selectedListId: id,
-      isEditFormVisible: true,
-      editFormData: {
-        id: id,
-        name: name,
-        isColor: isColor,
-      },
-    });
-  };
-  handleClickFormAddReminder = () => {
-    this.setState({
-      showAddReminderForm: true,
-    });
-  };
-  handleClickName = (listNote) => {
-    const { id, name, isColor } = listNote;
-    this.handleEditClickParent({ id, name, isColor });
-    this.setState({
-      selectedListName: name,
-      id: id,
-    });
+
+  componentDidMount = async () => {
+    this.getListNote();
+    this.getColors();
   };
 
   render() {
-    const {
-      showAddListForm,
-      isEditFormVisible,
-      editFormData,
-      showRenderReminderUi,
-      showAddReminderForm,
-      selectedListName,
-    } = this.state;
+    const { showFormCommonListNote } = this.state;
 
     return (
       <>
         <div
           className="menu-list-notes"
           style={{
-            display:
-              showAddListForm ||
-              isEditFormVisible ||
-              showRenderReminderUi ||
-              showAddReminderForm
-                ? "none"
-                : "block",
+            display: showFormCommonListNote ? "none" : "block",
           }}
         >
           <div className="menu-list-note" id="renderlist-home">
             <ParentComponent
               onListNoteClick={this.handleListNoteClick}
-              onEditClick={this.handleEditClick}
-              onEditClickParent={this.handleEditClickParent}
-              onClickReminder={this.handleCLickReminder}
+              onListDeleteSuccess={this.handleListDeleteSuccess}
+              listNote={this.state.listNote}
             ></ParentComponent>
           </div>
+
           {/* {showButtons && ( */}
           <div className="button-home">
             <button
               type="button"
               className="btn btn-primary add-reminder btn__add--reminder"
-              onClick={this.handleClickFormAddReminder}
-              // onClickBackList={this.handleCancelFormAddReminder}
             >
               New Reminder
             </button>
@@ -136,40 +123,22 @@ class ListNoteRender extends Component {
               type="button"
               className="btn btn-primary add-list"
               id="add-list-new"
-              onClick={this.handleAddListClick}
+              onClick={() => this.handleAddListClick("button")}
             >
               Add List
             </button>
           </div>
           {/* )} */}
         </div>
-        <AddListForm
-          showForm={showAddListForm}
-          onCancelClick={this.handleCancelClick}
-          onSuccess={this.handleAddSuccess}
-        />
-        {showAddReminderForm && (
-          <AddReminderForm
-            onCancelFormAdd={this.handleCancelFormAddReminder}
-            defaultSelectedListName={selectedListName}
-          />
-        )}
-        {isEditFormVisible && (
-          <EditListForm
-            listId={this.state.selectedListId}
-            showEditForm={isEditFormVisible}
-            formData={editFormData}
-            onCancelEdit={this.handleEditFormCancelClick}
-            onEditClickParent={() =>
-              this.handleEditClickParent(this.state.selectedListId)
-            }
-          ></EditListForm>
-        )}
-        {showRenderReminderUi && (
-          <ReminderHome
-            onListsButtonClick={this.handleListsButtonClick}
-            selectedListId={this.state.selectedListId}
-            selectedListName={this.state.selectedListName}
+
+        {showFormCommonListNote && (
+          <FormCommonListNote
+            setFormType={this.setFormType}
+            onCancelClick={this.handleCancelClick}
+            formType={this.state.formType}
+            selectedListData={this.state.selectedListData}
+            colorData={this.state.colorData}
+            onSubmitSuccess={this.handleFormSubmitSuccess}
           />
         )}
       </>

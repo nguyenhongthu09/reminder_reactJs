@@ -57,9 +57,18 @@ class AddReminderForm extends Component {
               </div>
             </div>
             <div className="render" id="renderlist">
-              <ParentComponent
+            
+            {this.props.listNote.map((list) => (
+              <div key={list.id}>{list.name}</div>
+            ))}
+            {/* {this.props.listNote.map((list) => (
+    // Hiển thị danh sách listNote tại đây
+          <div key={list.id}>{list.name}</div>
+          ))} */}
+              {/* <ParentComponent
                 onClickName={this.handleClickName}
-              ></ParentComponent>
+                listNote={this.props.listNote}
+              ></ParentComponent> */}
             </div>
           </div>
         </form>
