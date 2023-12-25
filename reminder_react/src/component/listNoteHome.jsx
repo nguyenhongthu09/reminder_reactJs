@@ -48,11 +48,41 @@ class ListNoteRender extends Component {
     }
   };
 
-  handleFormSubmitSuccess = async () => {
+  handleFormSubmitSuccess = async (updatedListData) => {
     this.setState({
       showFormCommonListNote: false,
     });
-    await this.getListNote();
+
+    const { formType } = this.state;
+    if (formType === "add") {
+      this.setState(
+        (prevState) => ({
+          listNote: [...prevState.listNote, updatedListData],
+        }),
+        () => {
+          console.log("Thêm mới thành công");
+        }
+      );
+    } else if (formType === "edit") {
+      const updatedListNote = this.state.listNote.map((list) =>
+        list.id === updatedListData.id
+          ? {
+              ...list,
+              name: updatedListData.name,
+              isColor: updatedListData.isColor,
+            }
+          : list
+      );
+
+      this.setState(
+        {
+          listNote: updatedListNote,
+        },
+        () => {
+          console.log("Cập nhật thành công");
+        }
+      );
+    }
   };
 
   handleListNoteClick = (listNote) => {
@@ -83,8 +113,10 @@ class ListNoteRender extends Component {
       showFormCommonListNote: false,
     });
   }
-  handleListDeleteSuccess = async () => {
-    await this.getListNote();
+  handleListDeleteSuccess = async (deletedListId) => {
+    this.setState((prevState) => ({
+      listNote: prevState.listNote.filter((list) => list.id !== deletedListId),
+    }));
   };
 
   componentDidMount = async () => {

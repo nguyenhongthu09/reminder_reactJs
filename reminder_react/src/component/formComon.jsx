@@ -20,6 +20,7 @@ class FormCommonListNote extends Component {
       formType: type,
     });
   };
+
   handleColorSelect = (selectedColor) => {
     this.setState({
       isColor: selectedColor,
@@ -38,6 +39,7 @@ class FormCommonListNote extends Component {
       isInputClicked: true,
     });
   };
+
   handleSubmit = async (e) => {
     e.preventDefault();
     const { name, isColor, id } = this.state;
@@ -46,10 +48,14 @@ class FormCommonListNote extends Component {
       if (formType === "add") {
         await addNewList({ name, isColor });
       } else if (formType === "edit") {
-        await updateListData(id, name, isColor);
+        await updateListData(
+          this.state.id,
+          this.state.name,
+          this.state.isColor
+        );
       }
       if (onSubmitSuccess) {
-        onSubmitSuccess();
+        onSubmitSuccess({ name, isColor, id });
       }
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);

@@ -19,9 +19,8 @@ class ParentComponent extends Component {
   handleDele = async (id) => {
     try {
       await delList(id);
-      console.log("xoa thanh cong");
       if (this.props.onListDeleteSuccess) {
-        this.props.onListDeleteSuccess();
+        this.props.onListDeleteSuccess(id);
       }
     } catch (error) {
       console.error("Error fetching listNote:", error.message);

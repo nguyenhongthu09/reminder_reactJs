@@ -1,5 +1,5 @@
 Chỉnh sửa lại:
 +gộp 2 form edit và add lại chung với nhau: dùng type để phân biệt nên mở đóng form nào và ngoài ra tạo state: formdata:  để đổ dử liệu khi edit và set rỗng khi mở form add
 +ở listnoteHome : tạo state để lưu dữ liệu API của getList và getColor để sau này dùng props  để gọi lại tránh gọi API
-+ 
++ cap nhat lai input trong edit
 
