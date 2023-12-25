@@ -58,6 +58,7 @@ class ListNoteRender extends Component {
       this.setState(
         (prevState) => ({
           listNote: [...prevState.listNote, updatedListData],
+          colorData: [...prevState.colorData, updatedListData.isColor],
         }),
         () => {
           console.log("Thêm mới thành công");

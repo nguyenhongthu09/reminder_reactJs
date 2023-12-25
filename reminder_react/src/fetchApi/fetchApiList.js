@@ -1,5 +1,4 @@
 import { API_URL } from "../constants/apiURL";
-import { generateRandomStringId } from "../common/common";
 const getAllList = async () => {
   try {
     const response = await fetch(`${API_URL}/listNote`, {
@@ -19,18 +18,13 @@ const getAllList = async () => {
 export default getAllList;
 
 export const addNewList = async (list) => {
-  const newlist = {
-    name: list.name,
-    isColor: list.isColor,
-    id: generateRandomStringId(),
-  };
   try {
     const response = await fetch(`${API_URL}/listNote`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newlist),
+      body: JSON.stringify(list),
     });
 
     if (response.status === 201) {

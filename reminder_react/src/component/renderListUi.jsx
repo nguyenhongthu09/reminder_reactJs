@@ -33,8 +33,8 @@ class ParentComponent extends Component {
     return (
       <div>
         <h1>My list</h1>
-        {listNote.map((list) => (
-          <div className="listnote" id={list.id} key={list.id}>
+        {listNote.map((list, index) => (
+          <div className="listnote" key={list.id} id={list.id}>
             <div
               className="list-note"
               id={list.id}

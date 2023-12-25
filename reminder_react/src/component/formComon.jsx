@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { addNewList } from "../fetchApi/fetchApiList";
 import RenderColorOnUi from "./renderColorUi";
 import { updateListData } from "../fetchApi/fetchApiList";
+import { generateRandomStringId } from "../common/common";
 class FormCommonListNote extends Component {
   constructor() {
     super();
@@ -42,20 +43,20 @@ class FormCommonListNote extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, isColor, id } = this.state;
+    const { name, isColor } = this.state;
     const { formType, onSubmitSuccess } = this.props;
     try {
       if (formType === "add") {
-        await addNewList({ name, isColor });
+        const id = generateRandomStringId();
+        await addNewList({ name, isColor, id });
+        if (onSubmitSuccess) {
+          onSubmitSuccess({ name, isColor, id });
+        }
       } else if (formType === "edit") {
-        await updateListData(
-          this.state.id,
-          this.state.name,
-          this.state.isColor
-        );
-      }
-      if (onSubmitSuccess) {
-        onSubmitSuccess({ name, isColor, id });
+        await updateListData(this.state.id, name, isColor);
+        if (onSubmitSuccess) {
+          onSubmitSuccess({ name, isColor, id: this.state.id });
+        }
       }
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
