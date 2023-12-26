@@ -5,17 +5,30 @@ class AddReminderForm extends Component {
     super(props);
     this.state = {
       selectedListName: props.defaultSelectedListName || "",
+      isAddButtonDisabled: true,
     };
-  }
+  };
 
-  handleClickName = (list) => {
-    console.log(list, " name list");
+  handleInputChange = (event) => {
+    const inputValue = event.target.value;
+    const isAddButtonDisabled = inputValue.trim() === ""; // Kiểm tra xem ô input có rỗng hay không
     this.setState({
-      selectedListName: list.name,
+      isAddButtonDisabled: isAddButtonDisabled,
     });
   };
 
+  handleListSelection = (selectedListName) => {
+    console.log(selectedListName, "name");
+    this.setState({
+      selectedListName: selectedListName,
+     
+    });
+  };
+
+
   render() {
+    const { listNote } = this.props;
+
     return (
       <>
         <form action="" id="form__add__note" className="form--add__notes">
@@ -30,7 +43,7 @@ class AddReminderForm extends Component {
             <button
               type="button"
               className="btn btn-primary add-reminder"
-              disabled={true}
+              disabled={this.state.isAddButtonDisabled}
               id="submitform-addnote"
             >
               Add
@@ -43,6 +56,8 @@ class AddReminderForm extends Component {
             id="add-note-name"
             className="input_add_note_name"
             placeholder="Add name reminder"
+            onFocus={this.handleInputFocus}
+            onChange={this.handleInputChange}
           />
 
           <div className="map-list">
@@ -57,18 +72,10 @@ class AddReminderForm extends Component {
               </div>
             </div>
             <div className="render" id="renderlist">
-            
-            {this.props.listNote.map((list) => (
-              <div key={list.id}>{list.name}</div>
-            ))}
-            {/* {this.props.listNote.map((list) => (
-    // Hiển thị danh sách listNote tại đây
-          <div key={list.id}>{list.name}</div>
-          ))} */}
-              {/* <ParentComponent
-                onClickName={this.handleClickName}
-                listNote={this.props.listNote}
-              ></ParentComponent> */}
+              <ParentComponent
+                listNote={listNote}
+                onListSelect={this.handleListSelection}
+              ></ParentComponent>
             </div>
           </div>
         </form>

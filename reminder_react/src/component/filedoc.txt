@@ -3,3 +3,5 @@ Chỉnh sửa lại:
 +ở listnoteHome : tạo state để lưu dữ liệu API của getList và getColor để sau này dùng props  để gọi lại tránh gọi API
 + cap nhat lai input trong edit
 
++ service nam trong component , chi chua API va update setstate khong duoc goi su kien event
++ doi lai ten cho hop li

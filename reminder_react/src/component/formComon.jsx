@@ -1,18 +1,16 @@
 import React, { Component } from "react";
-import { addNewList } from "../fetchApi/fetchApiList";
+
 import RenderColorOnUi from "./renderColorUi";
-import { updateListData } from "../fetchApi/fetchApiList";
-import { generateRandomStringId } from "../common/common";
+import { generateRandomStringId } from "../untils/common";
 class FormCommonListNote extends Component {
   constructor() {
     super();
     this.state = {
       formType: "",
-      id: "",
-      name: "",
-      isColor: "",
       isInputClicked: false,
       isButtonDisabled: true,
+      id: generateRandomStringId(),
+      name: "",
     };
   }
 
@@ -30,42 +28,53 @@ class FormCommonListNote extends Component {
   };
 
   handleNameChange = (event) => {
+    const inputValue = event.target.value;
+    const isButtonDisabled =
+      inputValue.trim() === "" || !this.state.isInputFocused;
     this.setState({
-      name: event.target.value,
+      name: inputValue,
+      isButtonDisabled: isButtonDisabled,
     });
   };
 
   handleInputClick = () => {
     this.setState({
       isInputClicked: true,
+      isButtonDisabled: false,
+    });
+  };
+  handleInputBlur = () => {
+    console.log("click");
+    const isInputClicked = this.state.name.trim() === "";
+    this.setState({
+      isInputClicked: isInputClicked,
     });
   };
 
-  handleSubmit = async (e) => {
-    e.preventDefault();
-    const { name, isColor } = this.state;
-    const { formType, onSubmitSuccess } = this.props;
-    try {
-      if (formType === "add") {
-        const id = generateRandomStringId();
-        await addNewList({ name, isColor, id });
-        if (onSubmitSuccess) {
-          onSubmitSuccess({ name, isColor, id });
-        }
-      } else if (formType === "edit") {
-        await updateListData(this.state.id, name, isColor);
-        if (onSubmitSuccess) {
-          onSubmitSuccess({ name, isColor, id: this.state.id });
-        }
-      }
-    } catch (error) {
-      console.error("Lỗi khi gửi dữ liệu:", error.message);
-    }
-  };
+  // handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const { name, isColor } = this.state;
+  //   const { formType, onSubmitSuccess } = this.props;
+  //   try {
+  //     if (formType === "add") {
+  //       const id = generateRandomStringId();
+  //       await addNewList({ name, isColor, id });
+  //       if (onSubmitSuccess) {
+  //         onSubmitSuccess({ name, isColor, id });
+  //       }
+  //     } else if (formType === "edit") {
+  //       await updateListData(this.state.id, name, isColor);
+  //       if (onSubmitSuccess) {
+  //         onSubmitSuccess({ name, isColor, id: this.state.id });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Lỗi khi gửi dữ liệu:", error.message);
+  //   }
+  // };
 
   componentDidMount() {
     const { formType, selectedListData } = this.props;
-
     if (formType === "edit" && selectedListData) {
       const { id, name, isColor } = selectedListData;
       this.setState({
@@ -80,7 +89,7 @@ class FormCommonListNote extends Component {
     const { formType } = this.props;
     return (
       <form
-        onSubmit={this.handleSubmit}
+        onSubmit={this.props.onSubmitSuccess}
         id="form_edit_list"
         action=""
         className={`form-edit-list ${formType}`}
@@ -96,11 +105,17 @@ class FormCommonListNote extends Component {
           </button>
           {formType === "edit" ? (
             <button
-              disabled={this.state.isButtonDisabled}
+              // disabled={this.state.isButtonDisabled}
               type="button"
               id="btnsubedit"
               className="btn btn-primary button-done"
-              onClick={this.handleSubmit}
+              onClick={() => {
+                this.props.onSubEditForm({
+                  id: this.state.id,
+                  name: this.state.name,
+                  isColor: this.state.isColor,
+                });
+              }}
             >
               Done
             </button>
@@ -110,7 +125,13 @@ class FormCommonListNote extends Component {
               type="button"
               id="btnsubedit"
               className="btn btn-primary button-done"
-              onClick={this.handleSubmit}
+              onClick={() => {
+                this.props.onSubmitSuccess({
+                  id: this.state.id,
+                  name: this.state.name,
+                  isColor: this.state.isColor,
+                });
+              }}
             >
               Done
             </button>
@@ -179,6 +200,7 @@ class FormCommonListNote extends Component {
               value={this.state.name}
               onChange={this.handleNameChange}
               onClick={this.handleInputClick}
+              onBlur={this.handleInputBlur}
             />
           ) : (
             <input

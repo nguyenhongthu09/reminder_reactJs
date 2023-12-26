@@ -17,6 +17,7 @@ class ReminderHome extends Component {
   render() {
     return (
       <div>
+      
         <div className="detail-list-note">
           {/* <div>
             <div className="loader  loader__reminder  loader-hidden  loader__common  "></div>
@@ -24,8 +25,8 @@ class ReminderHome extends Component {
 
           <div className="note">
             <RenderReminderUi
-              selectedListId={this.props.selectedListId}
-              selectedListName={this.props.selectedListName}
+             selectedListId={this.props.selectedListId}
+             selectedListName={this.props.selectedListName}
             ></RenderReminderUi>
           </div>
           <div className="new-reminder">

@@ -5,45 +5,51 @@ import "../style/style.css";
 class ParentComponent extends Component {
   constructor() {
     super();
-    this.state = {
-      isFormCommonListNoteVisible: false,
-      selectedListForEdit: null,
-    };
+    this.state = {};
   }
 
   handleListNoteClick = (list) => {
+   
     if (this.props.onListNoteClick) {
       this.props.onListNoteClick(list);
     }
   };
-  handleDele = async (id) => {
-    try {
-      await delList(id);
-      if (this.props.onListDeleteSuccess) {
-        this.props.onListDeleteSuccess(id);
-      }
-    } catch (error) {
-      console.error("Error fetching listNote:", error.message);
+
+  handleCLickNote = (list) =>{
+    if (this.props.onListNoteItemClick) {
+      this.props.onListNoteItemClick(list);
     }
-  };
+  }
+
+  handleChooseNameList = (list) =>{
+    if (this.props.onListSelect) {
+      this.props.onListSelect(list.name);
+      console.log("Clicked List Name:", list.name);
+    }
+  }
+
+  // handleDele = async (id) => {
+  //   try {
+  //     await delList(id);
+  //     if (this.props.onListDeleteSuccess) {
+  //       this.props.onListDeleteSuccess(id);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching listNote:", error.message);
+  //   }
+  // };
 
   render() {
     const { listNote } = this.props;
 
     return (
       <div>
-        <h1>My list</h1>
-        {listNote.map((list, index) => (
+        {listNote.map((list) => (
           <div className="listnote" key={list.id} id={list.id}>
-            <div
-              className="list-note"
-              id={list.id}
-              onClick={() => this.handleListNoteClick(list)}
-            >
-              <div
-                className="item-list-none-left"
-                onClick={() => this.handleClickName(list)}
-              >
+            <div className="list-note" id={list.id}   onClick={() => this.handleCLickNote(list)}>
+              <div className="item-list-none-left" 
+              onClick={() => this.handleChooseNameList(list)}
+               >
                 <div
                   className="icon-list-note"
                   style={{ backgroundColor: list.isColor }}
@@ -142,7 +148,7 @@ class ParentComponent extends Component {
                       className="dropdown-item delete"
                       href="#"
                       onClick={() => {
-                        this.handleDele(list.id);
+                        this.props.onListDeleteSuccess(list.id);
                       }}
                     >
                       <span className="delete-icon">

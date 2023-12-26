@@ -13,7 +13,7 @@ class RenderReminderUi extends Component {
   getReminders = async () => {
     try {
       const reminderData = await getReminder(this.props.selectedListId);
-      //   console.log(reminderData, " danh sach reminder");
+        console.log(reminderData, " danh sach reminder");
       const hasReminderData = reminderData.length > 0;
       this.setState({
         reminder: reminderData,
@@ -32,6 +32,7 @@ class RenderReminderUi extends Component {
 
     return (
       <>
+      {/* <h1>thune</h1> */}
         <h1 className="title-list">{this.props.selectedListName}</h1>
         {!hasReminderData && <div className="thong-bao">Empty list !!!</div>}
         {reminder.map((note) => (
