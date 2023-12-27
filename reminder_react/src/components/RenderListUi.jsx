@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import "../style/style.css";
 
-class ParentComponent extends Component {
+class RenderListOnUi
+ extends Component {
   constructor() {
     super();
     this.state = {};
@@ -190,4 +191,5 @@ class ParentComponent extends Component {
   }
 }
 
-export default ParentComponent;
+export default RenderListOnUi
+;

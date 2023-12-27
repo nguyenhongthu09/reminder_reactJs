@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ParentComponent from "./RenderListUi";
+import RenderListOnUi from "./RenderListUi";
 import { addNewReminder } from "../fetchApi/fetchApiREminder";
 class AddReminderForm extends Component {
   constructor(props) {
@@ -101,10 +101,10 @@ class AddReminderForm extends Component {
               </div>
             </div>
             <div className="render" id="renderlist">
-              <ParentComponent
+              <RenderListOnUi
                 listNote={listNote}
                 onListSelect={this.handleListSelection}
-              ></ParentComponent>
+              ></RenderListOnUi>
             </div>
           </div>
         </form>

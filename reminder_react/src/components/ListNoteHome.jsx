@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ParentComponent from "./RenderListUi";
+import RenderListOnUi from "./RenderListUi";
 import getAllList from "../fetchApi/fetchApiList";
 import getColor from "../fetchApi/fetchColor";
 import FormCommonListNote from "./FormComon";
@@ -211,12 +211,12 @@ class ListNoteHomePage extends Component {
         >
           <div className="menu-list-note" id="renderlist-home">
             <h1>My List</h1>
-            <ParentComponent
+            <RenderListOnUi
               onListNoteClick={this.handleListNoteClick}
               onListDeleteSuccess={this.deleteListNoteService}
               listNote={this.state.listNote}
               onListNoteItemClick={this.handleListNoteItemClick}
-            ></ParentComponent>
+            ></RenderListOnUi>
           </div>
           <div className="button-home">
             <button
