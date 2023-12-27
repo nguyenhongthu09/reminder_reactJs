@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import RenderColorOnUi from "./renderColorUi";
+import RenderColorOnUi from "./RenderColorUi";
 import { generateRandomStringId } from "../untils/common";
 class FormCommonListNote extends Component {
   constructor() {
@@ -50,28 +50,6 @@ class FormCommonListNote extends Component {
       isInputClicked: isInputClicked,
     });
   };
-
-  // handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const { name, isColor } = this.state;
-  //   const { formType, onSubmitSuccess } = this.props;
-  //   try {
-  //     if (formType === "add") {
-  //       const id = generateRandomStringId();
-  //       await addNewList({ name, isColor, id });
-  //       if (onSubmitSuccess) {
-  //         onSubmitSuccess({ name, isColor, id });
-  //       }
-  //     } else if (formType === "edit") {
-  //       await updateListData(this.state.id, name, isColor);
-  //       if (onSubmitSuccess) {
-  //         onSubmitSuccess({ name, isColor, id: this.state.id });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Lỗi khi gửi dữ liệu:", error.message);
-  //   }
-  // };
 
   componentDidMount() {
     const { formType, selectedListData } = this.props;

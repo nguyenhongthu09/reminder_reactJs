@@ -1,30 +1,58 @@
 import React, { Component } from "react";
-import ParentComponent from "./renderListUi";
+import ParentComponent from "./RenderListUi";
+import { addNewReminder } from "../fetchApi/fetchApiREminder";
 class AddReminderForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedListName: props.defaultSelectedListName || "",
+      selectedListName: "",
       isAddButtonDisabled: true,
+      selectedListId: null,
+      reminderTitle: "",
     };
-  };
+  }
 
   handleInputChange = (event) => {
     const inputValue = event.target.value;
-    const isAddButtonDisabled = inputValue.trim() === ""; // Kiểm tra xem ô input có rỗng hay không
+    const isAddButtonDisabled = inputValue.trim() === "";
     this.setState({
       isAddButtonDisabled: isAddButtonDisabled,
+      reminderTitle: inputValue,
     });
   };
 
-  handleListSelection = (selectedListName) => {
-    console.log(selectedListName, "name");
+  handleListSelection = (selectedListName, selectedListId) => {
     this.setState({
       selectedListName: selectedListName,
-     
+      selectedListId: selectedListId,
     });
   };
 
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    const { reminderTitle, selectedListId } = this.state;
+    if (!reminderTitle || !selectedListId) {
+      console.error("Vui lòng nhập đầy đủ thông tin.");
+      return;
+    }
+
+    const newReminder = {
+      title: reminderTitle,
+      status: false,
+      idlist: selectedListId,
+    };
+
+    try {
+      await addNewReminder(newReminder);
+      if (this.props.onSubmitAddReminderForm) {
+        this.props.onSubmitAddReminderForm();
+      }
+      console.log("Đã thêm mới reminder thành công.", newReminder);
+    } catch (error) {
+      console.error("Lỗi khi thêm mới reminder:", error.message);
+    }
+    console.log("ok");
+  };
 
   render() {
     const { listNote } = this.props;
@@ -45,6 +73,7 @@ class AddReminderForm extends Component {
               className="btn btn-primary add-reminder"
               disabled={this.state.isAddButtonDisabled}
               id="submitform-addnote"
+              onClick={this.handleSubmit}
             >
               Add
             </button>

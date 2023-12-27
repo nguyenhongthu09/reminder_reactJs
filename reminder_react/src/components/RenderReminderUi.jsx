@@ -1,41 +1,32 @@
 import React, { Component } from "react";
 import "../style/style.css";
-import { getReminder } from "../fetchApi/fetchApiREminder";
 class RenderReminderUi extends Component {
   constructor() {
     super();
-    this.state = {
-      reminder: [],
-      hasReminderData: false,
-    };
-  }
-
-  getReminders = async () => {
-    try {
-      const reminderData = await getReminder(this.props.selectedListId);
-        console.log(reminderData, " danh sach reminder");
-      const hasReminderData = reminderData.length > 0;
-      this.setState({
-        reminder: reminderData,
-        hasReminderData: hasReminderData,
-      });
-    } catch (error) {
-      console.error("Error fetching reminder:", error.message);
-    }
+    this.state = {};
   };
-  componentDidMount = () => {
-    this.getReminders();
+  
+  
+  handleEdit = (noteId, newValue) => {
+    this.setState({
+      editedNote: {
+        id: noteId,
+        value: newValue,
+      },
+    });
   };
+  
+   
+  
   render() {
-    const { reminder, hasReminderData } = this.state;
-    const { selectedListId } = this.props;
-
+    const { selectedListId, reminders, hasReminderData } = this.props;
+    const { editedNote } = this.state;
+   
     return (
       <>
-      {/* <h1>thune</h1> */}
         <h1 className="title-list">{this.props.selectedListName}</h1>
         {!hasReminderData && <div className="thong-bao">Empty list !!!</div>}
-        {reminder.map((note) => (
+        {reminders.map((note) => (
           <div key={note.id} id={note.id}>
             {note.idlist === selectedListId && (
               <div
@@ -57,8 +48,10 @@ class RenderReminderUi extends Component {
                         note.status ? "checked" : ""
                       }`}
                       data-reminder-id={note.id}
-                      value={note.title}
+                      
+                      defaultValue={note.title}
                       placeholder="Add Note"
+                      onBlur={(e) => this.handleEdit(note.id, e.target.value)}
                     />
                   </div>
                 </div>
@@ -93,7 +86,13 @@ class RenderReminderUi extends Component {
                       aria-labelledby="dropdownMenuButton1"
                     >
                       <li>
-                        <a className="dropdown-item delete" href="#">
+                        <a
+                          className="dropdown-item delete"
+                          href="#"
+                          onClick={() => {
+                            this.props.onReminderDeleSuccess(note.id);
+                          }}
+                        >
                           <span
                             className="delete-icon-re"
                             data-del-id-note={note.id}
@@ -120,6 +119,7 @@ class RenderReminderUi extends Component {
             )}
           </div>
         ))}
+    
       </>
     );
   }

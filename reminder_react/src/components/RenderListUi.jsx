@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { delList } from "../fetchApi/fetchApiList";
 import "../style/style.css";
 
 class ParentComponent extends Component {
@@ -9,35 +8,22 @@ class ParentComponent extends Component {
   }
 
   handleListNoteClick = (list) => {
-   
     if (this.props.onListNoteClick) {
       this.props.onListNoteClick(list);
     }
   };
 
-  handleCLickNote = (list) =>{
+  handleCLickNote = (list) => {
     if (this.props.onListNoteItemClick) {
       this.props.onListNoteItemClick(list);
     }
-  }
+  };
 
-  handleChooseNameList = (list) =>{
+  handleChooseNameList = (list) => {
     if (this.props.onListSelect) {
-      this.props.onListSelect(list.name);
-      console.log("Clicked List Name:", list.name);
+      this.props.onListSelect(list.name, list.id);
     }
-  }
-
-  // handleDele = async (id) => {
-  //   try {
-  //     await delList(id);
-  //     if (this.props.onListDeleteSuccess) {
-  //       this.props.onListDeleteSuccess(id);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching listNote:", error.message);
-  //   }
-  // };
+  };
 
   render() {
     const { listNote } = this.props;
@@ -46,10 +32,15 @@ class ParentComponent extends Component {
       <div>
         {listNote.map((list) => (
           <div className="listnote" key={list.id} id={list.id}>
-            <div className="list-note" id={list.id}   onClick={() => this.handleCLickNote(list)}>
-              <div className="item-list-none-left" 
-              onClick={() => this.handleChooseNameList(list)}
-               >
+            <div
+              className="list-note"
+              id={list.id}
+              onClick={() => this.handleCLickNote(list)}
+            >
+              <div
+                className="item-list-none-left"
+                onClick={() => this.handleChooseNameList(list)}
+              >
                 <div
                   className="icon-list-note"
                   style={{ backgroundColor: list.isColor }}

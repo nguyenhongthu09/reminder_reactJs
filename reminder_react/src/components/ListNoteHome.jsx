@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import ParentComponent from "./renderListUi";
+import ParentComponent from "./RenderListUi";
 import getAllList from "../fetchApi/fetchApiList";
 import getColor from "../fetchApi/fetchColor";
-import FormCommonListNote from "./formComon";
-import ReminderHome from "./reminderHome";
-import AddReminderForm from "./addFormReminder";
-import { addNewList , updateListData, delList} from "../fetchApi/fetchApiList";
+import FormCommonListNote from "./FormComon";
+import ReminderHome from "./ReminderHome";
+import AddReminderForm from "./AddFormReminder";
+import { addNewList, updateListData, delList } from "../fetchApi/fetchApiList";
 
-
-class ListNoteRender extends Component {
+class ListNoteHomePage extends Component {
   constructor() {
     super();
     this.state = {
@@ -25,7 +24,6 @@ class ListNoteRender extends Component {
     this.handleAddListClick = this.handleAddFormListClick.bind(this);
     this.handleCancelClick = this.handleCancelClick.bind(this);
     this.setFormType = this.setFormType.bind(this);
-    // this.handleFormSubmitSuccess = this.handleFormSubmitSuccess.bind(this);
     this.handleCancelFormAdd = this.handleCancelFormAddReminder.bind(this);
   }
   setFormType(formType) {
@@ -59,13 +57,12 @@ class ListNoteRender extends Component {
     }
   };
 
- 
-// ADD LISTNOTE
-  addListServiceForm = async (newList) =>{
+  // ADD LISTNOTE
+  addListServiceForm = async (newList) => {
     try {
       const { formType } = this.state;
       if (formType === "add") {
-        await addNewList(newList );
+        await addNewList(newList);
         this.setState(
           (prevState) => ({
             showFormCommonListNote: false,
@@ -73,46 +70,41 @@ class ListNoteRender extends Component {
           }),
           () => {
             console.log("Thêm mới thành công");
-            
           }
         );
-      } 
+      }
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
     }
   };
 
   //EDIT LISTNOTE
-  editListServiceForm = async (list) =>{
-        try {
-          const { formType , selectedListId } = this.state;
-          if (formType === "edit" && selectedListId) {
-                  
-                  const updatedListNote = this.state.listNote.map((listNote) =>
-                  listNote.id === list.id
-                    ? {
-                        ...list,
-                        name: list.name,
-                        isColor: list.isColor,
-                      }
-                    : listNote
-                );
-          
-                this.setState(
-                  { showFormCommonListNote: false,
-                    listNote: updatedListNote,
-                  },
-                  () => {
-                    console.log("Cập nhật thành công");
-                  }
-                );
-                await updateListData(selectedListId, list.name , list.isColor);
-                console.log(selectedListId, list.name , list.isColor, "edit list");
-                }
-               
-        } catch (error) {
-          console.error("Lỗi khi gửi dữ liệu:", error.message);
-        }
+  editListServiceForm = async (list) => {
+    try {
+      const { formType, selectedListId } = this.state;
+      if (formType === "edit" && selectedListId) {
+        const updatedListNote = this.state.listNote.map((listNote) =>
+          listNote.id === list.id
+            ? {
+                ...list,
+                name: list.name,
+                isColor: list.isColor,
+              }
+            : listNote
+        );
+
+        this.setState(
+          { showFormCommonListNote: false, listNote: updatedListNote },
+          () => {
+            console.log("Cập nhật thành công");
+          }
+        );
+        await updateListData(selectedListId, list.name, list.isColor);
+        console.log(selectedListId, list.name, list.isColor, "edit list");
+      }
+    } catch (error) {
+      console.error("Lỗi khi gửi dữ liệu:", error.message);
+    }
   };
 
   //DELETE LISTNOTE
@@ -127,44 +119,6 @@ class ListNoteRender extends Component {
       listNote: prevState.listNote.filter((list) => list.id !== deletedListId),
     }));
   };
-
-  // handleFormSubmitSuccess = async (updatedListData) => {
-  //   this.setState({
-  //     showFormCommonListNote: false,
-  //   });
-
-  //   const { formType } = this.state;
-  //   if (formType === "add") {
-  //     this.setState(
-  //       (prevState) => ({
-  //         listNote: [...prevState.listNote, updatedListData],
-  //         colorData: [...prevState.colorData, updatedListData.isColor],
-  //       }),
-  //       () => {
-  //         console.log("Thêm mới thành công");
-  //       }
-  //     );
-  //   } else if (formType === "edit") {
-  //     const updatedListNote = this.state.listNote.map((list) =>
-  //       list.id === updatedListData.id
-  //         ? {
-  //             ...list,
-  //             name: updatedListData.name,
-  //             isColor: updatedListData.isColor,
-  //           }
-  //         : list
-  //     );
-
-  //     this.setState(
-  //       {
-  //         listNote: updatedListNote,
-  //       },
-  //       () => {
-  //         console.log("Cập nhật thành công");
-  //       }
-  //     );
-  //   }
-  // };
 
   handleListNoteClick = (listNote) => {
     this.setFormType("edit");
@@ -184,24 +138,21 @@ class ListNoteRender extends Component {
   handleAddFormListClick(source) {
     this.setFormType("add");
 
-    if (source === "button" ) {
+    if (source === "button") {
       this.setState({
         showFormCommonListNote: true,
       });
     }
   }
 
-  handleCancelClick() {
+  handleCancelClick = () => {
     this.setState({
       showFormCommonListNote: false,
     });
-  }
- 
+  };
 
   handleListNoteItemClick = (listNote) => {
-    console.log("click");
     const { id, name } = listNote;
-    console.log(id, name, " log id va name");
     this.setState({
       showReminderHome: true,
       selectedListName: name,
@@ -215,17 +166,23 @@ class ListNoteRender extends Component {
     });
   };
 
-  hanldeOpenFormAddReminder = () =>{
+  hanldeOpenFormAddReminder = () => {
     this.setState({
-      showAddReminderForm: true, 
+      showAddReminderForm: true,
     });
-  }
+  };
 
-  handleCancelFormAddReminder() {
+  handleCancelFormAddReminder = () => {
     this.setState({
       showAddReminderForm: false,
     });
-  }
+  };
+
+  handleSubFormAddReminder = () => {
+    this.setState({
+      showAddReminderForm: false,
+    });
+  };
 
   componentDidMount = async () => {
     this.getListNote();
@@ -289,7 +246,7 @@ class ListNoteRender extends Component {
             selectedListData={this.state.selectedListData}
             colorData={this.state.colorData}
             onSubmitSuccess={this.addListServiceForm}
-            onSubEditForm = {this.editListServiceForm}
+            onSubEditForm={this.editListServiceForm}
           />
         )}
 
@@ -303,7 +260,8 @@ class ListNoteRender extends Component {
 
         {showAddReminderForm && (
           <AddReminderForm
-            onCancelFormAdd={this.handleCancelFormAddReminder} 
+            onCancelFormAdd={this.handleCancelFormAddReminder}
+            onSubmitAddReminderForm={this.handleSubFormAddReminder}
             listNote={this.state.listNote}
           />
         )}
@@ -312,4 +270,4 @@ class ListNoteRender extends Component {
   }
 }
 
-export default ListNoteRender;
+export default ListNoteHomePage;
