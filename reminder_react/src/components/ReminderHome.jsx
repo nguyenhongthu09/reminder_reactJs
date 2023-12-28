@@ -5,8 +5,9 @@ import {
   delREminder,
   getReminder,
   addNewReminder,
-  updateReminderData
+  updateReminderData,
 } from "../fetchApi/fetchApiREminder";
+import Button from "../core/Button";
 class ReminderHome extends Component {
   constructor() {
     super();
@@ -35,11 +36,11 @@ class ReminderHome extends Component {
   };
 
   // ADD REMINDER
-  handleSubmitAddReminder = async ( ) => {
+  handleSubmitAddReminder = async () => {
     const { selectedListId } = this.props;
-    const { reminderTitle, isAdding ,editedNote} = this.state;
-  if (!isAdding) { 
-      this.setState({ isAdding: true }); 
+    const { reminderTitle, isAdding, editedNote } = this.state;
+    if (!isAdding) {
+      this.setState({ isAdding: true });
       const newReminder = {
         title: reminderTitle,
         status: false,
@@ -56,13 +57,11 @@ class ReminderHome extends Component {
             reminderTitle: "",
             showNewReminderForm: false,
             idReminder: addedReminder.id,
-
           }));
         }
       } catch (error) {
         console.error("Lỗi khi thêm mới reminder:", error.message);
-      }
-      finally {
+      } finally {
         this.setState({ isAdding: false });
       }
     }
@@ -70,8 +69,8 @@ class ReminderHome extends Component {
 
   handleBlur = () => {
     const { isAdding } = this.state;
-    if (!isAdding) { 
-      this.handleSubmitAddReminder(); 
+    if (!isAdding) {
+      this.handleSubmitAddReminder();
     }
   };
 
@@ -132,6 +131,24 @@ class ReminderHome extends Component {
           </div> */}
 
           <div className="note">
+            <div className="button-detail-list">
+              <Button
+                type="button"
+                className="btn btn-primary btn-back-list"
+                onClick={this.handleListsButtonClick}
+              >
+                Back List
+              </Button>
+              <Button
+                type="button"
+                className="btn btn-primary add-reminder"
+                id="btnsubmit-note"
+                // disabled
+                onClick={this.handleSubmitAddReminder}
+              >
+                Done
+              </Button>
+            </div>
             <RenderReminderUi
               selectedListId={this.props.selectedListId}
               selectedListName={this.props.selectedListName}
@@ -169,32 +186,15 @@ class ReminderHome extends Component {
               </div>
             </div>
           )}
-          <div className="button-detail-list">
-            <button
-              type="button"
-              className="btn btn-primary btn-back-list"
-              onClick={this.handleListsButtonClick}
-            >
-              Lists
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary add-reminder"
-              id="btnsubmit-note"
-              // disabled
-              onClick={this.handleSubmitAddReminder}
-            >
-              Add
-            </button>
-          </div>
-          <button
+
+          <Button
             type="button"
             className="btn btn-primary add__reminders"
             id="btnNewNote"
             onClick={this.showNewReminderForm}
           >
             New Reminder
-          </button>
+          </Button>
         </div>
       </div>
     );

@@ -6,13 +6,14 @@ import FormCommonListNote from "./FormComon";
 import ReminderHome from "./ReminderHome";
 import AddReminderForm from "./AddFormReminder";
 import { addNewList, updateListData, delList } from "../fetchApi/fetchApiList";
+import Button from "../core/Button";
 
 class ListNoteHomePage extends Component {
   constructor() {
     super();
     this.state = {
       listNote: [],
-      color: [],
+      colors: [],
       showFormCommonListNote: false,
       formType: "",
       selectedListName: "",
@@ -219,21 +220,22 @@ class ListNoteHomePage extends Component {
             ></RenderListOnUi>
           </div>
           <div className="button-home">
-            <button
+            <Button
               type="button"
               className="btn btn-primary add-reminder btn__add--reminder"
               onClick={this.hanldeOpenFormAddReminder}
             >
               New Reminder
-            </button>
-            <button
+            </Button>
+
+            <Button
               type="button"
               className="btn btn-primary add-list"
               id="add-list-new"
               onClick={() => this.handleAddFormListClick("button")}
             >
               Add List
-            </button>
+            </Button>
           </div>
           {/* )} */}
         </div>

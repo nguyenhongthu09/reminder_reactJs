@@ -36,7 +36,7 @@
       "last 1 safari version"
     ]
   },
-  "nodeJs": {
-    "version": "18.13.0"
+  "engines": {
+    "node": "18"
   }
 }

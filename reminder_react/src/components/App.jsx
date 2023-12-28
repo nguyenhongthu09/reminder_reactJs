@@ -1,4 +1,4 @@
-import ListNoteHomePage from "./components/ListNoteHome";
+import ListNoteHomePage from "./ListNoteHome";
 function App() {
   return (
     <div className="App">

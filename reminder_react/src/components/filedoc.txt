@@ -5,3 +5,48 @@ Chỉnh sửa lại:
 
 + service nam trong component , chi chua API va update setstate khong duoc goi su kien event
 + doi lai ten cho hop li
+
+
++ Edit lai giao dien web
++Các Thuộc tính trong Button
+
+    onClick: Hàm để sử lý khi người dùng nhấp vào nút.​
+
+    lable: Hiển thị văn bản bên trong nút.​
+
+    color: Cài đặt màu nền.​
+
+    disable: Vô hiệu hóa người dùng tương tác với thành phần button.​
+
+    accessibilityLabel: Hiển thị văn bản hỗ trợ người khiếm thị.
+    className:Xác định lớp CSS của trường nhập liệu, cho phép bạn tùy chỉnh kiểu dáng bằng CSS.
+    type
+
++Các thuộc tính trong thẻ Input:
+    type : xác định loại trường nhập liệu
+    value : Xác định giá trị mặc định của trường nhập liệu
+    onChange: Xác định hàm xử lý sự kiện khi giá trị của trường nhập liệu thay đổi.
+    placeholder: Hiển thị một văn bản gợi ý trong trường nhập liệu, giúp người dùng hiểu rõ hơn về mục đích của trường.
+    disabled: Xác định trạng thái vô hiệu hóa của trường nhập liệu
+    required: Đánh dấu trường nhập liệu là bắt buộc phải điền.
+    className:Xác định lớp CSS của trường nhập liệu, cho phép bạn tùy chỉnh kiểu dáng bằng CSS.
+
++ Dropdown
+        <Dropdown actions={[
+    {
+        id: 1,
+        key: ‘delete’,
+        icon: ‘...path’
+        onClick: 
+    },
+    {
+        id: 2,
+        key: ‘edit’,
+        icon: ‘...path’
+    },
+    {
+        id: 3,
+        key: ‘move’,
+        icon: ‘...path’
+    }
+]} />
