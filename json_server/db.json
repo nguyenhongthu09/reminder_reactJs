@@ -1,14 +1,14 @@
 {
   "listNote": [
     {
-      "name": "ddđ",
-      "isColor": "#00FFFF",
+      "name": "List 1",
+      "isColor": "#008000",
       "id": "P597K0iR"
     },
     {
-      "name": "thu",
-      "isColor": "#00FF00",
-      "id": "P597K0iRc"
+      "name": "List 2",
+      "isColor": "#FF00FF",
+      "id": "O1H2TeEK"
     }
   ],
   "reminder": [
@@ -19,13 +19,13 @@
       "id": "oI_h5fG"
     },
     {
-      "title": "2",
+      "title": "reminder 1 list 1",
       "status": false,
       "idlist": "P597K0iR",
       "id": "7H_A7Ma"
     },
     {
-      "title": "3",
+      "title": "reminder 2 list 1",
       "status": false,
       "idlist": "P597K0iR",
       "id": "adLOES_"
@@ -61,6 +61,18 @@
     },
     {
       "color": "#008000"
+    },
+    {
+      "color": "#FF6600"
+    },
+    {
+      "color": "#330000"
+    },
+    {
+      "color": "#333300"
+    },
+    {
+      "color": "#663300"
     }
   ]
 }
