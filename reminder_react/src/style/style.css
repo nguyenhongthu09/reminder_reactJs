@@ -116,11 +116,13 @@ body {
   background-color: antiquewhite;
   width: 480px;
   height: 800px;
-  margin-top: 30px;
+  margin-top: 10px;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, 0%);
+  border: 2px solid black;
+  border-radius: 10px;
 }
 
 .form-add-list.visible {
@@ -168,6 +170,7 @@ body {
   padding: 10px;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 17px;
 }
 
 .detail-list-note {
@@ -261,7 +264,7 @@ body {
   padding-left: 10px;
   width: 95%;
   height: 60px;
-  margin: 50px 10px 0px 10px;
+  margin: 32px 10px 0px 10px;
   border-radius: 8px;
 }
 
@@ -328,10 +331,11 @@ body {
   margin-top: 40px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  width: 100%;
+  width: 96%;
   background-color: rgb(220, 228, 228);
   border-radius: 7px;
-  padding: 0px 10px;
+  margin-left: 10px;
+  margin-right: 10px;
   justify-items: center;
   border-radius: 5px;
   border: 1px solid black;
