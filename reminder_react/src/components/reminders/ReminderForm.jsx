@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import RenderListOnUi from "./RenderListUi";
-import { addNewReminder } from "../fetchApi/fetchApiREminder";
+import RenderListOnUi from "../lists/List";
+import { addNewReminder } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
 
@@ -54,7 +54,6 @@ class AddReminderForm extends Component {
     } catch (error) {
       console.error("Lỗi khi thêm mới reminder:", error.message);
     }
-    console.log("ok");
   };
 
   render() {
@@ -65,15 +64,13 @@ class AddReminderForm extends Component {
         <form action="" id="form__add__note" className="form--add__notes">
           <div className="button-detail-list">
             <Button
-              type="button"
-              className="btn btn-primary btn-back-note"
+              className="btn-back-note"
               onClick={this.props.onCancelFormAdd}
             >
               Cancel
             </Button>
             <Button
-              type="button"
-              className="btn btn-primary add-reminder"
+              className="add-reminder"
               disabled={this.state.isAddButtonDisabled}
               id="submitform-addnote"
               onClick={this.handleSubmit}
@@ -84,7 +81,6 @@ class AddReminderForm extends Component {
 
           <h1>New reminder</h1>
           <Input
-            type="text"
             id="add-note-name"
             className="input_add_note_name"
             placeholder="Add name reminder"

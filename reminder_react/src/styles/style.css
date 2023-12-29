@@ -482,3 +482,8 @@ body {
 .item-reminders {
   margin-left: 15px;
 }
+
+.btnDropdown {
+  --bs-btn-bg: rgb(228, 222, 222);
+  border: none;
+}

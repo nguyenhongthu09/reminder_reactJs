@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import "../style/style.css";
-import RenderReminderUi from "./RenderReminderUi";
+import RenderReminder from "./Reminder";
 import {
   delREminder,
   getReminder,
   addNewReminder,
   updateReminderData,
-} from "../fetchApi/fetchApiREminder";
+} from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
-class ReminderHome extends Component {
+class RemindersList extends Component {
   constructor() {
     super();
     this.state = {
@@ -17,7 +16,9 @@ class ReminderHome extends Component {
       hasReminderData: false,
       showNewReminderForm: false,
       reminderTitle: "",
-      isAdding: false,
+      shouldAddReminderOnBlur: false,
+      isAddingFromButtonClick: false,
+      isAddingFromBlur: false,
       editedValue: "",
     };
   }
@@ -39,8 +40,8 @@ class ReminderHome extends Component {
   // ADD REMINDER
   handleSubmitAddReminder = async () => {
     const { selectedListId } = this.props;
-    const { reminderTitle, isAdding } = this.state;
-    if (!isAdding) {
+    const { reminderTitle, shouldAddReminderOnBlur } = this.state;
+    if (shouldAddReminderOnBlur || this.state.isAddingFromButtonClick) {
       this.setState({ isAdding: true });
       const newReminder = {
         title: reminderTitle,
@@ -69,15 +70,29 @@ class ReminderHome extends Component {
   };
 
   handleBlur = () => {
-    const { isAdding } = this.state;
-    if (!isAdding) {
-      this.handleSubmitAddReminder();
+    const { isAddingFromButtonClick } = this.state;
+    if (!isAddingFromButtonClick) {
+      this.setState(
+        { shouldAddReminderOnBlur: true, isAddingFromBlur: true },
+        () => {
+          this.handleSubmitAddReminder();
+          this.setState({ shouldAddReminder: false, reminderTitle: "" });
+        }
+      );
     }
+  };
+
+  handleClickDone = () => {
+    this.setState({ isAddingFromButtonClick: true }, () => {
+      this.handleSubmitAddReminder();
+      this.setState({ isAddingFromButtonClick: false });
+    });
   };
 
   // DELETE REMINDER
   deleteReminderService = async (deleReminderId) => {
     try {
+      console.log(deleReminderId, "id reminder");
       await delREminder(deleReminderId);
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
@@ -133,48 +148,34 @@ class ReminderHome extends Component {
           <div className="note">
             <div className="button-detail-list">
               <Button
-                type="button"
-                className="btn btn-primary btn-back-list"
+                className="btn-back-list"
                 onClick={this.handleListsButtonClick}
               >
                 Back List
               </Button>
               <Button
-                type="button"
-                className="btn btn-primary add-reminder"
+                className="add-reminder"
                 id="btnsubmit-note"
                 // disabled
-                onClick={this.handleSubmitAddReminder}
+                onClick={this.handleClickDone}
               >
                 Done
               </Button>
             </div>
-            <RenderReminderUi
+            <RenderReminder
               selectedListId={this.props.selectedListId}
               selectedListName={this.props.selectedListName}
               onReminderDeleSuccess={this.deleteReminderService}
               reminders={this.state.reminders}
               hasReminderData={this.state.hasReminderData}
               onEdit={this.handleEdit}
-            ></RenderReminderUi>
+            />
           </div>
           {this.state.showNewReminderForm && (
             <div className="new-reminder">
               <div className="form-check  item-reminders">
-                {/* <input className="form-check-input " type="checkbox" /> */}
                 <Input className="form-check-input " type="checkbox"></Input>
-                {/* <input
-                  type="text"
-                  className="form-check-name input-new-reminder"
-                  placeholder="Add Note"
-                  autoFocus
-                  onBlur={this.handleBlur}
-                  onChange={(e) =>
-                    this.setState({ reminderTitle: e.target.value })
-                  }
-                ></input> */}
                 <Input
-                  type="text"
                   className="form-check-name input-new-reminder"
                   placeholder="Add Note"
                   autoFocus
@@ -188,8 +189,7 @@ class ReminderHome extends Component {
           )}
 
           <Button
-            type="button"
-            className="btn btn-primary add__reminders"
+            className="add__reminders"
             id="btnNewNote"
             onClick={this.showNewReminderForm}
           >
@@ -201,4 +201,4 @@ class ReminderHome extends Component {
   }
 }
 
-export default ReminderHome;
+export default RemindersList;

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import Button from "../core/Button";
-import RenderColorOnUi from "./RenderColorUi";
-import { generateRandomStringId } from "../untils/common";
+import RenderListColor from "./ListColor";
+import { generateRandomStringId } from "../../untils/common";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
-class FormCommonListNote extends Component {
+class ListForm extends Component {
   constructor() {
     super();
     this.state = {
@@ -99,32 +99,20 @@ class FormCommonListNote extends Component {
       >
         <div className="form__edit__list">
           <Button
-            type="button"
             id="btn-xoa"
-            className="btn btn-primary button-cancel"
+            className="button-cancel"
             onClick={this.props.onCancelClick}
           >
             Cancel
           </Button>
-          {formType === "edit" ? (
-            <Button
-              disabled={this.state.isButtonDisabled}
-              type="submit"
-              id="btnsubedit"
-              className="btn btn-primary button-done"
-            >
-              Edit
-            </Button>
-          ) : (
-            <Button
-              disabled={this.state.isButtonDisabled}
-              type="submit"
-              id="btnsubedit"
-              className="btn btn-primary button-done"
-            >
-              Done
-            </Button>
-          )}
+          <Button
+            disabled={this.state.isButtonDisabled}
+            type="submit"
+            id="btnsubedit"
+            className="button-done"
+          >
+            {formType === "edit" ? "Edit" : "Done"}
+          </Button>
         </div>
         <h1>{formType === "add" ? "Add List" : "Edit List"}</h1>
 
@@ -135,27 +123,16 @@ class FormCommonListNote extends Component {
             style={{ backgroundColor: isColor }}
           >
             <span className="fill-color">
-              <Icon></Icon>
+              <Icon type="notelist"></Icon>
             </span>
           </div>
-          {formType === "edit" ? (
-            <Input
-              type="text"
-              id="name_edit-list"
-              placeholder="Name List"
-              value={name}
-              onChange={this.handleNameChange}
-              onClick={this.handleInputClick}
-            ></Input>
-          ) : (
-            <Input
-              type="text"
-              id="name_edit-list"
-              placeholder="Name List"
-              onChange={this.handleNameChange}
-              onClick={this.handleInputClick}
-            ></Input>
-          )}
+          <Input
+            id="name_edit-list"
+            placeholder="Name List"
+            value={formType === "edit" ? name : undefined}
+            onChange={this.handleNameChange}
+            onClick={this.handleInputClick}
+          ></Input>
           <p id="name_error" className="error-message">
             Please enter a list name.
           </p>
@@ -164,7 +141,7 @@ class FormCommonListNote extends Component {
           className="color-list-icon  render-list-color-edit"
           id="color-list-add-list"
         >
-          <RenderColorOnUi
+          <RenderListColor
             colors={this.props.colorData}
             onColorClick={this.handleColorSelect}
           />
@@ -173,4 +150,4 @@ class FormCommonListNote extends Component {
     );
   }
 }
-export default FormCommonListNote;
+export default ListForm;

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import "../style/style.css";
-class RenderColorOnUi extends Component {
+class RenderListColor extends Component {
   constructor() {
     super();
     this.state = { selectedColor: null };
@@ -29,4 +28,4 @@ class RenderColorOnUi extends Component {
     );
   }
 }
-export default RenderColorOnUi;
+export default RenderListColor;

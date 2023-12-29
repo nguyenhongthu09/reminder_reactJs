@@ -1,14 +1,18 @@
 import React, { Component } from "react";
-import RenderListOnUi from "./RenderListUi";
-import getAllList from "../fetchApi/fetchApiList";
-import getColor from "../fetchApi/fetchColor";
-import FormCommonListNote from "./FormComon";
-import ReminderHome from "./ReminderHome";
-import AddReminderForm from "./AddFormReminder";
-import { addNewList, updateListData, delList } from "../fetchApi/fetchApiList";
+import RenderListOnUi from "./List";
+import getAllList from "../../fetchApi/fetchApiList";
+import getColor from "../../fetchApi/fetchColor";
+import ListForm from "./ListForm";
+import RemindersList from "../reminders/Reminders";
+import AddReminderForm from "../reminders/ReminderForm";
+import {
+  addNewList,
+  updateListData,
+  delList,
+} from "../../fetchApi/fetchApiList";
 import Button from "../core/Button";
 
-class ListNoteHomePage extends Component {
+class ListPage extends Component {
   constructor() {
     super();
     this.state = {
@@ -121,10 +125,10 @@ class ListNoteHomePage extends Component {
     }));
   };
 
-  handleListNoteClick = (listNote) => {
+  handleListNoteClick = (list) => {
     this.setFormType("edit");
 
-    const { id, name, isColor } = listNote;
+    const { id, name, isColor } = list;
     this.setState({
       selectedListData: {
         id,
@@ -221,16 +225,14 @@ class ListNoteHomePage extends Component {
           </div>
           <div className="button-home">
             <Button
-              type="button"
-              className="btn btn-primary add-reminder btn__add--reminder"
+              className="add-reminder btn__add--reminder"
               onClick={this.hanldeOpenFormAddReminder}
             >
               New Reminder
             </Button>
 
             <Button
-              type="button"
-              className="btn btn-primary add-list"
+              className="add-list"
               id="add-list-new"
               onClick={() => this.handleAddFormListClick("button")}
             >
@@ -241,7 +243,7 @@ class ListNoteHomePage extends Component {
         </div>
 
         {showFormCommonListNote && (
-          <FormCommonListNote
+          <ListForm
             // setFormType={this.setFormType}
             onCancelClick={this.handleCancelClick}
             formType={this.state.formType}
@@ -253,7 +255,7 @@ class ListNoteHomePage extends Component {
         )}
 
         {showReminderHome && (
-          <ReminderHome
+          <RemindersList
             onListsButtonClick={this.hanldeBackList}
             selectedListName={selectedListName}
             selectedListId={selectedListId}
@@ -272,4 +274,4 @@ class ListNoteHomePage extends Component {
   }
 }
 
-export default ListNoteHomePage;
+export default ListPage;

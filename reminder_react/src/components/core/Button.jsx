@@ -7,18 +7,23 @@ class Button extends Component {
       children,
       onClick,
       disabled = false,
-      className,
-      type,
+      className="",
+      type ="button",
       id,
     } = this.props;
-
+    const btnClassName = `btn btn-primary ${className}`;
     return (
       <button
         type={type}
-        className={className}
+        className={btnClassName}
         onClick={onClick}
         disabled={disabled}
         id={id}
+        {...this.props.toggleForId ? {
+          id: this.props.toggleForId,
+          'data-bs-toggle':"dropdown",
+          'aria-expanded':"false"
+        } : {}}
       >
         {children}
       </button>
@@ -27,10 +32,10 @@ class Button extends Component {
 }
 
 Button.propTypes = {
-  children: PropTypes.string,
+  children: PropTypes.any,
   disabled: PropTypes.bool,
-  className: PropTypes.string.isRequired,
-  type: PropTypes.any.isRequired,
+  className: PropTypes.string,
+  type: PropTypes.any,
   onClick: PropTypes.func,
   id: PropTypes.string,
 };

@@ -7,7 +7,7 @@ class Input extends Component {
       value,
       onClick,
       className,
-      type,
+      type = "text",
       id,
       onChange,
       onBlur,
@@ -21,7 +21,7 @@ class Input extends Component {
         id={id}
         className={className}
         onClick={onClick}
-        defaultValue={value}
+        value={value}
         onChange={onChange}
         onBlur={onBlur}
         placeholder={placeholder}
@@ -32,7 +32,7 @@ class Input extends Component {
 }
 
 Input.propTypes = {
-  type: PropTypes.any.isRequired,
+  type: PropTypes.any,
   id: PropTypes.string,
   className: PropTypes.string,
   onClick: PropTypes.func,

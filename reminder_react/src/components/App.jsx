@@ -1,8 +1,8 @@
-import ListNoteHomePage from "./ListNoteHome";
+import ListPage from "./lists/Lists";
 function App() {
   return (
     <div className="App">
-      <ListNoteHomePage />
+      <ListPage />
     </div>
   );
 }
