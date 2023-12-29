@@ -48,7 +48,30 @@ class FormCommonListNote extends Component {
   //   });
   // };
 
+  handleSubmit = (event) => {
+    event.preventDefault();
+    if (this.props.formType === "edit") {
+      this.props.onSubEditForm({
+        id: this.state.id,
+        name: this.state.name,
+        isColor: this.state.isColor,
+      });
+    } else {
+      this.props.onSubmitSuccess({
+        id: this.state.id,
+        name: this.state.name,
+        isColor: this.state.isColor,
+      });
+    }
+  };
+  handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      this.handleSubmit(event);
+    }
+  };
+
   componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown);
     const { formType, selectedListData } = this.props;
     if (formType === "edit" && selectedListData) {
       const { id, name, isColor } = selectedListData;
@@ -59,14 +82,17 @@ class FormCommonListNote extends Component {
       });
     }
   }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
 
   render() {
-    const { formType, onSubEditForm, onSubmitSuccess } = this.props;
-    const { isColor, id, name } = this.state;
+    const { formType } = this.props;
+    const { isColor, name } = this.state;
 
     return (
       <form
-        onSubmit={this.props.onSubmitSuccess}
+        onSubmit={this.handleSubmit}
         id="form_edit_list"
         action=""
         className={`form-edit-list ${formType}`}
@@ -83,20 +109,18 @@ class FormCommonListNote extends Component {
           {formType === "edit" ? (
             <Button
               disabled={this.state.isButtonDisabled}
-              type="button"
+              type="submit"
               id="btnsubedit"
               className="btn btn-primary button-done"
-              onClick={() => onSubEditForm({ id, name, isColor })}
             >
               Edit
             </Button>
           ) : (
             <Button
               disabled={this.state.isButtonDisabled}
-              type="button"
+              type="submit"
               id="btnsubedit"
               className="btn btn-primary button-done"
-              onClick={() => onSubmitSuccess({ id, name, isColor })}
             >
               Done
             </Button>
