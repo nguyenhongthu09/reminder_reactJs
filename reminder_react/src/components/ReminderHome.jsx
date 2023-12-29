@@ -8,6 +8,7 @@ import {
   updateReminderData,
 } from "../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
+import Input from "../core/Input";
 class ReminderHome extends Component {
   constructor() {
     super();
@@ -38,7 +39,7 @@ class ReminderHome extends Component {
   // ADD REMINDER
   handleSubmitAddReminder = async () => {
     const { selectedListId } = this.props;
-    const { reminderTitle, isAdding, editedNote } = this.state;
+    const { reminderTitle, isAdding } = this.state;
     if (!isAdding) {
       this.setState({ isAdding: true });
       const newReminder = {
@@ -89,11 +90,10 @@ class ReminderHome extends Component {
   };
 
   handleEdit = async (editedNoteId, newValue) => {
-    // Gọi hàm cập nhật dữ liệu từ API
     try {
       const updatedReminder = await updateReminderData(editedNoteId, newValue);
       console.log(updatedReminder, " update thanh cong reminder UI");
-      // Cập nhật trạng thái của component
+
       if (updatedReminder) {
         this.setState((prevState) => ({
           reminders: prevState.reminders.map((reminder) =>
@@ -158,22 +158,12 @@ class ReminderHome extends Component {
               onEdit={this.handleEdit}
             ></RenderReminderUi>
           </div>
-          {/* <div className="new-reminder">
-            <div className="form-check  item-reminders">
-              <input className="form-check-input " type="checkbox" />
-              <input
-                type="text"
-                className="form-check-name input-new-reminder"
-                placeholder="Add Note"
-                autoFocus
-              ></input>
-            </div>
-          </div> */}
           {this.state.showNewReminderForm && (
             <div className="new-reminder">
               <div className="form-check  item-reminders">
-                <input className="form-check-input " type="checkbox" />
-                <input
+                {/* <input className="form-check-input " type="checkbox" /> */}
+                <Input className="form-check-input " type="checkbox"></Input>
+                {/* <input
                   type="text"
                   className="form-check-name input-new-reminder"
                   placeholder="Add Note"
@@ -182,7 +172,17 @@ class ReminderHome extends Component {
                   onChange={(e) =>
                     this.setState({ reminderTitle: e.target.value })
                   }
-                ></input>
+                ></input> */}
+                <Input
+                  type="text"
+                  className="form-check-name input-new-reminder"
+                  placeholder="Add Note"
+                  autoFocus
+                  onBlur={this.handleBlur}
+                  onChange={(e) =>
+                    this.setState({ reminderTitle: e.target.value })
+                  }
+                ></Input>
               </div>
             </div>
           )}

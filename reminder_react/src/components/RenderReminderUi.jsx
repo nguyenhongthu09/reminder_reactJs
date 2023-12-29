@@ -20,7 +20,6 @@ class RenderReminderUi extends Component {
   
   render() {
     const { selectedListId, reminders, hasReminderData } = this.props;
-    const { editedNote } = this.state;
    
     return (
       <>

@@ -12,6 +12,7 @@ class Input extends Component {
       onChange,
       onBlur,
       placeholder,
+      autoFocus,
     } = this.props;
 
     return (
@@ -20,10 +21,11 @@ class Input extends Component {
         id={id}
         className={className}
         onClick={onClick}
-        defaultValue={value} 
+        defaultValue={value}
         onChange={onChange}
         onBlur={onBlur}
         placeholder={placeholder}
+        autoFocus={autoFocus}
       />
     );
   }
@@ -38,6 +40,7 @@ Input.propTypes = {
   onBlur: PropTypes.func,
   value: PropTypes.string,
   placeholder: PropTypes.string,
+  autoFocus: PropTypes.bool,
 };
 
 export default Input;
