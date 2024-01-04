@@ -188,6 +188,39 @@ class ListPage extends Component {
       showAddReminderForm: false,
     });
   };
+  // update khi them moi trong form
+  updateListNoteCount = (listId, newTotalCount) => {
+    this.setState((prevState) => {
+      const updatedListNote = prevState.listNote.map((list) =>
+        list.id === listId ? { ...list, totalCount: newTotalCount } : list
+      );
+      return { listNote: updatedListNote };
+    });
+  };
+  //update khi them moi va xoa trong remidner
+  updateListTotalCount = (newTotalCount) => {
+    const { selectedListId } = this.state;
+    this.setState((prevState) => {
+      const updatedListNote = prevState.listNote.map((list) =>
+        list.id === selectedListId
+          ? { ...list, totalCount: newTotalCount }
+          : list
+      );
+      return { listNote: updatedListNote };
+    });
+  };
+
+  updateTotalDone = (newTotalDone) => {
+    const { selectedListId } = this.state;
+
+    this.setState((prevState) => {
+      const updatedListNote = prevState.listNote.map((list) =>
+        list.id === selectedListId ? { ...list, totalDone: newTotalDone } : list
+      );
+
+      return { listNote: updatedListNote };
+    });
+  };
 
   componentDidMount = async () => {
     this.getListNote();
@@ -256,9 +289,11 @@ class ListPage extends Component {
 
         {showReminderHome && (
           <RemindersList
-            onListsButtonClick={this.hanldeBackList}
+            onListsBackClick={this.hanldeBackList}
             selectedListName={selectedListName}
             selectedListId={selectedListId}
+            updateListTotalCount={this.updateListTotalCount}
+            updateTotalDone={this.updateTotalDone}
           />
         )}
 
@@ -267,6 +302,7 @@ class ListPage extends Component {
             onCancelFormAdd={this.handleCancelFormAddReminder}
             onSubmitAddReminderForm={this.handleSubFormAddReminder}
             listNote={this.state.listNote}
+            updateListNoteCount={this.updateListNoteCount}
           />
         )}
       </>

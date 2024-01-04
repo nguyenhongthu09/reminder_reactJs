@@ -13,6 +13,7 @@ class Input extends Component {
       onBlur,
       placeholder,
       autoFocus,
+      checked,
     } = this.props;
 
     return (
@@ -26,6 +27,7 @@ class Input extends Component {
         onBlur={onBlur}
         placeholder={placeholder}
         autoFocus={autoFocus}
+        checked={checked}
       />
     );
   }
@@ -41,6 +43,7 @@ Input.propTypes = {
   value: PropTypes.string,
   placeholder: PropTypes.string,
   autoFocus: PropTypes.bool,
+  checked: PropTypes.bool,
 };
 
 export default Input;

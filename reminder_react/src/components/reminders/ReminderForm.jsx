@@ -48,7 +48,13 @@ class AddReminderForm extends Component {
     try {
       await addNewReminder(newReminder);
       if (this.props.onSubmitAddReminderForm) {
-        this.props.onSubmitAddReminderForm();
+        const updatedListNote = [...this.props.listNote];
+        this.props.onSubmitAddReminderForm(updatedListNote);
+        const selectedList = updatedListNote.find(
+          (list) => list.id === selectedListId
+        );
+        const newTotalCount = selectedList ? selectedList.totalCount + 1 : 1;
+        this.props.updateListNoteCount(selectedListId, newTotalCount);
       }
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {

@@ -8,6 +8,7 @@ import {
 } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
+import getAllList from "../../fetchApi/fetchApiList";
 class RemindersList extends Component {
   constructor() {
     super();
@@ -16,10 +17,9 @@ class RemindersList extends Component {
       hasReminderData: false,
       showNewReminderForm: false,
       reminderTitle: "",
-      shouldAddReminderOnBlur: false,
-      isAddingFromButtonClick: false,
-      isAddingFromBlur: false,
       editedValue: "",
+      actionType: null,
+      editingNoteId: null,
     };
   }
 
@@ -38,73 +38,90 @@ class RemindersList extends Component {
   };
 
   // ADD REMINDER
-  handleSubmitAddReminder = async () => {
+  addReminderService = async () => {
     const { selectedListId } = this.props;
-    const { reminderTitle, shouldAddReminderOnBlur } = this.state;
-    if (shouldAddReminderOnBlur || this.state.isAddingFromButtonClick) {
-      this.setState({ isAdding: true });
-      const newReminder = {
-        title: reminderTitle,
-        status: false,
-        idlist: selectedListId,
-      };
+    const { reminderTitle } = this.state;
 
-      try {
-        const response = await addNewReminder(newReminder);
-        console.log(response, " them moi thanh cong");
-        const addedReminder = response ? response : null;
-        if (addedReminder) {
-          this.setState((prevState) => ({
-            reminders: [...prevState.reminders, addedReminder],
-            reminderTitle: "",
-            showNewReminderForm: false,
-            idReminder: addedReminder.id,
-          }));
-        }
-      } catch (error) {
-        console.error("Lỗi khi thêm mới reminder:", error.message);
-      } finally {
-        this.setState({ isAdding: false });
+    const newReminder = {
+      title: reminderTitle,
+      status: false,
+      idlist: selectedListId,
+    };
+
+    try {
+      const response = await addNewReminder(newReminder);
+      console.log(response, " them moi thanh cong");
+      const newTotalCount = this.state.reminders.length + 1;
+      this.props.updateListTotalCount(newTotalCount);
+      const addedReminder = response ? response : null;
+      if (addedReminder) {
+        this.setState((prevState) => ({
+          reminders: [...prevState.reminders, addedReminder],
+          reminderTitle: "",
+          idReminder: addedReminder.id,
+        }));
       }
+    } catch (error) {
+      console.error("Lỗi khi thêm mới reminder:", error.message);
+    } finally {
+      this.setState({ actionType: null });
     }
   };
 
   handleBlur = () => {
-    const { isAddingFromButtonClick } = this.state;
-    if (!isAddingFromButtonClick) {
-      this.setState(
-        { shouldAddReminderOnBlur: true, isAddingFromBlur: true },
-        () => {
-          this.handleSubmitAddReminder();
-          this.setState({ shouldAddReminder: false, reminderTitle: "" });
-        }
-      );
-    }
+    this.setState(
+      { actionType: "blur", showNewReminderForm: false, hasReminderData: true },
+      () => {
+        this.addReminderService();
+      }
+    );
   };
 
   handleClickDone = () => {
-    this.setState({ isAddingFromButtonClick: true }, () => {
-      this.handleSubmitAddReminder();
-      this.setState({ isAddingFromButtonClick: false });
+    this.setState({
+      actionType: "click",
+      showNewReminderForm: false,
+      hasReminderData: true,
     });
   };
 
   // DELETE REMINDER
-  deleteReminderService = async (deleReminderId) => {
+  deleteReminderService = async (deleReminderId, status) => {
     try {
-      console.log(deleReminderId, "id reminder");
       await delREminder(deleReminderId);
+      const { reminders } = this.state;
+      const newTotalCount = this.state.reminders.length - 1;
+      console.log(status, "status");
+      if (status) {
+        console.log(status, " status ruyen aco");
+        // Nếu reminder có status là true, cập nhật cả totalDone và totalCOunt
+        this.props.updateListTotalCount(newTotalCount);
+        const newTotalDone = reminders.filter(
+          (reminder) => reminder.id !== deleReminderId && reminder.status
+        ).length;
+        this.props.updateTotalDone(newTotalDone);
+      } else {
+        // Nếu reminder có status là false, chỉ cập nhật totalCOunt
+        this.props.updateListTotalCount(newTotalCount);
+      }
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
     }
-    this.setState((prevState) => ({
-      reminders: prevState.reminders.filter(
-        (reminder) => reminder.id !== deleReminderId
-      ),
-    }));
+    this.setState(
+      (prevState) => ({
+        reminders: prevState.reminders.filter(
+          (reminder) => reminder.id !== deleReminderId
+        ),
+      }),
+      () => {
+        const hasReminderData = this.state.reminders.length !== 0;
+        this.setState({ hasReminderData });
+      }
+    );
   };
 
-  handleEdit = async (editedNoteId, newValue) => {
+  //EDIT REMIDNER
+  editReminder = async (editedNoteId, newValue) => {
     try {
       const updatedReminder = await updateReminderData(editedNoteId, newValue);
       console.log(updatedReminder, " update thanh cong reminder UI");
@@ -121,9 +138,10 @@ class RemindersList extends Component {
     }
   };
 
-  handleListsButtonClick = () => {
-    if (this.props.onListsButtonClick) {
-      this.props.onListsButtonClick();
+  hanldeBackList = async () => {
+    if (this.props.onListsBackClick) {
+      await getAllList();
+      this.props.onListsBackClick();
     }
   };
 
@@ -131,6 +149,11 @@ class RemindersList extends Component {
     this.setState({
       showNewReminderForm: true,
     });
+  };
+
+  handleUpdateReminders = (updatedReminders, totalDone) => {
+    this.setState({ reminders: updatedReminders });
+    this.props.updateTotalDone(totalDone);
   };
 
   componentDidMount = () => {
@@ -147,10 +170,7 @@ class RemindersList extends Component {
 
           <div className="note">
             <div className="button-detail-list">
-              <Button
-                className="btn-back-list"
-                onClick={this.handleListsButtonClick}
-              >
+              <Button className="btn-back-list" onClick={this.hanldeBackList}>
                 Back List
               </Button>
               <Button
@@ -168,7 +188,8 @@ class RemindersList extends Component {
               onReminderDeleSuccess={this.deleteReminderService}
               reminders={this.state.reminders}
               hasReminderData={this.state.hasReminderData}
-              onEdit={this.handleEdit}
+              onEdit={this.editReminder}
+              onUpdateReminders={this.handleUpdateReminders}
             />
           </div>
           {this.state.showNewReminderForm && (

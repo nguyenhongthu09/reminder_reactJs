@@ -1,4 +1,6 @@
 import { API_URL } from "../constants/apiURL";
+import { getReminderTotal, getReminderDone } from "./fetchApiREminder";
+
 const getAllList = async () => {
   try {
     const response = await fetch(`${API_URL}/listNote`, {
@@ -7,12 +9,29 @@ const getAllList = async () => {
 
     if (response.status === 200) {
       const listData = await response.json();
-
-      return listData;
+   const a =   await Promise.all(
+        listData.map(async (listItem) => {
+          const { reminderData, totalCount, totalDone, reminderDataDone } =
+            await fetchTotals(listItem.id);
+          listItem.reminders = reminderData || [];
+          listItem.totalCount = parseInt(totalCount, 10) || 0;
+          listItem.totalDone = parseInt(totalDone, 10) || 0;
+          listItem.remindersDone = reminderDataDone || [];
+          return listItem;
+        })
+      );
+          console.log(a, "log thu a");
+      return a;
     }
   } catch (error) {
     console.error("Error fetching list:", error);
   }
+};
+
+export const fetchTotals = async (listId) => {
+  const { reminderData, totalCount } = await getReminderTotal(listId);
+  const { reminderDataDone, totalDone } = await getReminderDone(listId);
+  return { reminderData, totalCount, totalDone, reminderDataDone };
 };
 
 export default getAllList;

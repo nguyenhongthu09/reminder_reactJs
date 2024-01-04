@@ -89,13 +89,13 @@ class RenderListOnUi extends Component {
                   className="number-items-notes"
                   id={`total-done-${list.id}`}
                 >
-                  0
+                  {list.totalDone}
                 </span>
                 <span
                   className="number-items-note"
                   id={`total-count-${list.id}`}
                 >
-                  /0
+                  /{list.totalCount}
                 </span>
               </div>
             </div>
