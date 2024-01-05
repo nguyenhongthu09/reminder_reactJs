@@ -136,7 +136,6 @@ class RenderReminder extends Component {
                 <div className="items-list-reminder">
                   <div className="form-check item-reminder">
                     <Input
-                      className="form-check-input "
                       type="checkbox"
                       id={`id-input-${note.id}`}
                       checked={this.state.checkboxStatus[note.id]}
@@ -145,7 +144,7 @@ class RenderReminder extends Component {
                       }
                     />
                     <Input
-                      className={`form-check-name doimau ${
+                      className={`input_reminder doimau ${
                         this.state.checkboxStatus[note.id] ? "checked" : ""
                       }`}
                       onChange={(e) =>
@@ -156,7 +155,6 @@ class RenderReminder extends Component {
                           ? this.state.editedNote.value
                           : note.title
                       }
-                      placeholder="Add Note"
                       onBlur={(e) => this.handleEdit(note.id, e.target.value)}
                     />
                   </div>

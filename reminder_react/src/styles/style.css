@@ -215,6 +215,14 @@ body {
   background-color: #d8d2d2;
   font-size: 23px !important;
 }
+.detail-list-note .input_reminder {
+  padding-left: 10px;
+  border: none;
+  margin-bottom: 10px;
+  outline: none;
+  background-color: #d8d2d2;
+  font-size: 23px !important;
+}
 
 
 .detail-list-note .add__reminders {

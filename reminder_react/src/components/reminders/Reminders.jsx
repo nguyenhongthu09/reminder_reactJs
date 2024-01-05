@@ -73,6 +73,14 @@ class RemindersList extends Component {
   };
 
   handleBlur = () => {
+    const { reminderTitle } = this.state;
+    if (reminderTitle.trim() === "") {
+      this.setState({
+        showNewReminderForm: false,
+        hasReminderData: true,
+      });
+      return;
+    }
     this.setState(
       { actionType: "blur", showNewReminderForm: false, hasReminderData: true },
       () => {
@@ -96,7 +104,6 @@ class RemindersList extends Component {
       await delREminder(deleReminderId);
       const { reminders } = this.state;
       const newTotalCount = this.state.reminders.length - 1;
-      console.log(status, "status");
       if (status) {
         this.props.updateListTotalCount(newTotalCount);
         const newTotalDone = reminders.filter(
@@ -202,10 +209,8 @@ class RemindersList extends Component {
           {this.state.showNewReminderForm && (
             <div className="new-reminder">
               <div className="form-check  item-reminders">
-                <Input className="form-check-input " type="checkbox"></Input>
+                <Input type="checkbox"></Input>
                 <Input
-                  className="form-check-name input-new-reminder"
-                  placeholder="Add Note"
                   autoFocus
                   onBlur={this.handleBlur}
                   onChange={(e) =>

@@ -94,8 +94,7 @@ class AddReminderForm extends Component {
           <h1>New reminder</h1>
           <Input
             id="add-note-name"
-            className="input_add_note_name"
-            placeholder="Add name reminder"
+            className="form-check-name"
             onFocus={this.handleInputFocus}
             onChange={this.handleInputChange}
           ></Input>

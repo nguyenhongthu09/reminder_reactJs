@@ -6,21 +6,24 @@ class Input extends Component {
     const {
       value,
       onClick,
-      className,
-      type = "text",
       id,
       onChange,
       onBlur,
-      placeholder,
+      placeholder = "Please enter data",
       autoFocus,
       checked,
+      type,
+      className,
     } = this.props;
 
+    const combinedClassName = `${
+      type === "checkbox" ? "form-check-input" : "form-check-name"
+    } ${className || ""}`;
     return (
       <input
         type={type}
         id={id}
-        className={className}
+        className={combinedClassName}
         onClick={onClick}
         value={value}
         onChange={onChange}
