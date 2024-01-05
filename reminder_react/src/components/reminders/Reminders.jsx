@@ -9,6 +9,7 @@ import {
 import Button from "../core/Button";
 import Input from "../core/Input";
 import getAllList from "../../fetchApi/fetchApiList";
+import LoadingIcon from "../core/Loading";
 class RemindersList extends Component {
   constructor() {
     super();
@@ -20,6 +21,7 @@ class RemindersList extends Component {
       editedValue: "",
       actionType: null,
       editingNoteId: null,
+      loading: false,
     };
   }
 
@@ -49,6 +51,7 @@ class RemindersList extends Component {
     };
 
     try {
+      this.setState({ loading: true });
       const response = await addNewReminder(newReminder);
       console.log(response, " them moi thanh cong");
       const newTotalCount = this.state.reminders.length + 1;
@@ -61,6 +64,7 @@ class RemindersList extends Component {
           idReminder: addedReminder.id,
         }));
       }
+      this.setState({ loading: false });
     } catch (error) {
       console.error("Lỗi khi thêm mới reminder:", error.message);
     } finally {
@@ -88,22 +92,21 @@ class RemindersList extends Component {
   // DELETE REMINDER
   deleteReminderService = async (deleReminderId, status) => {
     try {
+      this.setState({ loading: true });
       await delREminder(deleReminderId);
       const { reminders } = this.state;
       const newTotalCount = this.state.reminders.length - 1;
       console.log(status, "status");
       if (status) {
-        console.log(status, " status ruyen aco");
-        // Nếu reminder có status là true, cập nhật cả totalDone và totalCOunt
         this.props.updateListTotalCount(newTotalCount);
         const newTotalDone = reminders.filter(
           (reminder) => reminder.id !== deleReminderId && reminder.status
         ).length;
         this.props.updateTotalDone(newTotalDone);
       } else {
-        // Nếu reminder có status là false, chỉ cập nhật totalCOunt
         this.props.updateListTotalCount(newTotalCount);
       }
+      this.setState({ loading: false });
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
     }
@@ -123,6 +126,7 @@ class RemindersList extends Component {
   //EDIT REMIDNER
   editReminder = async (editedNoteId, newValue) => {
     try {
+      this.setState({ loading: true });
       const updatedReminder = await updateReminderData(editedNoteId, newValue);
       console.log(updatedReminder, " update thanh cong reminder UI");
 
@@ -133,6 +137,7 @@ class RemindersList extends Component {
           ),
         }));
       }
+      this.setState({ loading: false });
     } catch (error) {
       console.error("Lỗi khi cập nhật reminder:", error.message);
     }
@@ -140,8 +145,10 @@ class RemindersList extends Component {
 
   hanldeBackList = async () => {
     if (this.props.onListsBackClick) {
+      this.setState({ loading: true });
       await getAllList();
       this.props.onListsBackClick();
+      this.setState({ loading: false });
     }
   };
 
@@ -156,18 +163,17 @@ class RemindersList extends Component {
     this.props.updateTotalDone(totalDone);
   };
 
-  componentDidMount = () => {
-    this.getReminders();
+  componentDidMount = async () => {
+    this.setState({ loading: true });
+    await this.getReminders();
+    this.setState({ loading: false });
   };
 
   render() {
+    const { loading } = this.state;
     return (
       <div>
         <div className="detail-list-note">
-          {/* <div>
-            <div className="loader  loader__reminder  loader-hidden  loader__common  "></div>
-          </div> */}
-
           <div className="note">
             <div className="button-detail-list">
               <Button className="btn-back-list" onClick={this.hanldeBackList}>
@@ -182,6 +188,7 @@ class RemindersList extends Component {
                 Done
               </Button>
             </div>
+            {loading && <LoadingIcon />}
             <RenderReminder
               selectedListId={this.props.selectedListId}
               selectedListName={this.props.selectedListName}

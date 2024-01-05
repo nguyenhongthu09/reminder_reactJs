@@ -3,7 +3,7 @@ import RenderListOnUi from "../lists/List";
 import { addNewReminder } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
-
+import LoadingIcon from "../core/Loading";
 class AddReminderForm extends Component {
   constructor(props) {
     super(props);
@@ -12,6 +12,7 @@ class AddReminderForm extends Component {
       isAddButtonDisabled: true,
       selectedListId: null,
       reminderTitle: "",
+      loading: false,
     };
   }
 
@@ -33,6 +34,7 @@ class AddReminderForm extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
+   
     const { reminderTitle, selectedListId } = this.state;
     if (!reminderTitle || !selectedListId) {
       console.error("Vui lòng nhập đầy đủ thông tin.");
@@ -46,6 +48,7 @@ class AddReminderForm extends Component {
     };
 
     try {
+      this.setState({ loading: true });
       await addNewReminder(newReminder);
       if (this.props.onSubmitAddReminderForm) {
         const updatedListNote = [...this.props.listNote];
@@ -56,6 +59,7 @@ class AddReminderForm extends Component {
         const newTotalCount = selectedList ? selectedList.totalCount + 1 : 1;
         this.props.updateListNoteCount(selectedListId, newTotalCount);
       }
+      this.setState({ loading: false });
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {
       console.error("Lỗi khi thêm mới reminder:", error.message);
@@ -64,10 +68,12 @@ class AddReminderForm extends Component {
 
   render() {
     const { listNote } = this.props;
+    const {loading} = this.state;
 
     return (
       <>
         <form action="" id="form__add__note" className="form--add__notes">
+          {loading && <LoadingIcon />}
           <div className="button-detail-list">
             <Button
               className="btn-back-note"

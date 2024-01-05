@@ -4,6 +4,7 @@ import RenderListColor from "./ListColor";
 import { generateRandomStringId } from "../../untils/common";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
+import LoadingIcon from "../core/Loading";
 class ListForm extends Component {
   constructor() {
     super();
@@ -11,6 +12,7 @@ class ListForm extends Component {
       id: generateRandomStringId(),
       name: "",
       isButtonDisabled: true,
+      loading: false,
     };
   }
 
@@ -41,27 +43,30 @@ class ListForm extends Component {
       isButtonDisabled: false,
     });
   };
-  // handleInputBlur = () => {
-  //   const isButtonDisabled = this.state.name.trim() === "";
-  //   this.setState({
-  //     isButtonDisabled: isButtonDisabled,
-  //   });
-  // };
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    if (this.props.formType === "edit") {
-      this.props.onSubEditForm({
-        id: this.state.id,
-        name: this.state.name,
-        isColor: this.state.isColor,
-      });
-    } else {
-      this.props.onSubmitSuccess({
-        id: this.state.id,
-        name: this.state.name,
-        isColor: this.state.isColor,
-      });
+    try {
+      this.setState({ loading: true });
+
+      if (this.props.formType === "edit") {
+        await this.props.onSubEditForm({
+          id: this.state.id,
+          name: this.state.name,
+          isColor: this.state.isColor,
+        });
+      } else {
+        await this.props.onSubmitSuccess({
+          id: this.state.id,
+          name: this.state.name,
+          isColor: this.state.isColor,
+        });
+      }
+
+      this.setState({ loading: false });
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+      this.setState({ loading: false });
     }
   };
   handleKeyDown = (event) => {
@@ -88,7 +93,7 @@ class ListForm extends Component {
 
   render() {
     const { formType } = this.props;
-    const { isColor, name } = this.state;
+    const { isColor, name, loading } = this.state;
 
     return (
       <form
@@ -97,6 +102,7 @@ class ListForm extends Component {
         action=""
         className={`form-edit-list ${formType}`}
       >
+        {loading && <LoadingIcon />}
         <div className="form__edit__list">
           <Button
             id="btn-xoa"

@@ -11,6 +11,7 @@ import {
   delList,
 } from "../../fetchApi/fetchApiList";
 import Button from "../core/Button";
+import LoadingIcon from "../core/Loading";
 
 class ListPage extends Component {
   constructor() {
@@ -24,6 +25,7 @@ class ListPage extends Component {
       selectedListId: null,
       showAddReminderForm: false,
       showReminderHome: false,
+      loading: false,
     };
 
     this.handleAddListClick = this.handleAddFormListClick.bind(this);
@@ -67,16 +69,13 @@ class ListPage extends Component {
     try {
       const { formType } = this.state;
       if (formType === "add") {
+        newList.totalDone = 0;
+        newList.totalCount = 0;
         await addNewList(newList);
-        this.setState(
-          (prevState) => ({
-            showFormCommonListNote: false,
-            listNote: [...prevState.listNote, newList],
-          }),
-          () => {
-            console.log("Thêm mới thành công");
-          }
-        );
+        this.setState((prevState) => ({
+          showFormCommonListNote: false,
+          listNote: [...prevState.listNote, newList],
+        }));
       }
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
@@ -91,11 +90,14 @@ class ListPage extends Component {
         const updatedListNote = this.state.listNote.map((listNote) =>
           listNote.id === list.id
             ? {
-                ...list,
+                ...listNote,
                 name: list.name,
                 isColor: list.isColor,
               }
             : listNote
+        );
+        const updatedList = updatedListNote.find(
+          (listNote) => listNote.id === list.id
         );
 
         this.setState(
@@ -104,8 +106,16 @@ class ListPage extends Component {
             console.log("Cập nhật thành công");
           }
         );
-        await updateListData(selectedListId, list.name, list.isColor);
-        console.log(selectedListId, list.name, list.isColor, "edit list");
+        const currentTotalDone = updatedList.totalDone;
+        const currentTotalCount = updatedList.totalCount;
+
+        await updateListData(
+          selectedListId,
+          list.name,
+          list.isColor,
+          currentTotalDone,
+          currentTotalCount
+        );
       }
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
@@ -188,6 +198,7 @@ class ListPage extends Component {
       showAddReminderForm: false,
     });
   };
+
   // update khi them moi trong form
   updateListNoteCount = (listId, newTotalCount) => {
     this.setState((prevState) => {
@@ -197,6 +208,7 @@ class ListPage extends Component {
       return { listNote: updatedListNote };
     });
   };
+
   //update khi them moi va xoa trong remidner
   updateListTotalCount = (newTotalCount) => {
     const { selectedListId } = this.state;
@@ -210,6 +222,7 @@ class ListPage extends Component {
     });
   };
 
+  //update total co status la true
   updateTotalDone = (newTotalDone) => {
     const { selectedListId } = this.state;
 
@@ -223,8 +236,13 @@ class ListPage extends Component {
   };
 
   componentDidMount = async () => {
-    this.getListNote();
-    this.getColors();
+    try {
+      this.setState({ loading: true });
+      await Promise.all([this.getListNote(), this.getColors()]);
+      this.setState({ loading: false });
+    } catch (error) {
+      console.error("Error loading data:", error.message);
+    }
   };
 
   render() {
@@ -234,6 +252,7 @@ class ListPage extends Component {
       selectedListName,
       selectedListId,
       showAddReminderForm,
+      loading,
     } = this.state;
 
     return (
@@ -247,6 +266,7 @@ class ListPage extends Component {
                 : "block",
           }}
         >
+          {loading && <LoadingIcon />}
           <div className="menu-list-note" id="renderlist-home">
             <h1>My List</h1>
             <RenderListOnUi
@@ -277,7 +297,6 @@ class ListPage extends Component {
 
         {showFormCommonListNote && (
           <ListForm
-            // setFormType={this.setFormType}
             onCancelClick={this.handleCancelClick}
             formType={this.state.formType}
             selectedListData={this.state.selectedListData}

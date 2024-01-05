@@ -4,6 +4,7 @@ import Button from "../core/Button";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import { updateReminderStatus } from "../../fetchApi/fetchApiREminder";
+import LoadingIcon from "../core/Loading";
 class RenderReminder extends Component {
   constructor() {
     super();
@@ -13,11 +14,11 @@ class RenderReminder extends Component {
         value: "",
       },
       checkboxStatus: {},
+      loading: false,
     };
   }
 
   handleEdit = (noteId, newValue) => {
-    console.log("Chỉnh sửa ghi chú:", noteId, "Giá trị mới:", newValue);
     this.setState(
       {
         editedNote: { id: noteId, value: newValue },
@@ -32,7 +33,6 @@ class RenderReminder extends Component {
       this.props.onReminderDeleSuccess(id, status);
     }
   };
-  
 
   handleInputChange = async (noteId, newValue) => {
     this.setState({
@@ -42,6 +42,7 @@ class RenderReminder extends Component {
 
   handleInputStatus = async (noteId) => {
     try {
+      this.setState({ loading: true });
       const newStatus = !this.state.checkboxStatus[noteId];
       await updateReminderStatus(noteId, newStatus);
 
@@ -80,6 +81,7 @@ class RenderReminder extends Component {
           this.props.onUpdateReminders(updatedReminders, totalDone);
         }
       );
+      this.setState({ loading: false });
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái:", error.message);
     }
@@ -112,6 +114,7 @@ class RenderReminder extends Component {
     ];
 
     const { selectedListId, reminders, hasReminderData } = this.props;
+    const { loading } = this.state;
 
     const sortedReminders = [...reminders].sort((a, b) =>
       a.status && !b.status ? 1 : !a.status && b.status ? -1 : 0
@@ -119,6 +122,7 @@ class RenderReminder extends Component {
 
     return (
       <>
+        {loading && <LoadingIcon />}
         <h1 className="title-list">{this.props.selectedListName}</h1>
         {!hasReminderData && <div className="thong-bao">Empty list !!!</div>}
         {sortedReminders.map((note) => (
@@ -161,7 +165,9 @@ class RenderReminder extends Component {
                   <Dropdown
                     id={note.id}
                     actions={action}
-                    onClick={(id) => this.handleButtonClick(note.id, note.status)}
+                    onClick={(id) =>
+                      this.handleButtonClick(note.id, note.status)
+                    }
                   ></Dropdown>
                 </div>
               </div>
