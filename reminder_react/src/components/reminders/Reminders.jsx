@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import RenderReminder from "./Reminder";
+import Reminder from "./Reminder";
 import {
   delREminder,
   getReminder,
@@ -9,18 +9,16 @@ import {
 import Button from "../core/Button";
 import Input from "../core/Input";
 import getAllList from "../../fetchApi/fetchApiList";
-import LoadingIcon from "../core/Loading";
-class RemindersList extends Component {
+import Loading from "../core/Loading";
+import Checkbox from "../core/Checkbox";
+class Reminders extends Component {
   constructor() {
     super();
     this.state = {
       reminders: [],
-      hasReminderData: false,
-      showNewReminderForm: false,
+      reminderForm: false,
       reminderTitle: "",
-      editedValue: "",
       actionType: null,
-      editingNoteId: null,
       loading: false,
     };
   }
@@ -29,10 +27,8 @@ class RemindersList extends Component {
   getReminders = async () => {
     try {
       const reminderData = await getReminder(this.props.selectedListId);
-      const hasReminderData = reminderData.length > 0;
       this.setState({
         reminders: reminderData,
-        hasReminderData: hasReminderData,
       });
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
@@ -76,13 +72,15 @@ class RemindersList extends Component {
     const { reminderTitle } = this.state;
     if (reminderTitle.trim() === "") {
       this.setState({
-        showNewReminderForm: false,
-        hasReminderData: true,
+        reminderForm: false,
       });
       return;
     }
     this.setState(
-      { actionType: "blur", showNewReminderForm: false, hasReminderData: true },
+      {
+        actionType: "blur",
+        reminderForm: false,
+      },
       () => {
         this.addReminderService();
       }
@@ -92,8 +90,7 @@ class RemindersList extends Component {
   handleClickDone = () => {
     this.setState({
       actionType: "click",
-      showNewReminderForm: false,
-      hasReminderData: true,
+      reminderForm: false,
     });
   };
 
@@ -117,17 +114,11 @@ class RemindersList extends Component {
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
     }
-    this.setState(
-      (prevState) => ({
-        reminders: prevState.reminders.filter(
-          (reminder) => reminder.id !== deleReminderId
-        ),
-      }),
-      () => {
-        const hasReminderData = this.state.reminders.length !== 0;
-        this.setState({ hasReminderData });
-      }
-    );
+    this.setState((prevState) => ({
+      reminders: prevState.reminders.filter(
+        (reminder) => reminder.id !== deleReminderId
+      ),
+    }));
   };
 
   //EDIT REMIDNER
@@ -159,9 +150,9 @@ class RemindersList extends Component {
     }
   };
 
-  showNewReminderForm = () => {
+  showReminderForm = () => {
     this.setState({
-      showNewReminderForm: true,
+      reminderForm: true,
     });
   };
 
@@ -177,7 +168,8 @@ class RemindersList extends Component {
   };
 
   render() {
-    const { loading } = this.state;
+    const { loading, reminders, reminderForm } = this.state;
+    const { nameList, selectedListId } = this.props;
     return (
       <div>
         <div className="detail-list-note">
@@ -195,21 +187,20 @@ class RemindersList extends Component {
                 Done
               </Button>
             </div>
-            {loading && <LoadingIcon />}
-            <RenderReminder
-              selectedListId={this.props.selectedListId}
-              selectedListName={this.props.selectedListName}
+            {loading && <Loading />}
+            <Reminder
+              selectedListId={selectedListId}
+              nameList={nameList}
               onReminderDeleSuccess={this.deleteReminderService}
-              reminders={this.state.reminders}
-              hasReminderData={this.state.hasReminderData}
+              reminders={reminders}
               onEdit={this.editReminder}
               onUpdateReminders={this.handleUpdateReminders}
             />
           </div>
-          {this.state.showNewReminderForm && (
+          {reminderForm && (
             <div className="new-reminder">
               <div className="form-check  item-reminders">
-                <Input type="checkbox"></Input>
+                <Checkbox />
                 <Input
                   autoFocus
                   onBlur={this.handleBlur}
@@ -224,7 +215,7 @@ class RemindersList extends Component {
           <Button
             className="add__reminders"
             id="btnNewNote"
-            onClick={this.showNewReminderForm}
+            onClick={this.showReminderForm}
           >
             New Reminder
           </Button>
@@ -234,4 +225,4 @@ class RemindersList extends Component {
   }
 }
 
-export default RemindersList;
+export default Reminders;

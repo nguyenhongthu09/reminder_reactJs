@@ -71,7 +71,7 @@ body {
 }
 
 .icon-home-list-del {
-  margin-top: 10px;
+  margin-top: 4px;
   margin-left: 5px;
 }
 
@@ -215,6 +215,7 @@ body {
   background-color: #d8d2d2;
   font-size: 23px !important;
 }
+
 .detail-list-note .input_reminder {
   padding-left: 10px;
   border: none;

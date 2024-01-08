@@ -1,44 +1,38 @@
 import React, { Component } from "react";
-import RenderListOnUi from "./List";
+import List from "./List";
 import getAllList from "../../fetchApi/fetchApiList";
 import getColor from "../../fetchApi/fetchColor";
 import ListForm from "./ListForm";
-import RemindersList from "../reminders/Reminders";
-import AddReminderForm from "../reminders/ReminderForm";
+import Reminders from "../reminders/Reminders";
+import ReminderForm from "../reminders/ReminderForm";
 import {
   addNewList,
   updateListData,
   delList,
 } from "../../fetchApi/fetchApiList";
 import Button from "../core/Button";
-import LoadingIcon from "../core/Loading";
+import Loading from "../core/Loading";
 
-class ListPage extends Component {
+class Lists extends Component {
   constructor() {
     super();
     this.state = {
       listNote: [],
       colors: [],
-      showFormCommonListNote: false,
+      listForm: false,
       formType: "",
-      selectedListName: "",
       selectedListId: null,
-      showAddReminderForm: false,
-      showReminderHome: false,
+      reminderForm: false,
+      reminders: false,
       loading: false,
     };
-
-    this.handleAddListClick = this.handleAddFormListClick.bind(this);
-    this.handleCancelClick = this.handleCancelClick.bind(this);
-    this.setFormType = this.setFormType.bind(this);
-    this.handleCancelFormAdd = this.handleCancelFormAddReminder.bind(this);
   }
-  setFormType(formType) {
+  setFormType = (formType) => {
     this.setState({
-      showFormCommonListNote: formType === "add" || formType === "edit",
+      listForm: formType === "add" || formType === "edit",
       formType: formType,
     });
-  }
+  };
 
   //GET LISTNOTE
   getListNote = async () => {
@@ -57,7 +51,7 @@ class ListPage extends Component {
     try {
       const colorData = await getColor();
       this.setState({
-        colorData: colorData.map((colors) => colors.color),
+        colors: colorData.map((colors) => colors.color),
       });
     } catch (error) {
       console.error("Error fetching colorData:", error.message);
@@ -73,7 +67,7 @@ class ListPage extends Component {
         newList.totalCount = 0;
         await addNewList(newList);
         this.setState((prevState) => ({
-          showFormCommonListNote: false,
+          listForm: false,
           listNote: [...prevState.listNote, newList],
         }));
       }
@@ -100,12 +94,9 @@ class ListPage extends Component {
           (listNote) => listNote.id === list.id
         );
 
-        this.setState(
-          { showFormCommonListNote: false, listNote: updatedListNote },
-          () => {
-            console.log("Cập nhật thành công");
-          }
-        );
+        this.setState({ listForm: false, listNote: updatedListNote }, () => {
+          console.log("Cập nhật thành công");
+        });
         const currentTotalDone = updatedList.totalDone;
         const currentTotalCount = updatedList.totalCount;
 
@@ -126,7 +117,6 @@ class ListPage extends Component {
   deleteListNoteService = async (deletedListId) => {
     try {
       await delList(deletedListId);
-      console.log("xoa thanh cong", deletedListId);
     } catch (error) {
       console.error("Error fetching listNote:", error.message);
     }
@@ -137,65 +127,64 @@ class ListPage extends Component {
 
   handleListNoteClick = (list) => {
     this.setFormType("edit");
-
     const { id, name, isColor } = list;
     this.setState({
-      selectedListData: {
+      selectedListItem: {
         id,
         name,
         isColor,
       },
       selectedListId: id,
-      showFormCommonListNote: true,
+      listForm: true,
     });
   };
 
-  handleAddFormListClick(source) {
+  handleAddFormListClick = (source) => {
     this.setFormType("add");
-
     if (source === "button") {
       this.setState({
-        showFormCommonListNote: true,
+        listForm: true,
       });
     }
-  }
+  };
 
   handleCancelClick = () => {
     this.setState({
-      showFormCommonListNote: false,
+      listForm: false,
     });
   };
 
   handleListNoteItemClick = (listNote) => {
+    console.log(listNote.name, "log thu ne");
     const { id, name } = listNote;
     this.setState({
-      showReminderHome: true,
-      selectedListName: name,
+      reminders: true,
       selectedListId: id,
+      nameList: name,
     });
   };
 
   hanldeBackList = () => {
     this.setState({
-      showReminderHome: false,
+      reminders: false,
     });
   };
 
   hanldeOpenFormAddReminder = () => {
     this.setState({
-      showAddReminderForm: true,
+      reminderForm: true,
     });
   };
 
   handleCancelFormAddReminder = () => {
     this.setState({
-      showAddReminderForm: false,
+      reminderForm: false,
     });
   };
 
   handleSubFormAddReminder = () => {
     this.setState({
-      showAddReminderForm: false,
+      reminderForm: false,
     });
   };
 
@@ -247,12 +236,16 @@ class ListPage extends Component {
 
   render() {
     const {
-      showFormCommonListNote,
-      showReminderHome,
-      selectedListName,
+      listForm,
+      reminders,
       selectedListId,
-      showAddReminderForm,
+      reminderForm,
       loading,
+      colors,
+      selectedListItem,
+      listNote,
+      formType,
+      nameList,
     } = this.state;
 
     return (
@@ -260,21 +253,18 @@ class ListPage extends Component {
         <div
           className="menu-list-notes"
           style={{
-            display:
-              showFormCommonListNote || showReminderHome || showAddReminderForm
-                ? "none"
-                : "block",
+            display: listForm || reminders || reminderForm ? "none" : "block",
           }}
         >
-          {loading && <LoadingIcon />}
+          {loading && <Loading />}
           <div className="menu-list-note" id="renderlist-home">
             <h1>My List</h1>
-            <RenderListOnUi
+            <List
               onListNoteClick={this.handleListNoteClick}
               onListDeleteSuccess={this.deleteListNoteService}
-              listNote={this.state.listNote}
+              listNote={listNote}
               onListNoteItemClick={this.handleListNoteItemClick}
-            ></RenderListOnUi>
+            ></List>
           </div>
           <div className="button-home">
             <Button
@@ -295,32 +285,32 @@ class ListPage extends Component {
           {/* )} */}
         </div>
 
-        {showFormCommonListNote && (
+        {listForm && (
           <ListForm
             onCancelClick={this.handleCancelClick}
-            formType={this.state.formType}
-            selectedListData={this.state.selectedListData}
-            colorData={this.state.colorData}
+            formType={formType}
+            selectedListItem={selectedListItem}
+            colors={colors}
             onSubmitSuccess={this.addListServiceForm}
             onSubEditForm={this.editListServiceForm}
           />
         )}
 
-        {showReminderHome && (
-          <RemindersList
+        {reminders && (
+          <Reminders
             onListsBackClick={this.hanldeBackList}
-            selectedListName={selectedListName}
+            nameList={nameList}
             selectedListId={selectedListId}
             updateListTotalCount={this.updateListTotalCount}
             updateTotalDone={this.updateTotalDone}
           />
         )}
 
-        {showAddReminderForm && (
-          <AddReminderForm
+        {reminderForm && (
+          <ReminderForm
             onCancelFormAdd={this.handleCancelFormAddReminder}
             onSubmitAddReminderForm={this.handleSubFormAddReminder}
-            listNote={this.state.listNote}
+            listNote={listNote}
             updateListNoteCount={this.updateListNoteCount}
           />
         )}
@@ -329,4 +319,4 @@ class ListPage extends Component {
   }
 }
 
-export default ListPage;
+export default Lists;

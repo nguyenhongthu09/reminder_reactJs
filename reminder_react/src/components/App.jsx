@@ -1,8 +1,8 @@
-import ListPage from "./lists/Lists";
+import Lists from "./lists/Lists";
 function App() {
   return (
     <div className="App">
-      <ListPage />
+      <Lists />
     </div>
   );
 }

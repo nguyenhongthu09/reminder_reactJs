@@ -2,40 +2,10 @@ import React, { Component } from "react";
 import Dropdown from "../core/Dropdown";
 import Icon from "../core/Icon";
 import Button from "../core/Button";
-class RenderListOnUi extends Component {
+class List extends Component {
   constructor() {
     super();
-    this.state = {};
-  }
-
-  handleCLickNote = (list) => {
-    if (this.props.onListNoteItemClick) {
-      this.props.onListNoteItemClick(list);
-    }
-  };
-
-  handleChooseNameList = (list) => {
-    if (this.props.onListSelect) {
-      this.props.onListSelect(list.name, list.id);
-    }
-  };
-  handleButtonClick = (id, action) => {
-    const selectedList = this.props.listNote.find((list) => list.id === id);
-    if (action.id === 2) {
-      if (id && this.props.onListNoteClick) {
-        this.props.onListNoteClick(selectedList);
-      }
-    }
-    if (action.id === 1) {
-      if (id && this.props.onListDeleteSuccess) {
-        this.props.onListDeleteSuccess(id);
-      }
-    }
-  };
-
-  render() {
-    const { listNote } = this.props;
-    const action = [
+    this.action = [
       {
         id: 1,
         key: "delete",
@@ -61,6 +31,36 @@ class RenderListOnUi extends Component {
         },
       },
     ];
+  }
+
+  handleCLickNote = (list) => {
+    if (this.props.onListNoteItemClick) {
+      this.props.onListNoteItemClick(list);
+    }
+  };
+
+  handleChooseNameList = (list) => {
+    if (this.props.onListSelect) {
+      this.props.onListSelect(list);
+    }
+  };
+  handleButtonClick = (id, action) => {
+    const selectedList = this.props.listNote.find((list) => list.id === id);
+    if (action.id === 2) {
+      if (id && this.props.onListNoteClick) {
+        this.props.onListNoteClick(selectedList);
+      }
+    }
+    if (action.id === 1) {
+      if (id && this.props.onListDeleteSuccess) {
+        this.props.onListDeleteSuccess(id);
+      }
+    }
+  };
+
+  render() {
+    const { listNote } = this.props;
+
     return (
       <div>
         {listNote.map((list) => (
@@ -102,7 +102,7 @@ class RenderListOnUi extends Component {
             <div className="icon-home-list-del">
               <Dropdown
                 id={list.id}
-                actions={action}
+                actions={this.action}
                 onClick={(id, action) => action.onClick(id, action)}
               ></Dropdown>
             </div>
@@ -113,4 +113,4 @@ class RenderListOnUi extends Component {
   }
 }
 
-export default RenderListOnUi;
+export default List;

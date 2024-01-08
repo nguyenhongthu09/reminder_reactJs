@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import RenderListOnUi from "../lists/List";
+import List from "../lists/List";
 import { addNewReminder } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
-import LoadingIcon from "../core/Loading";
-class AddReminderForm extends Component {
+import Loading from "../core/Loading";
+class ReminderForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedListName: "",
       isAddButtonDisabled: true,
       selectedListId: null,
       reminderTitle: "",
@@ -25,16 +24,17 @@ class AddReminderForm extends Component {
     });
   };
 
-  handleListSelection = (selectedListName, selectedListId) => {
+  handleListSelection = (listNote) => {
+    const { id, name } = listNote;
     this.setState({
-      selectedListName: selectedListName,
-      selectedListId: selectedListId,
+      nameList: name,
+      selectedListId: id,
     });
   };
 
   handleSubmit = async (e) => {
     e.preventDefault();
-   
+
     const { reminderTitle, selectedListId } = this.state;
     if (!reminderTitle || !selectedListId) {
       console.error("Vui lòng nhập đầy đủ thông tin.");
@@ -68,12 +68,12 @@ class AddReminderForm extends Component {
 
   render() {
     const { listNote } = this.props;
-    const {loading} = this.state;
+    const { loading, nameList, isAddButtonDisabled } = this.state;
 
     return (
       <>
         <form action="" id="form__add__note" className="form--add__notes">
-          {loading && <LoadingIcon />}
+          {loading && <Loading />}
           <div className="button-detail-list">
             <Button
               className="btn-back-note"
@@ -83,7 +83,7 @@ class AddReminderForm extends Component {
             </Button>
             <Button
               className="add-reminder"
-              disabled={this.state.isAddButtonDisabled}
+              disabled={isAddButtonDisabled}
               id="submitform-addnote"
               onClick={this.handleSubmit}
             >
@@ -105,16 +105,14 @@ class AddReminderForm extends Component {
                 <span>Choose list</span>
               </div>
               <div>
-                <span className="name-list-choose">
-                  {this.state.selectedListName}
-                </span>
+                <span className="name-list-choose">{nameList}</span>
               </div>
             </div>
             <div className="render" id="renderlist">
-              <RenderListOnUi
+              <List
                 listNote={listNote}
                 onListSelect={this.handleListSelection}
-              ></RenderListOnUi>
+              ></List>
             </div>
           </div>
         </form>
@@ -123,4 +121,4 @@ class AddReminderForm extends Component {
   }
 }
 
-export default AddReminderForm;
+export default ReminderForm;

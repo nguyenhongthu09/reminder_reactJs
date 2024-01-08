@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Icon from "./Icon";
 import Button from "./Button";
+import PropTypes from "prop-types";
 class Dropdown extends Component {
   handleActionClick = (id, action) => {
     const { onClick } = this.props;
@@ -41,5 +42,16 @@ class Dropdown extends Component {
     );
   }
 }
+
+Dropdown.propTypes = {
+  actions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      icon: PropTypes.node,
+    })
+  ),
+  id: PropTypes.string,
+  onClick: PropTypes.func,
+};
 
 export default Dropdown;

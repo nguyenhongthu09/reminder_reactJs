@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-class LoadingIcon extends Component {
+class Loading extends Component {
   render() {
     return (
       <>
@@ -13,4 +13,4 @@ class LoadingIcon extends Component {
     );
   }
 }
-export default LoadingIcon;
+export default Loading;

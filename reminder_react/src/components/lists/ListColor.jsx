@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-class RenderListColor extends Component {
+class ListColor extends Component {
   constructor() {
     super();
     this.state = { selectedColor: null };
@@ -28,4 +28,4 @@ class RenderListColor extends Component {
     );
   }
 }
-export default RenderListColor;
+export default ListColor;

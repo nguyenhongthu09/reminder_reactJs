@@ -4,8 +4,9 @@ import Button from "../core/Button";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import { updateReminderStatus } from "../../fetchApi/fetchApiREminder";
-import LoadingIcon from "../core/Loading";
-class RenderReminder extends Component {
+import Loading from "../core/Loading";
+import Checkbox from "../core/Checkbox";
+class Reminder extends Component {
   constructor() {
     super();
     this.state = {
@@ -16,6 +17,20 @@ class RenderReminder extends Component {
       checkboxStatus: {},
       loading: false,
     };
+    this.action = [
+      {
+        id: 1,
+        key: "delete",
+        icon: (
+          <Button className="dropdown-item">
+            <Icon type="delete"></Icon>
+          </Button>
+        ),
+        onClick: (id, status) => {
+          this.handleButtonClick(id, status);
+        },
+      },
+    ];
   }
 
   handleEdit = (noteId, newValue) => {
@@ -98,33 +113,19 @@ class RenderReminder extends Component {
   }
 
   render() {
-    const action = [
-      {
-        id: 1,
-        key: "delete",
-        icon: (
-          <Button className="dropdown-item">
-            <Icon type="delete"></Icon>
-          </Button>
-        ),
-        onClick: (id, status) => {
-          this.handleButtonClick(id, status);
-        },
-      },
-    ];
-
-    const { selectedListId, reminders, hasReminderData } = this.props;
+    const { selectedListId, reminders } = this.props;
     const { loading } = this.state;
 
     const sortedReminders = [...reminders].sort((a, b) =>
       a.status && !b.status ? 1 : !a.status && b.status ? -1 : 0
     );
+    const hasReminderData = sortedReminders.length === 0;
 
     return (
       <>
-        {loading && <LoadingIcon />}
-        <h1 className="title-list">{this.props.selectedListName}</h1>
-        {!hasReminderData && <div className="thong-bao">Empty list !!!</div>}
+        {loading && <Loading />}
+        <h1 className="title-list">{this.props.nameList}</h1>
+        {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
         {sortedReminders.map((note) => (
           <div key={note.id} id={note.id}>
             {note.idlist === selectedListId && (
@@ -135,8 +136,7 @@ class RenderReminder extends Component {
               >
                 <div className="items-list-reminder">
                   <div className="form-check item-reminder">
-                    <Input
-                      type="checkbox"
+                    <Checkbox
                       id={`id-input-${note.id}`}
                       checked={this.state.checkboxStatus[note.id]}
                       onChange={(e) =>
@@ -162,7 +162,7 @@ class RenderReminder extends Component {
                 <div className="icon-detail-reminder-del">
                   <Dropdown
                     id={note.id}
-                    actions={action}
+                    actions={this.action}
                     onClick={(id) =>
                       this.handleButtonClick(note.id, note.status)
                     }
@@ -177,4 +177,4 @@ class RenderReminder extends Component {
   }
 }
 
-export default RenderReminder;
+export default Reminder;

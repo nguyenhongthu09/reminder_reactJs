@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import Button from "../core/Button";
-import RenderListColor from "./ListColor";
+import ListColor from "./ListColor";
 import { generateRandomStringId } from "../../untils/common";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
-import LoadingIcon from "../core/Loading";
+import Loading from "../core/Loading";
 class ListForm extends Component {
   constructor() {
     super();
@@ -77,9 +77,9 @@ class ListForm extends Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown);
-    const { formType, selectedListData } = this.props;
-    if (formType === "edit" && selectedListData) {
-      const { id, name, isColor } = selectedListData;
+    const { formType, selectedListItem } = this.props;
+    if (formType === "edit" && selectedListItem) {
+      const { id, name, isColor } = selectedListItem;
       this.setState({
         id: id,
         name: name,
@@ -92,8 +92,8 @@ class ListForm extends Component {
   }
 
   render() {
-    const { formType } = this.props;
-    const { isColor, name, loading } = this.state;
+    const { formType, colors } = this.props;
+    const { isColor, name, loading, isButtonDisabled } = this.state;
 
     return (
       <form
@@ -102,7 +102,7 @@ class ListForm extends Component {
         action=""
         className={`form-edit-list ${formType}`}
       >
-        {loading && <LoadingIcon />}
+        {loading && <Loading />}
         <div className="form__edit__list">
           <Button
             id="btn-xoa"
@@ -112,7 +112,7 @@ class ListForm extends Component {
             Cancel
           </Button>
           <Button
-            disabled={this.state.isButtonDisabled}
+            disabled={isButtonDisabled}
             type="submit"
             id="btnsubedit"
             className="button-done"
@@ -147,10 +147,7 @@ class ListForm extends Component {
           className="color-list-icon  render-list-color-edit"
           id="color-list-add-list"
         >
-          <RenderListColor
-            colors={this.props.colorData}
-            onColorClick={this.handleColorSelect}
-          />
+          <ListColor colors={colors} onColorClick={this.handleColorSelect} />
         </div>
       </form>
     );
