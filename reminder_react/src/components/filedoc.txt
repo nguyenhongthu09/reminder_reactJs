@@ -50,3 +50,38 @@ Chỉnh sửa lại:
         icon: ‘...path’
     }
 ]} />
+///////////////////////////
+class Example extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      value: 0,
+    };
+  }
+
+  // Function syntax
+  handleClickFunction() {
+    this.setState((prevState) => ({ value: prevState.value + 1 }));
+  }
+
+  // Arrow function syntax
+  handleClickArrow = () => {
+    // 'this' is bound to the class instance
+    this.setState((prevState) => ({ value: prevState.value + 1 }));
+  };
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleClickFunction.bind(this)}>Click (Function)</button>
+        <button onClick={this.handleClickArrow}>Click (Arrow)</button>
+      </div>
+    );
+  }
+}
++ Function thông thường: cần sử dụng .bind(this) để đảm bảo rằng this trong hàm handleClickFunction sẽ trỏ đến đúng instance của class Example.Nếu không sử dụng bind(this) thì giá trị của this sẽ là undefined khi hàm đó được gọi. 
++ Arrow function: không thay đổi giá trị của this. nó sẽ giữ giá trị của this của nó từ ngữ cảnh của hàm bao bọc nó. 
+    Do đó, trong trường hợp này, this trong handleClickArrow tự động trỏ đến instance của class Example mà không cần sử dụng .bind(this).
+-> Tóm lại, sử dụng .bind(this) với "function syntax" là để đảm bảo rằng this được chính xác trong hàm, trong khi arrow function giữ giá trị this từ ngữ cảnh của nó.
+
+

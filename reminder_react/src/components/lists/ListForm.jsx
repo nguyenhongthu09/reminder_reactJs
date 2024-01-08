@@ -16,12 +16,6 @@ class ListForm extends Component {
     };
   }
 
-  setFormType = (type) => {
-    this.setState({
-      formType: type,
-    });
-  };
-
   handleColorSelect = (selectedColor) => {
     this.setState({
       isColor: selectedColor,
@@ -46,21 +40,20 @@ class ListForm extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
+    const { formType, onSubEditForm, onSubmitSuccess } = this.props;
+    const { id, name, isColor } = this.state;
+    const formData = {
+      id: id,
+      name: name,
+      isColor: isColor,
+    };
     try {
       this.setState({ loading: true });
 
-      if (this.props.formType === "edit") {
-        await this.props.onSubEditForm({
-          id: this.state.id,
-          name: this.state.name,
-          isColor: this.state.isColor,
-        });
+      if (formType === "edit") {
+        await onSubEditForm(formData);
       } else {
-        await this.props.onSubmitSuccess({
-          id: this.state.id,
-          name: this.state.name,
-          isColor: this.state.isColor,
-        });
+        await onSubmitSuccess(formData);
       }
 
       this.setState({ loading: false });
@@ -77,18 +70,15 @@ class ListForm extends Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown);
-    const { formType, selectedListItem } = this.props;
-    if (formType === "edit" && selectedListItem) {
-      const { id, name, isColor } = selectedListItem;
+    const { formType, listData } = this.props;
+    if (formType === "edit") {
+      const { id, name, isColor } = listData;
       this.setState({
         id: id,
         name: name,
         isColor: isColor,
       });
     }
-  }
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown);
   }
 
   render() {

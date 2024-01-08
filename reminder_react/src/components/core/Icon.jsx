@@ -14,7 +14,7 @@ class Icon extends Component {
         case "notelist":
           return <img src={notelist} alt="NoteList Icon" />;
         case "delete":
-          return <img src={deleteIcon} alt="NoteList Icon" />;
+          return <img src={deleteIcon} alt="Delete Icon" />;
         case "edit":
           return <img src={edit} alt="Edit Icon" />;
         case "dropdown":

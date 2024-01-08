@@ -79,8 +79,8 @@ class Lists extends Component {
   //EDIT LISTNOTE
   editListServiceForm = async (list) => {
     try {
-      const { formType, selectedListId } = this.state;
-      if (formType === "edit" && selectedListId) {
+      const { formType } = this.state;
+      if (formType === "edit") {
         const updatedListNote = this.state.listNote.map((listNote) =>
           listNote.id === list.id
             ? {
@@ -94,14 +94,12 @@ class Lists extends Component {
           (listNote) => listNote.id === list.id
         );
 
-        this.setState({ listForm: false, listNote: updatedListNote }, () => {
-          console.log("Cập nhật thành công");
-        });
+        this.setState({ listForm: false, listNote: updatedListNote }, () => {});
+        console.log("Cập nhật thành công", updatedList);
         const currentTotalDone = updatedList.totalDone;
         const currentTotalCount = updatedList.totalCount;
-
         await updateListData(
-          selectedListId,
+          list.id,
           list.name,
           list.isColor,
           currentTotalDone,
@@ -125,16 +123,10 @@ class Lists extends Component {
     }));
   };
 
-  handleListNoteClick = (list) => {
+  handleListNoteClick = (listNote) => {
     this.setFormType("edit");
-    const { id, name, isColor } = list;
     this.setState({
-      selectedListItem: {
-        id,
-        name,
-        isColor,
-      },
-      selectedListId: id,
+      listData: listNote,
       listForm: true,
     });
   };
@@ -155,12 +147,11 @@ class Lists extends Component {
   };
 
   handleListNoteItemClick = (listNote) => {
-    console.log(listNote.name, "log thu ne");
-    const { id, name } = listNote;
+    console.log(listNote, "log thu ne");
     this.setState({
       reminders: true,
-      selectedListId: id,
-      nameList: name,
+      selectedListId: listNote.id,
+      nameList: listNote.name,
     });
   };
 
@@ -170,21 +161,9 @@ class Lists extends Component {
     });
   };
 
-  hanldeOpenFormAddReminder = () => {
+  handleFormAddReminder = (openForm) => {
     this.setState({
-      reminderForm: true,
-    });
-  };
-
-  handleCancelFormAddReminder = () => {
-    this.setState({
-      reminderForm: false,
-    });
-  };
-
-  handleSubFormAddReminder = () => {
-    this.setState({
-      reminderForm: false,
+      reminderForm: openForm,
     });
   };
 
@@ -238,13 +217,13 @@ class Lists extends Component {
     const {
       listForm,
       reminders,
-      selectedListId,
       reminderForm,
       loading,
       colors,
-      selectedListItem,
+      listData,
       listNote,
       formType,
+      selectedListId,
       nameList,
     } = this.state;
 
@@ -269,7 +248,7 @@ class Lists extends Component {
           <div className="button-home">
             <Button
               className="add-reminder btn__add--reminder"
-              onClick={this.hanldeOpenFormAddReminder}
+              onClick={() => this.handleFormAddReminder(true)}
             >
               New Reminder
             </Button>
@@ -289,7 +268,7 @@ class Lists extends Component {
           <ListForm
             onCancelClick={this.handleCancelClick}
             formType={formType}
-            selectedListItem={selectedListItem}
+            listData={listData}
             colors={colors}
             onSubmitSuccess={this.addListServiceForm}
             onSubEditForm={this.editListServiceForm}
@@ -308,8 +287,8 @@ class Lists extends Component {
 
         {reminderForm && (
           <ReminderForm
-            onCancelFormAdd={this.handleCancelFormAddReminder}
-            onSubmitAddReminderForm={this.handleSubFormAddReminder}
+            onCancelFormAdd={() => this.handleFormAddReminder(false)}
+            onSubmitAddReminderForm={() => this.handleFormAddReminder(false)}
             listNote={listNote}
             updateListNoteCount={this.updateListNoteCount}
           />

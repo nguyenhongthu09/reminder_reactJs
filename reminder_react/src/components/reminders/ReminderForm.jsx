@@ -17,7 +17,8 @@ class ReminderForm extends Component {
 
   handleInputChange = (event) => {
     const inputValue = event.target.value;
-    const isAddButtonDisabled = inputValue.trim() === "";
+    const isAddButtonDisabled =
+      inputValue.trim() === "" || !this.state.selectedListId;
     this.setState({
       isAddButtonDisabled: isAddButtonDisabled,
       reminderTitle: inputValue,
@@ -25,10 +26,10 @@ class ReminderForm extends Component {
   };
 
   handleListSelection = (listNote) => {
-    const { id, name } = listNote;
     this.setState({
-      nameList: name,
-      selectedListId: id,
+      nameList: listNote.name,
+      selectedListId: listNote.id,
+      isAddButtonDisabled: !this.state.reminderTitle.trim() || !listNote.id,
     });
   };
 
@@ -37,7 +38,7 @@ class ReminderForm extends Component {
 
     const { reminderTitle, selectedListId } = this.state;
     if (!reminderTitle || !selectedListId) {
-      console.error("Vui lòng nhập đầy đủ thông tin.");
+      alert("Vui lòng chọn listNote tương ứng");
       return;
     }
 

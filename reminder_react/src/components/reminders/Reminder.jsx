@@ -16,6 +16,7 @@ class Reminder extends Component {
       },
       checkboxStatus: {},
       loading: false,
+      inputText: "",
     };
     this.action = [
       {
@@ -38,7 +39,7 @@ class Reminder extends Component {
       {
         editedNote: { id: noteId, value: newValue },
       },
-      () => this.props.onEdit && this.props.onEdit(noteId, newValue)
+      () => this.props.onEdit(noteId, newValue)
     );
   };
 
@@ -52,6 +53,7 @@ class Reminder extends Component {
   handleInputChange = async (noteId, newValue) => {
     this.setState({
       editedNote: { id: noteId, value: newValue },
+      inputText: newValue,
     });
   };
 
@@ -72,15 +74,9 @@ class Reminder extends Component {
       };
       updatedReminders[indexToUpdate] = updatedReminder;
 
-      updatedReminders.sort((a, b) => {
-        if (a.status && !b.status) {
-          return 1;
-        } else if (!a.status && b.status) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+      updatedReminders.sort((a, b) =>
+        a.status && !b.status ? 1 : !a.status && b.status ? -1 : 0
+      );
 
       const totalDone = updatedReminders.filter(
         (reminder) => reminder.status
@@ -102,7 +98,12 @@ class Reminder extends Component {
     }
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.inputText !== this.state.inputText) {
+      const isDoneButtonDisabled = this.state.inputText.trim() === "";
+      this.props.updateIsDoneButtonDisabled(isDoneButtonDisabled);
+    }
+
     if (prevProps.reminders !== this.props.reminders) {
       const checkboxStatus = {};
       this.props.reminders.forEach((note) => {
@@ -113,9 +114,9 @@ class Reminder extends Component {
   }
 
   render() {
-    const { selectedListId, reminders } = this.props;
+    const { selectedListId, reminders, isDoneButtonDisabled } = this.props;
     const { loading } = this.state;
-
+    console.log(isDoneButtonDisabled, " button");
     const sortedReminders = [...reminders].sort((a, b) =>
       a.status && !b.status ? 1 : !a.status && b.status ? -1 : 0
     );
@@ -144,12 +145,13 @@ class Reminder extends Component {
                       }
                     />
                     <Input
+                      isDoneButtonDisabled={isDoneButtonDisabled}
                       className={`input_reminder doimau ${
                         this.state.checkboxStatus[note.id] ? "checked" : ""
                       }`}
-                      onChange={(e) =>
-                        this.handleInputChange(note.id, e.target.value)
-                      }
+                      onChange={(e) => {
+                        this.handleInputChange(note.id, e.target.value);
+                      }}
                       value={
                         this.state.editedNote?.id === note.id
                           ? this.state.editedNote.value

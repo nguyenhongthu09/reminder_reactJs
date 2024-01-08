@@ -20,6 +20,7 @@ class Reminders extends Component {
       reminderTitle: "",
       actionType: null,
       loading: false,
+      isDoneButtonDisabled: true,
     };
   }
 
@@ -58,6 +59,7 @@ class Reminders extends Component {
           reminders: [...prevState.reminders, addedReminder],
           reminderTitle: "",
           idReminder: addedReminder.id,
+          isDoneButtonDisabled: true,
         }));
       }
       this.setState({ loading: false });
@@ -133,6 +135,7 @@ class Reminders extends Component {
           reminders: prevState.reminders.map((reminder) =>
             reminder.id === updatedReminder.id ? updatedReminder : reminder
           ),
+          isDoneButtonDisabled: true,
         }));
       }
       this.setState({ loading: false });
@@ -161,6 +164,11 @@ class Reminders extends Component {
     this.props.updateTotalDone(totalDone);
   };
 
+  updateIsDoneButtonDisabled = (isDoneButtonDisabled) => {
+    this.setState({ isDoneButtonDisabled });
+  };
+  
+
   componentDidMount = async () => {
     this.setState({ loading: true });
     await this.getReminders();
@@ -181,7 +189,7 @@ class Reminders extends Component {
               <Button
                 className="add-reminder"
                 id="btnsubmit-note"
-                // disabled
+                disabled={this.state.isDoneButtonDisabled}
                 onClick={this.handleClickDone}
               >
                 Done
@@ -195,6 +203,8 @@ class Reminders extends Component {
               reminders={reminders}
               onEdit={this.editReminder}
               onUpdateReminders={this.handleUpdateReminders}
+              isDoneButtonDisabled={this.state.isDoneButtonDisabled}
+              updateIsDoneButtonDisabled={this.updateIsDoneButtonDisabled}
             />
           </div>
           {reminderForm && (
@@ -204,10 +214,14 @@ class Reminders extends Component {
                 <Input
                   autoFocus
                   onBlur={this.handleBlur}
-                  onChange={(e) =>
-                    this.setState({ reminderTitle: e.target.value })
-                  }
-                ></Input>
+                  onChange={(e) => {
+                    const reminderTitle = e.target.value.trim();
+                    this.setState({
+                      reminderTitle: reminderTitle,
+                      isDoneButtonDisabled: reminderTitle === "",
+                    });
+                  }}
+                />
               </div>
             </div>
           )}

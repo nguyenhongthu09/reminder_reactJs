@@ -45,10 +45,10 @@ class List extends Component {
     }
   };
   handleButtonClick = (id, action) => {
-    const selectedList = this.props.listNote.find((list) => list.id === id);
+    const idList = this.props.listNote.find((list) => list.id === id);
     if (action.id === 2) {
       if (id && this.props.onListNoteClick) {
-        this.props.onListNoteClick(selectedList);
+        this.props.onListNoteClick(idList);
       }
     }
     if (action.id === 1) {
