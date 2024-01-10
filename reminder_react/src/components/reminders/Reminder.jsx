@@ -6,6 +6,8 @@ import Icon from "../core/Icon";
 import { updateReminderStatus } from "../../fetchApi/fetchApiREminder";
 import Loading from "../core/Loading";
 import Checkbox from "../core/Checkbox";
+import PropTypes from "prop-types";
+
 class Reminder extends Component {
   constructor() {
     super();
@@ -89,7 +91,7 @@ class Reminder extends Component {
           },
         }),
         () => {
-          this.props.onUpdateReminders(updatedReminders, totalDone);
+          this.props.onUpdateReminder(updatedReminders, totalDone);
         }
       );
       this.setState({ loading: false });
@@ -116,7 +118,6 @@ class Reminder extends Component {
   render() {
     const { selectedListId, reminders, isDoneButtonDisabled } = this.props;
     const { loading } = this.state;
-    console.log(isDoneButtonDisabled, " button");
     const sortedReminders = [...reminders].sort((a, b) =>
       a.status && !b.status ? 1 : !a.status && b.status ? -1 : 0
     );
@@ -125,7 +126,7 @@ class Reminder extends Component {
     return (
       <>
         {loading && <Loading />}
-        <h1 className="title-list">{this.props.nameList}</h1>
+
         {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
         {sortedReminders.map((note) => (
           <div key={note.id} id={note.id}>
@@ -178,5 +179,22 @@ class Reminder extends Component {
     );
   }
 }
+
+Reminder.propTypes = {
+  selectedListId: PropTypes.string,
+  reminders: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      idlist: PropTypes.string,
+      status: PropTypes.bool,
+    })
+  ),
+  isDoneButtonDisabled: PropTypes.bool,
+  nameList: PropTypes.string,
+  onEdit: PropTypes.func,
+  onReminderDeleSuccess: PropTypes.func,
+  updateIsDoneButtonDisabled: PropTypes.func,
+};
 
 export default Reminder;

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Dropdown from "../core/Dropdown";
 import Icon from "../core/Icon";
 import Button from "../core/Button";
+import PropTypes from "prop-types";
 class List extends Component {
   constructor() {
     super();
@@ -59,11 +60,11 @@ class List extends Component {
   };
 
   render() {
-    const { listNote } = this.props;
+    const { listNotes } = this.props;
 
     return (
       <div>
-        {listNote.map((list) => (
+        {listNotes.map((list) => (
           <div className="listnote" key={list.id} id={list.id}>
             <div
               className="list-note"
@@ -112,5 +113,21 @@ class List extends Component {
     );
   }
 }
+
+List.propTypes = {
+  listNote: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.any,
+      name: PropTypes.string,
+      isColor: PropTypes.any,
+      totalDone: PropTypes.number,
+      totalCount: PropTypes.number,
+    })
+  ),
+  onListNoteItemClick: PropTypes.func,
+  onListSelect: PropTypes.func,
+  onListNoteClick: PropTypes.func,
+  onListDeleteSuccess: PropTypes.func,
+};
 
 export default List;

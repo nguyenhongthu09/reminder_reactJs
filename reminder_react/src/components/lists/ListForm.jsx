@@ -5,6 +5,7 @@ import { generateRandomStringId } from "../../untils/common";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Loading from "../core/Loading";
+import PropTypes from "prop-types";
 class ListForm extends Component {
   constructor() {
     super();
@@ -143,4 +144,17 @@ class ListForm extends Component {
     );
   }
 }
+
+ListForm.propTypes = {
+  formType: PropTypes.oneOf(["add", "edit"]).isRequired,
+  colors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onCancelClick: PropTypes.func.isRequired,
+  onSubEditForm: PropTypes.func,
+  onSubmitSuccess: PropTypes.func,
+  listData: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    isColor: PropTypes.string,
+  }),
+};
 export default ListForm;

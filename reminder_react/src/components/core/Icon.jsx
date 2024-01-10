@@ -1,9 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import notelist from "../../assets/img/svg/notelist.svg";
-import deleteIcon from "../../assets/img/svg/delete.svg";
-import edit from "../../assets/img/svg/edit.svg";
-import dropdownIcon from "../../assets/img/svg/dropdown.svg";
 
 class Icon extends Component {
   render() {
@@ -12,13 +8,13 @@ class Icon extends Component {
     const selectIcon = () => {
       switch (type) {
         case "notelist":
-          return <img src={notelist} alt="NoteList Icon" />;
+          return <img src="svg/notelist.svg" alt="NoteList Icon" />;
         case "delete":
-          return <img src={deleteIcon} alt="Delete Icon" />;
+          return <img src="svg/delete.svg" alt="Delete Icon" />;
         case "edit":
-          return <img src={edit} alt="Edit Icon" />;
+          return <img src="svg/edit.svg" alt="Edit Icon" />;
         case "dropdown":
-          return <img src={dropdownIcon} alt="Dropdown Icon" />;
+          return <img src="svg/dropdown.svg" alt="Dropdown Icon" />;
         default:
           return null;
       }

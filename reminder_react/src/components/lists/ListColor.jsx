@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+
 class ListColor extends Component {
   constructor() {
     super();
@@ -28,4 +30,10 @@ class ListColor extends Component {
     );
   }
 }
+
+ListColor.propTypes = {
+  colors: PropTypes.arrayOf(PropTypes.string),
+  onColorClick: PropTypes.func,
+};
+
 export default ListColor;

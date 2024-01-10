@@ -7,10 +7,11 @@ import {
   updateReminderData,
 } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
-import Input from "../core/Input";
 import getAllList from "../../fetchApi/fetchApiList";
 import Loading from "../core/Loading";
-import Checkbox from "../core/Checkbox";
+
+import PropTypes from "prop-types";
+import ReminderFormInList from "./ReminderFormInList";
 class Reminders extends Component {
   constructor() {
     super();
@@ -28,6 +29,8 @@ class Reminders extends Component {
   getReminders = async () => {
     try {
       const reminderData = await getReminder(this.props.selectedListId);
+      console.log(this.props.selectedListId, "id");
+      console.log(reminderData, " remidner");
       this.setState({
         reminders: reminderData,
       });
@@ -40,7 +43,6 @@ class Reminders extends Component {
   addReminderService = async () => {
     const { selectedListId } = this.props;
     const { reminderTitle } = this.state;
-
     const newReminder = {
       title: reminderTitle,
       status: false,
@@ -60,6 +62,7 @@ class Reminders extends Component {
           reminderTitle: "",
           idReminder: addedReminder.id,
           isDoneButtonDisabled: true,
+          reminderForm: false,
         }));
       }
       this.setState({ loading: false });
@@ -70,28 +73,13 @@ class Reminders extends Component {
     }
   };
 
-  handleBlur = () => {
-    const { reminderTitle } = this.state;
-    if (reminderTitle.trim() === "") {
-      this.setState({
-        reminderForm: false,
-      });
-      return;
-    }
-    this.setState(
-      {
-        actionType: "blur",
-        reminderForm: false,
-      },
-      () => {
-        this.addReminderService();
-      }
-    );
+  // Định nghĩa hàm để nhận dữ liệu từ ReminderFormInList
+  handleReminderTitleChange = (reminderTitle, isDoneButtonDisabled) => {
+    this.setState({ reminderTitle, isDoneButtonDisabled });
   };
 
-  handleClickDone = () => {
+  handleCloseReminderForm = () => {
     this.setState({
-      actionType: "click",
       reminderForm: false,
     });
   };
@@ -159,7 +147,7 @@ class Reminders extends Component {
     });
   };
 
-  handleUpdateReminders = (updatedReminders, totalDone) => {
+  handleUpdateReminder = (updatedReminders, totalDone) => {
     this.setState({ reminders: updatedReminders });
     this.props.updateTotalDone(totalDone);
   };
@@ -167,7 +155,6 @@ class Reminders extends Component {
   updateIsDoneButtonDisabled = (isDoneButtonDisabled) => {
     this.setState({ isDoneButtonDisabled });
   };
-  
 
   componentDidMount = async () => {
     this.setState({ loading: true });
@@ -196,34 +183,23 @@ class Reminders extends Component {
               </Button>
             </div>
             {loading && <Loading />}
+            <h1 className="title-list">{nameList}</h1>
             <Reminder
               selectedListId={selectedListId}
-              nameList={nameList}
-              onReminderDeleSuccess={this.deleteReminderService}
               reminders={reminders}
+              onReminderDeleSuccess={this.deleteReminderService}
               onEdit={this.editReminder}
-              onUpdateReminders={this.handleUpdateReminders}
+              onUpdateReminder={this.handleUpdateReminder}
               isDoneButtonDisabled={this.state.isDoneButtonDisabled}
               updateIsDoneButtonDisabled={this.updateIsDoneButtonDisabled}
             />
           </div>
           {reminderForm && (
-            <div className="new-reminder">
-              <div className="form-check  item-reminders">
-                <Checkbox />
-                <Input
-                  autoFocus
-                  onBlur={this.handleBlur}
-                  onChange={(e) => {
-                    const reminderTitle = e.target.value.trim();
-                    this.setState({
-                      reminderTitle: reminderTitle,
-                      isDoneButtonDisabled: reminderTitle === "",
-                    });
-                  }}
-                />
-              </div>
-            </div>
+            <ReminderFormInList
+              onSubmitAddReminderForm={this.addReminderService}
+              onCancelFormAdd={this.handleCloseReminderForm}
+              onReminderTitleChange={this.handleReminderTitleChange}
+            />
           )}
 
           <Button
@@ -238,5 +214,13 @@ class Reminders extends Component {
     );
   }
 }
+
+Reminders.propTypes = {
+  selectedListId: PropTypes.string,
+  nameList: PropTypes.string,
+  onListsBackClick: PropTypes.func,
+  updateListTotalCount: PropTypes.func,
+  updateTotalDone: PropTypes.func,
+};
 
 export default Reminders;

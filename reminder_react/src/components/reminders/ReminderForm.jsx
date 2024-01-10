@@ -4,6 +4,7 @@ import { addNewReminder } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
 import Loading from "../core/Loading";
+import PropTypes from "prop-types";
 class ReminderForm extends Component {
   constructor(props) {
     super(props);
@@ -121,5 +122,20 @@ class ReminderForm extends Component {
     );
   }
 }
+
+ReminderForm.propTypes = {
+  listNote: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      isColor: PropTypes.string,
+      totalCount: PropTypes.number,
+      totalDone: PropTypes.number,
+    })
+  ),
+  onCancelFormAdd: PropTypes.func,
+  onSubmitAddReminderForm: PropTypes.func,
+  updateListNoteCount: PropTypes.func,
+};
 
 export default ReminderForm;

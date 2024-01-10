@@ -241,7 +241,7 @@ class Lists extends Component {
             <List
               onListNoteClick={this.handleListNoteClick}
               onListDeleteSuccess={this.deleteListNoteService}
-              listNote={listNote}
+              listNotes={listNote}
               onListNoteItemClick={this.handleListNoteItemClick}
             ></List>
           </div>
@@ -282,6 +282,7 @@ class Lists extends Component {
             selectedListId={selectedListId}
             updateListTotalCount={this.updateListTotalCount}
             updateTotalDone={this.updateTotalDone}
+            reminders={this.state.reminders}
           />
         )}
 

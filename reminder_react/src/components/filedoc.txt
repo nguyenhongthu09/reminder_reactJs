@@ -79,7 +79,11 @@ class Example extends React.Component {
     );
   }
 }
-+ Function thông thường: cần sử dụng .bind(this) để đảm bảo rằng this trong hàm handleClickFunction sẽ trỏ đến đúng instance của class Example.Nếu không sử dụng bind(this) thì giá trị của this sẽ là undefined khi hàm đó được gọi. 
++ Function thông thường: cần sử dụng .bind(this) để đảm bảo rằng this trong hàm handleClickFunction sẽ trỏ đến đúng instance của class Example.
+  Nếu không sử dụng bind(this) thì giá trị của this sẽ là undefined khi hàm đó được gọi. 
+  Vi hàm thông thường không có ngữ cảnh this được rõ ràng chỉ định, điều này có thể dẫn đến vấn đề khi hàm đó được gọi từ một ngữ cảnh khác nhau.
+  Khi bạn đặt một hàm trong một class và gọi nó từ một sự kiện hoặc callback function, giá trị của this trong hàm đó không nhất thiết phải trỏ đến instance của class.
+   Điều này có thể gây ra lỗi hoặc không đúng đối với logic mong đợi.
 + Arrow function: không thay đổi giá trị của this. nó sẽ giữ giá trị của this của nó từ ngữ cảnh của hàm bao bọc nó. 
     Do đó, trong trường hợp này, this trong handleClickArrow tự động trỏ đến instance của class Example mà không cần sử dụng .bind(this).
 -> Tóm lại, sử dụng .bind(this) với "function syntax" là để đảm bảo rằng this được chính xác trong hàm, trong khi arrow function giữ giá trị this từ ngữ cảnh của nó.
