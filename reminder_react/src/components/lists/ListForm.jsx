@@ -129,7 +129,7 @@ class ListForm extends Component {
             value={formType === "edit" ? name : undefined}
             onChange={this.handleNameChange}
             onClick={this.handleInputClick}
-          ></Input>
+          />
           <p id="name_error" className="error-message">
             Please enter a list name.
           </p>

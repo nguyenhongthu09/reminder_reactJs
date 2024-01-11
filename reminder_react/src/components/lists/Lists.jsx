@@ -244,7 +244,7 @@ class Lists extends Component {
               onListDeleteSuccess={this.deleteListNoteService}
               listNotes={listNote}
               onListNoteItemClick={this.handleListNoteItemClick}
-            ></List>
+            />
           </div>
           <div className="button-home">
             <Button

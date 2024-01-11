@@ -99,7 +99,7 @@ class ReminderForm extends Component {
             className="form-check-name"
             onFocus={this.handleInputFocus}
             onChange={this.handleInputChange}
-          ></Input>
+          />
 
           <div className="map-list">
             <div className="title-list-name-choose">
@@ -114,7 +114,7 @@ class ReminderForm extends Component {
               <List
                 listNote={listNote}
                 onListSelect={this.handleListSelection}
-              ></List>
+              />
             </div>
           </div>
         </form>

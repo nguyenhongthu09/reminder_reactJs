@@ -105,7 +105,7 @@ class List extends Component {
                 id={list.id}
                 actions={this.action}
                 onClick={(id, action) => action.onClick(id, action)}
-              ></Dropdown>
+              />
             </div>
           </div>
         ))}

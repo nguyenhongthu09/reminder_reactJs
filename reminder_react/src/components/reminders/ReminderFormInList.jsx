@@ -38,18 +38,16 @@ class ReminderFormInList extends Component {
 
   render() {
     return (
-      <>
-        <div className="new-reminder">
-          <div className="form-check  item-reminders">
-            <Checkbox />
-            <Input
-              autoFocus
-              onBlur={this.handleBlur}
-              onChange={this.handleChange}
-            />
-          </div>
+      <div className="new-reminder">
+        <div className="form-check  item-reminders">
+          <Checkbox />
+          <Input
+            autoFocus
+            onBlur={this.handleBlur}
+            onChange={this.handleChange}
+          />
         </div>
-      </>
+      </div>
     );
   }
 }

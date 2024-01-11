@@ -169,7 +169,7 @@ class Reminder extends Component {
                     onClick={(id) =>
                       this.handleButtonClick(note.id, note.status)
                     }
-                  ></Dropdown>
+                  />
                 </div>
               </div>
             )}
