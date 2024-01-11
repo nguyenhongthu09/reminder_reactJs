@@ -111,10 +111,13 @@ class ReminderForm extends Component {
               </div>
             </div>
             <div className="render" id="renderlist">
-              <List
-                listNote={listNote}
-                onListSelect={this.handleListSelection}
-              />
+              {listNote.map((list) => (
+                <List
+                  key={list.id}
+                  listNote={list}
+                  onListSelect={this.handleListSelection}
+                />
+              ))}
             </div>
           </div>
         </form>

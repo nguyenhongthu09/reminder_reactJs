@@ -121,13 +121,10 @@ class Reminder extends Component {
     const sortedReminders = [...reminders].sort((a, b) =>
       a.status && !b.status ? 1 : !a.status && b.status ? -1 : 0
     );
-    const hasReminderData = sortedReminders.length === 0;
 
     return (
       <>
         {loading && <Loading />}
-
-        {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
         {sortedReminders.map((note) => (
           <div key={note.id} id={note.id}>
             {note.idlist === selectedListId && (

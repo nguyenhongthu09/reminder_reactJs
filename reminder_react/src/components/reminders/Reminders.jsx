@@ -164,6 +164,7 @@ class Reminders extends Component {
   render() {
     const { loading, reminders, reminderForm } = this.state;
     const { nameList, selectedListId } = this.props;
+    const hasReminderData = reminders.length === 0;
     return (
       <div>
         <div className="detail-list-note">
@@ -183,6 +184,8 @@ class Reminders extends Component {
             </div>
             {loading && <Loading />}
             <h1 className="title-list">{nameList}</h1>
+            {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
+
             <Reminder
               selectedListId={selectedListId}
               reminders={reminders}
