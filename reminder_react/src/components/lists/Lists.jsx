@@ -27,6 +27,7 @@ class Lists extends Component {
       loading: false,
     };
   }
+
   setFormType = (formType) => {
     this.setState({
       listForm: formType === "add" || formType === "edit",

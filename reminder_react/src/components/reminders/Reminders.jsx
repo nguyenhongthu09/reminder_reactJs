@@ -73,7 +73,6 @@ class Reminders extends Component {
     }
   };
 
-  // Định nghĩa hàm để nhận dữ liệu từ ReminderFormInList
   handleReminderTitleChange = (reminderTitle, isDoneButtonDisabled) => {
     this.setState({ reminderTitle, isDoneButtonDisabled });
   };
