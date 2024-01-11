@@ -148,7 +148,6 @@ class Lists extends Component {
   };
 
   handleListNoteItemClick = (listNote) => {
-    console.log(listNote, "log thu ne");
     this.setState({
       reminders: true,
       selectedListId: listNote.id,
@@ -239,12 +238,15 @@ class Lists extends Component {
           {loading && <Loading />}
           <div className="menu-list-note" id="renderlist-home">
             <h1>My List</h1>
-            <List
-              onListNoteClick={this.handleListNoteClick}
-              onListDeleteSuccess={this.deleteListNoteService}
-              listNotes={listNote}
-              onListNoteItemClick={this.handleListNoteItemClick}
-            />
+            {listNote.map((list) => (
+              <List
+                key={list.id}
+                onListNoteClick={this.handleListNoteClick}
+                onListDeleteSuccess={this.deleteListNoteService}
+                listNote={list}
+                onListNoteItemClick={this.handleListNoteItemClick}
+              />
+            ))}
           </div>
           <div className="button-home">
             <Button

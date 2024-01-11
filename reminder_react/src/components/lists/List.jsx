@@ -46,10 +46,10 @@ class List extends Component {
     }
   };
   handleButtonClick = (id, action) => {
-    const idList = this.props.listNote.find((list) => list.id === id);
     if (action.id === 2) {
       if (id && this.props.onListNoteClick) {
-        this.props.onListNoteClick(idList);
+        const listnote = this.props.listNote;
+        this.props.onListNoteClick(listnote);
       }
     }
     if (action.id === 1) {
@@ -60,70 +60,66 @@ class List extends Component {
   };
 
   render() {
-    const { listNotes } = this.props;
+    const { listNote } = this.props;
 
     return (
       <div>
-        {listNotes.map((list) => (
-          <div className="listnote" key={list.id} id={list.id}>
+        <div className="listnote" key={listNote.id} id={listNote.id}>
+          <div
+            className="list-note"
+            id={listNote.id}
+            onClick={() => this.handleCLickNote(listNote)}
+          >
             <div
-              className="list-note"
-              id={list.id}
-              onClick={() => this.handleCLickNote(list)}
+              className="item-list-none-left"
+              onClick={() => this.handleChooseNameList(listNote)}
             >
               <div
-                className="item-list-none-left"
-                onClick={() => this.handleChooseNameList(list)}
+                className="icon-list-note"
+                style={{ backgroundColor: listNote.isColor }}
               >
-                <div
-                  className="icon-list-note"
-                  style={{ backgroundColor: list.isColor }}
-                >
-                  <span className="icon-list">
-                    <Icon type="notelist"></Icon>
-                  </span>
-                </div>
-                <span className="name-list">{list.name}</span>
-              </div>
-              <div className="item-list-none-right">
-                <span
-                  className="number-items-notes"
-                  id={`total-done-${list.id}`}
-                >
-                  {list.totalDone}
-                </span>
-                <span
-                  className="number-items-note"
-                  id={`total-count-${list.id}`}
-                >
-                  /{list.totalCount}
+                <span className="icon-list">
+                  <Icon type="notelist"></Icon>
                 </span>
               </div>
+              <span className="name-list">{listNote.name}</span>
             </div>
-            <div className="icon-home-list-del">
-              <Dropdown
-                id={list.id}
-                actions={this.action}
-                onClick={(id, action) => action.onClick(id, action)}
-              />
+            <div className="item-list-none-right">
+              <span
+                className="number-items-notes"
+                id={`total-done-${listNote.id}`}
+              >
+                {listNote.totalDone}
+              </span>
+              <span
+                className="number-items-note"
+                id={`total-count-${listNote.id}`}
+              >
+                /{listNote.totalCount}
+              </span>
             </div>
           </div>
-        ))}
+          <div className="icon-home-list-del">
+            <Dropdown
+              id={listNote.id}
+              actions={this.action}
+              onClick={(id, action) => action.onClick(id, action)}
+            />
+          </div>
+        </div>
       </div>
     );
   }
 }
 
 List.propTypes = {
-  listNote: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.any,
-      name: PropTypes.string,
-      isColor: PropTypes.any,
-      totalDone: PropTypes.number,
-      totalCount: PropTypes.number,
-    })
-  ),
+  listNote: PropTypes.shape({
+    id: PropTypes.any,
+    name: PropTypes.string,
+    isColor: PropTypes.any,
+    totalDone: PropTypes.number,
+    totalCount: PropTypes.number,
+  }),
   onListNoteItemClick: PropTypes.func,
   onListSelect: PropTypes.func,
   onListNoteClick: PropTypes.func,

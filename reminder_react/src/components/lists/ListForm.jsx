@@ -72,7 +72,7 @@ class ListForm extends Component {
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown);
     const { formType, listData } = this.props;
-    if (formType === "edit") {
+    if (formType === "edit" && listData) {
       const { id, name, isColor } = listData;
       this.setState({
         id: id,
@@ -146,15 +146,11 @@ class ListForm extends Component {
 }
 
 ListForm.propTypes = {
-  formType: PropTypes.oneOf(["add", "edit"]).isRequired,
-  colors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onCancelClick: PropTypes.func.isRequired,
+  formType: PropTypes.oneOf(["add", "edit"]),
+  colors: PropTypes.arrayOf(PropTypes.string),
+  onCancelClick: PropTypes.func,
   onSubEditForm: PropTypes.func,
   onSubmitSuccess: PropTypes.func,
-  listData: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-    isColor: PropTypes.string,
-  }),
+  listData: PropTypes.object,
 };
 export default ListForm;
