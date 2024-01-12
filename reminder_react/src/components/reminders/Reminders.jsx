@@ -9,7 +9,7 @@ import {
 import Button from "../core/Button";
 import getAllList from "../../fetchApi/fetchApiList";
 import Loading from "../core/Loading";
-
+import { updateReminderStatus } from "../../fetchApi/fetchApiREminder";
 import PropTypes from "prop-types";
 import ReminderFormInList from "./ReminderFormInList";
 class Reminders extends Component {
@@ -31,9 +31,15 @@ class Reminders extends Component {
       const reminderData = await getReminder(this.props.selectedListId);
       console.log(this.props.selectedListId, "id");
       console.log(reminderData, " remidner");
+      const checkboxStatus = {};
+      reminderData.forEach((reminder) => {
+        checkboxStatus[reminder.id] = reminder.status;
+      });
       this.setState({
         reminders: reminderData,
+        checkboxStatus,
       });
+      console.log(checkboxStatus, " get aoi");
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
     }
@@ -131,6 +137,34 @@ class Reminders extends Component {
     }
   };
 
+  //EDIT STATUS FOR REMINDER
+  editStatusReminder = async (idNote, newStatus) => {
+    try {
+      this.setState({ loading: true });
+      const updateStatus = await updateReminderStatus(idNote, newStatus);
+      console.log(updateStatus, "update status thanh cong len API");
+
+      if (updateStatus) {
+        this.setState((prevState) => {
+          const updatedReminders = prevState.reminders.map((reminder) =>
+            reminder.id === updateStatus.id ? updateStatus : reminder
+          );
+
+          const newTotalDone = updatedReminders.filter(
+            (reminder) => reminder.status
+          ).length;
+          this.props.updateTotalDone(newTotalDone);
+          return {
+            reminders: updatedReminders,
+          };
+        });
+      }
+      this.setState({ loading: false });
+    } catch (error) {
+      console.error("Lỗi khi cập nhật reminder:", error.message);
+    }
+  };
+
   hanldeBackList = async () => {
     if (this.props.onListsBackClick) {
       this.setState({ loading: true });
@@ -165,6 +199,9 @@ class Reminders extends Component {
     const { loading, reminders, reminderForm } = this.state;
     const { nameList, selectedListId } = this.props;
     const hasReminderData = reminders.length === 0;
+    const sortedReminders = reminders.slice().sort((a, b) => {
+      return a.status === b.status ? 0 : a.status ? 1 : -1;
+    });
     return (
       <div>
         <div className="detail-list-note">
@@ -185,16 +222,21 @@ class Reminders extends Component {
             {loading && <Loading />}
             <h1 className="title-list">{nameList}</h1>
             {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
-
-            <Reminder
-              selectedListId={selectedListId}
-              reminders={reminders}
-              onReminderDeleSuccess={this.deleteReminderService}
-              onEdit={this.editReminder}
-              onUpdateReminder={this.handleUpdateReminder}
-              isDoneButtonDisabled={this.state.isDoneButtonDisabled}
-              updateIsDoneButtonDisabled={this.updateIsDoneButtonDisabled}
-            />
+            {sortedReminders.map(
+              (note) =>
+                note.idlist === selectedListId && (
+                  <Reminder
+                    key={note.id}
+                    reminder={note}
+                    onReminderDeleSuccess={this.deleteReminderService}
+                    onEdit={this.editReminder}
+                    onUpdateReminder={this.handleUpdateReminder}
+                    isDoneButtonDisabled={this.state.isDoneButtonDisabled}
+                    updateIsDoneButtonDisabled={this.updateIsDoneButtonDisabled}
+                    onUpdateStatus={this.editStatusReminder}
+                  />
+                )
+            )}
           </div>
           {reminderForm && (
             <ReminderFormInList

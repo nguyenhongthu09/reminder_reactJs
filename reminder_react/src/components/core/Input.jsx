@@ -11,7 +11,7 @@ class Input extends Component {
       onBlur,
       placeholder = "Please enter data",
       autoFocus,
-      type,
+      type = "text",
       className = "form-check-name",
     } = this.props;
     return (
@@ -31,7 +31,7 @@ class Input extends Component {
 }
 
 Input.propTypes = {
-  type: PropTypes.any,
+  type: PropTypes.string,
   id: PropTypes.string,
   className: PropTypes.string,
   onClick: PropTypes.func,
