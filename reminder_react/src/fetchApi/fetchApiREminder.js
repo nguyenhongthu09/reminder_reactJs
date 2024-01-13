@@ -41,39 +41,19 @@ export const delREminder = async (id) => {
   });
 };
 
-export const updateReminderData = async (id, newName) => {
+export const updateReminderData = async (id, data) => {
   const response = await fetch(`${API_URL}/reminder/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ title: newName }),
+    body: JSON.stringify(data),
   });
 
   if (response.ok) {
     const updatedReminder = await response.json();
     console.log(updatedReminder, "update reminder thanh cong");
     return updatedReminder;
-  }
-};
-
-export const updateReminderStatus = async (id, newStatus) => {
-  const response = await fetch(`${API_URL}/reminder/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      status: newStatus,
-    }),
-  });
-
-  if (response.ok) {
-    const updateStatus = await response.json();
-    console.log(updateStatus, "update reminder thanh cong");
-    return updateStatus;
-  } else {
-    throw new Error("Cập nhật trạng thái thất bại");
   }
 };
 

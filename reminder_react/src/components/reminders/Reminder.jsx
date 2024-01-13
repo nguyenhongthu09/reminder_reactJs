@@ -13,9 +13,11 @@ class Reminder extends Component {
       editedNote: {
         id: null,
         value: "",
+        statusCheckbox: null,
       },
-      statusCheckbox: null,
       inputText: "",
+      // isInputEmpty: false,
+      isDoneButtonDisabled: true,
     };
     this.action = [
       {
@@ -34,20 +36,20 @@ class Reminder extends Component {
   }
 
   handleEdit = (noteId, newValue) => {
-    console.log(newValue, " vaue");
     this.setState(
       {
         editedNote: { id: noteId, value: newValue },
+        isDoneButtonDisabled: true,
       },
-      () => this.props.onEdit(noteId, newValue)
+      () => this.props.onEditReminder(noteId, newValue, "title")
     );
   };
 
   handleStatus = (noteId, newStatus) => {
     this.setState({
-      statusCheckbox: newStatus,
+      editedNote: { id: noteId, statusCheckbox: newStatus },
     });
-    this.props.onUpdateStatus(noteId, newStatus);
+    this.props.onEditReminder(noteId, newStatus, "status");
   };
 
   handleButtonClick = (id, status) => {
@@ -57,22 +59,24 @@ class Reminder extends Component {
   };
 
   handleInputChange = async (noteId, newValue) => {
+    const isDoneButtonDisabled = newValue.trim() === "";
+    console.log(isDoneButtonDisabled, " input");
     this.setState({
       editedNote: { id: noteId, value: newValue },
       inputText: newValue,
+      isDoneButtonDisabled: isDoneButtonDisabled,
     });
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.inputText !== this.state.inputText) {
       const isDoneButtonDisabled = this.state.inputText.trim() === "";
-      this.props.updateIsDoneButtonDisabled(isDoneButtonDisabled);
+      this.props.isDoneButtonDisabled(isDoneButtonDisabled);
     }
   }
 
   render() {
-    const { reminder, isDoneButtonDisabled } = this.props;
-
+    const { reminder } = this.props;
     return (
       <div key={reminder.id} id={reminder.id}>
         <div
@@ -90,7 +94,6 @@ class Reminder extends Component {
                 }
               />
               <Input
-                isDoneButtonDisabled={isDoneButtonDisabled}
                 className={`input_reminder ${reminder.status ? "doimau" : ""}`}
                 onChange={(e) => {
                   this.handleInputChange(reminder.id, e.target.value);

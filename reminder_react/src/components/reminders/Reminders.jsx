@@ -9,7 +9,6 @@ import {
 import Button from "../core/Button";
 import getAllList from "../../fetchApi/fetchApiList";
 import Loading from "../core/Loading";
-import { updateReminderStatus } from "../../fetchApi/fetchApiREminder";
 import PropTypes from "prop-types";
 import ReminderFormInList from "./ReminderFormInList";
 class Reminders extends Component {
@@ -117,51 +116,45 @@ class Reminders extends Component {
   };
 
   //EDIT REMIDNER
-  editReminder = async (editedNoteId, newValue) => {
+  editReminder = async (editedNoteId, newData, updateType) => {
     try {
       this.setState({ loading: true });
-      const updatedReminder = await updateReminderData(editedNoteId, newValue);
-      console.log(updatedReminder, " update thanh cong reminder UI");
+      let updatedReminder;
 
-      if (updatedReminder) {
-        this.setState((prevState) => ({
-          reminders: prevState.reminders.map((reminder) =>
+      if (updateType === "title") {
+        updatedReminder = await updateReminderData(editedNoteId, {
+          title: newData,
+        });
+      } else if (updateType === "status") {
+        updatedReminder = await updateReminderData(editedNoteId, {
+          status: newData,
+        });
+        if (updatedReminder) {
+          const updatedReminders = this.state.reminders.map((reminder) =>
             reminder.id === updatedReminder.id ? updatedReminder : reminder
-          ),
-          isDoneButtonDisabled: true,
-        }));
-      }
-      this.setState({ loading: false });
-    } catch (error) {
-      console.error("Lỗi khi cập nhật reminder:", error.message);
-    }
-  };
-
-  //EDIT STATUS FOR REMINDER
-  editStatusReminder = async (idNote, newStatus) => {
-    try {
-      this.setState({ loading: true });
-      const updateStatus = await updateReminderStatus(idNote, newStatus);
-      console.log(updateStatus, "update status thanh cong len API");
-
-      if (updateStatus) {
-        this.setState((prevState) => {
-          const updatedReminders = prevState.reminders.map((reminder) =>
-            reminder.id === updateStatus.id ? updateStatus : reminder
           );
 
           const newTotalDone = updatedReminders.filter(
             (reminder) => reminder.status
           ).length;
+
           this.props.updateTotalDone(newTotalDone);
-          return {
+
+          this.setState({
             reminders: updatedReminders,
-          };
-        });
+            isDoneButtonDisabled: true,
+          });
+        }
+      } else {
+        console.error("Loại cập nhật không hợp lệ");
+        return;
       }
-      this.setState({ loading: false });
+
+      console.log(updatedReminder, " Cập nhật thành công");
     } catch (error) {
-      console.error("Lỗi khi cập nhật reminder:", error.message);
+      console.error("Lỗi khi cập nhật nhắc nhở:", error.message);
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
@@ -179,13 +172,7 @@ class Reminders extends Component {
       reminderForm: true,
     });
   };
-
-  handleUpdateReminder = (updatedReminders, totalDone) => {
-    this.setState({ reminders: updatedReminders });
-    this.props.updateTotalDone(totalDone);
-  };
-
-  updateIsDoneButtonDisabled = (isDoneButtonDisabled) => {
+  isDoneButtonDisabled = (isDoneButtonDisabled) => {
     this.setState({ isDoneButtonDisabled });
   };
 
@@ -229,18 +216,17 @@ class Reminders extends Component {
                     key={note.id}
                     reminder={note}
                     onReminderDeleSuccess={this.deleteReminderService}
-                    onEdit={this.editReminder}
-                    onUpdateReminder={this.handleUpdateReminder}
-                    isDoneButtonDisabled={this.state.isDoneButtonDisabled}
-                    updateIsDoneButtonDisabled={this.updateIsDoneButtonDisabled}
-                    onUpdateStatus={this.editStatusReminder}
+                    onEditReminder={(noteId, newValue, updateType) =>
+                      this.editReminder(noteId, newValue, updateType)
+                    }
+                    isDoneButtonDisabled={this.isDoneButtonDisabled}
                   />
                 )
             )}
           </div>
           {reminderForm && (
             <ReminderFormInList
-              onSubmitAddReminderForm={this.addReminderService}
+              onBlur={this.addReminderService}
               onCancelFormAdd={this.handleCloseReminderForm}
               onReminderTitleChange={this.handleReminderTitleChange}
             />
