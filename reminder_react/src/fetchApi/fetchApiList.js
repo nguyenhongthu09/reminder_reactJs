@@ -1,15 +1,13 @@
-import { API_URL } from "../constants/apiURL";
 import { getReminderTotal, getReminderDone } from "./fetchApiREminder";
+import apiClient from "../config/axios";
 
 const getAllList = async () => {
   try {
-    const response = await fetch(`${API_URL}/listNote`, {
-      method: "GET",
-    });
+    const response = await apiClient.get("/listNote");
 
     if (response.status === 200) {
-      const listData = await response.json();
-   const a =   await Promise.all(
+      const listData = response.data;
+      const a = await Promise.all(
         listData.map(async (listItem) => {
           const { reminderData, totalCount, totalDone, reminderDataDone } =
             await fetchTotals(listItem.id);
@@ -20,7 +18,7 @@ const getAllList = async () => {
           return listItem;
         })
       );
-          console.log(a, "log thu a");
+      console.log(a, "log thu a");
       return a;
     }
   } catch (error) {
@@ -34,22 +32,14 @@ export const fetchTotals = async (listId) => {
   return { reminderData, totalCount, totalDone, reminderDataDone };
 };
 
-export default getAllList;
-
 export const addNewList = async (list) => {
   try {
-    const response = await fetch(`${API_URL}/listNote`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(list),
-    });
+    const response = await apiClient.post("/listNote", list);
 
     if (response.status === 201) {
       console.log("Thêm mới thành công");
 
-      const createdListNote = await response.json();
+      const createdListNote = response.data;
       console.log("Dữ liệu trả về từ server:", createdListNote);
     } else {
       console.error("Lỗi khi thêm mới, mã trạng thái:", response.status);
@@ -60,30 +50,23 @@ export const addNewList = async (list) => {
 };
 
 export const delList = async (id) => {
-  await fetch(`${API_URL}/listNote/${id}`, {
-    method: "DELETE",
-  });
+  await apiClient.delete(`/listNote/${id}`);
 };
 
 export const updateListData = async (id, newName, newColor) => {
   try {
-    const response = await fetch(`${API_URL}/listNote/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: newName,
-        isColor: newColor,
-      }),
+    const response = await apiClient.put(`/listNote/${id}`, {
+      name: newName,
+      isColor: newColor,
     });
 
-    if (response.ok) {
-      console.log("Update successful");
-    } else {
-      console.error("Update failed:", response.statusText);
+    if (response.status === 200) {
+      const updateListNote = response.data;
+      console.log("Update successful", updateListNote);
     }
   } catch (error) {
     console.error("Error during update:", error);
   }
 };
+
+export default getAllList;

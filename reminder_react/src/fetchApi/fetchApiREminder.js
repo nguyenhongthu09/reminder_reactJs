@@ -1,100 +1,94 @@
-import { API_URL } from "../constants/apiURL";
 
+import apiClient from "../config/axios";
 export const getReminder = async (listId) => {
-  const response = await fetch(`${API_URL}/reminder?idlist=${listId}`, {
-    method: "GET",
-  });
+  try {
+    const response = await apiClient.get(`/reminder?idlist=${listId}`);
 
-  if (response.status === 200) {
-    const reminderData = await response.json();
-    // console.log(reminderData, "danh sach reminder");
-    return reminderData;
+    if (response.status === 200) {
+      const reminderData = response.data;
+      return reminderData;
+    }
+  } catch (error) {
+    console.error("Error fetching reminders:", error.message);
+    return null;
   }
 };
 
 export const addNewReminder = async (reminder) => {
   try {
-    const response = await fetch(`${API_URL}/reminder`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reminder),
-    });
+    const response = await apiClient.post("/reminder", reminder);
 
     if (response.status === 201) {
-      const createdReminderData = await response.json();
+      const createdReminderData = response.data;
       return createdReminderData;
     } else {
-      console.error("Lỗi khi thêm mới, mã trạng thái:", response.status);
+      console.error("Error adding new reminder, status code:", response.status);
       return null;
     }
   } catch (error) {
-    console.error("Lỗi trong quá trình thêm mới:", error.message);
+    console.error("Error during adding new reminder:", error.message);
     return null;
   }
 };
 
 export const delREminder = async (id) => {
-  await fetch(`${API_URL}/reminder/${id}`, {
-    method: "DELETE",
-  });
+  await apiClient.delete(`/reminder/${id}`);
 };
 
 export const updateReminderData = async (id, data) => {
-  const response = await fetch(`${API_URL}/reminder/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await apiClient.patch(`/reminder/${id}`, data);
 
-  if (response.ok) {
-    const updatedReminder = await response.json();
-    console.log(updatedReminder, "update reminder thanh cong");
-    return updatedReminder;
+    if (response.status === 200) {
+      const updatedReminder = response.data;
+      console.log(updatedReminder, "update reminder successful");
+      return updatedReminder;
+    }
+  } catch (error) {
+    console.error("Error updating reminder:", error.message);
+    return null;
   }
 };
 
 export const getReminderTotal = async (listId) => {
-  const url = new URL(`${API_URL}/reminder?idlist=${listId}`);
-  let page = parseInt(url.searchParams.get("_page"));
-  if (!Number.isInteger(page) || page <= 0) {
-    page = 1;
-  }
-  const limit = 1;
+  try {
+    const response = await apiClient.get(`/reminder?idlist=${listId}`, {
+      params: {
+        _page: 1,
+        _limit: 1,
+      },
+    });
 
-  url.searchParams.append("_page", page);
-  url.searchParams.append("_limit", limit);
-  const response = await fetch(url, {
-    method: "GET",
-  });
-
-  if (response.status === 200) {
-    const reminderData = await response.json();
-    const totalCount = response.headers.get("X-Total-Count");
-    return { reminderData, totalCount };
+    if (response.status === 200) {
+      const reminderData = response.data;
+      const totalCount = response.headers["x-total-count"];
+      return { reminderData, totalCount };
+    }
+  } catch (error) {
+    console.error("Error fetching reminder total:", error.message);
+    return null;
   }
 };
 
 export const getReminderDone = async (listId) => {
-  const url = new URL(`${API_URL}/reminder?idlist=${listId}&status=true`);
-  let page = parseInt(url.searchParams.get("_page"));
-  if (!Number.isInteger(page) || page <= 0) {
-    page = 1;
-  }
-  const limit = 1;
+  try {
+    const response = await apiClient.get(
+      `/reminder?idlist=${listId}&status=true`,
+      {
+        params: {
+          _page: 1,
+          _limit: 1,
+        },
+      }
+    );
 
-  url.searchParams.append("_page", page);
-  url.searchParams.append("_limit", limit);
-  const response = await fetch(url, {
-    method: "GET",
-  });
-
-  if (response.status === 200) {
-    const reminderDataDone = await response.json();
-    const totalDone = response.headers.get("X-Total-Count");
-    return { reminderDataDone, totalDone };
+    if (response.status === 200) {
+      const reminderDataDone = response.data;
+      const totalDone = response.headers["x-total-count"];
+      return { reminderDataDone, totalDone };
+    }
+  } catch (error) {
+    console.error("Error fetching done reminder:", error.message);
+    return null;
   }
 };

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import List from "./List";
 import getAllList from "../../fetchApi/fetchApiList";
 import getColor from "../../fetchApi/fetchColor";
@@ -12,65 +12,54 @@ import {
 } from "../../fetchApi/fetchApiList";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
+function Lists() {
+  const [listNote, setListNote] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [listForm, setListForm] = useState(false);
+  const [formType, setFormType] = useState("");
+  const [selectedListId, setSelectedListId] = useState(null);
+  const [reminderForm, setReminderForm] = useState(false);
+  const [reminders, setReminders] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [listData, setListData] = useState(null);
+  const [nameList, setNameList] = useState("");
 
-class Lists extends Component {
-  constructor() {
-    super();
-    this.state = {
-      listNote: [],
-      colors: [],
-      listForm: false,
-      formType: "",
-      selectedListId: null,
-      reminderForm: false,
-      reminders: false,
-      loading: false,
-    };
-  }
-
-  setFormType = (formType) => {
-    this.setState({
-      listForm: formType === "add" || formType === "edit",
-      formType: formType,
-    });
+  const setFormTypeHandler = (type) => {
+    setListForm(type === "add" || type === "edit");
+    setFormType(type);
   };
 
   //GET LISTNOTE
-  getListNote = async () => {
+  const getListNote = async () => {
     try {
       const listData = await getAllList();
-      this.setState((prevState) => ({
-        listNote: listData,
-      }));
+
+      setListNote(listData);
     } catch (error) {
       console.error("Error fetching listNote:", error.message);
     }
   };
 
   //GET COLOR
-  getColors = async () => {
+  const getColors = async () => {
     try {
       const colorData = await getColor();
-      this.setState({
-        colors: colorData.map((colors) => colors.color),
-      });
+
+      setColors(colorData.map((colors) => colors.color));
     } catch (error) {
       console.error("Error fetching colorData:", error.message);
     }
   };
 
   // ADD LISTNOTE
-  addListServiceForm = async (newList) => {
+  const addListServiceForm = async (newList) => {
     try {
-      const { formType } = this.state;
       if (formType === "add") {
         newList.totalDone = 0;
         newList.totalCount = 0;
         await addNewList(newList);
-        this.setState((prevState) => ({
-          listForm: false,
-          listNote: [...prevState.listNote, newList],
-        }));
+        setListForm(false);
+        setListNote((prevListNote) => [...prevListNote, newList]);
       }
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
@@ -78,11 +67,10 @@ class Lists extends Component {
   };
 
   //EDIT LISTNOTE
-  editListServiceForm = async (list) => {
+  const editListServiceForm = async (list) => {
     try {
-      const { formType } = this.state;
       if (formType === "edit") {
-        const updatedListNote = this.state.listNote.map((listNote) =>
+        const updatedListNote = listNote.map((listNote) =>
           listNote.id === list.id
             ? {
                 ...listNote,
@@ -95,7 +83,8 @@ class Lists extends Component {
           (listNote) => listNote.id === list.id
         );
 
-        this.setState({ listForm: false, listNote: updatedListNote }, () => {});
+        setListForm(false);
+        setListNote(updatedListNote);
         console.log("Cập nhật thành công", updatedList);
         const currentTotalDone = updatedList.totalDone;
         const currentTotalCount = updatedList.totalCount;
@@ -113,193 +102,164 @@ class Lists extends Component {
   };
 
   //DELETE LISTNOTE
-  deleteListNoteService = async (deletedListId) => {
+  const deleteListNoteService = async (deletedListId) => {
     try {
       await delList(deletedListId);
     } catch (error) {
       console.error("Error fetching listNote:", error.message);
     }
-    this.setState((prevState) => ({
-      listNote: prevState.listNote.filter((list) => list.id !== deletedListId),
-    }));
+
+    setListNote((prevListNote) =>
+      prevListNote.filter((list) => list.id !== deletedListId)
+    );
   };
 
-  handleListNoteClick = (listNote) => {
-    this.setFormType("edit");
-    this.setState({
-      listData: listNote,
-      listForm: true,
-    });
+  const handleListNoteClick = (listNote) => {
+    setFormTypeHandler("edit");
+    setListData(listNote);
+    setListForm(true);
   };
 
-  handleAddFormListClick = (source) => {
-    this.setFormType("add");
+  const handleAddFormListClick = (source) => {
+    setFormTypeHandler("add");
     if (source === "button") {
-      this.setState({
-        listForm: true,
-      });
+      setListForm(true);
     }
   };
 
-  handleCancelClick = () => {
-    this.setState({
-      listForm: false,
-    });
+  const handleCancelClick = () => {
+    setListForm(false);
   };
 
-  handleListNoteItemClick = (listNote) => {
-    this.setState({
-      reminders: true,
-      selectedListId: listNote.id,
-      nameList: listNote.name,
-    });
+  const handleListNoteItemClick = (listNote) => {
+    setReminders(true);
+    setSelectedListId(listNote.id);
+    setNameList(listNote.name);
   };
 
-  hanldeBackList = () => {
-    this.setState({
-      reminders: false,
-    });
+  const handleBackList = () => {
+    setReminders(false);
   };
 
-  handleFormAddReminder = (openForm) => {
-    this.setState({
-      reminderForm: openForm,
-    });
+  const handleFormAddReminder = (openForm) => {
+    setReminderForm(openForm);
   };
 
   // update khi them moi trong form
-  updateListNoteCount = (listId, newTotalCount) => {
-    this.setState((prevState) => {
-      const updatedListNote = prevState.listNote.map((list) =>
+  const updateListNoteCount = (listId, newTotalCount) => {
+    setListNote((prevListNote) =>
+      prevListNote.map((list) =>
         list.id === listId ? { ...list, totalCount: newTotalCount } : list
-      );
-      return { listNote: updatedListNote };
-    });
+      )
+    );
   };
 
   //update khi them moi va xoa trong remidner
-  updateListTotalCount = (newTotalCount) => {
-    const { selectedListId } = this.state;
-    this.setState((prevState) => {
-      const updatedListNote = prevState.listNote.map((list) =>
+  const updateListTotalCount = (newTotalCount) => {
+    setListNote((prevListNote) =>
+      prevListNote.map((list) =>
         list.id === selectedListId
           ? { ...list, totalCount: newTotalCount }
           : list
-      );
-      return { listNote: updatedListNote };
-    });
+      )
+    );
   };
 
   //update total co status la true
-  updateTotalDone = (newTotalDone) => {
-    const { selectedListId } = this.state;
-
-    this.setState((prevState) => {
-      const updatedListNote = prevState.listNote.map((list) =>
+  const updateTotalDone = (newTotalDone) => {
+    setListNote((prevListNote) =>
+      prevListNote.map((list) =>
         list.id === selectedListId ? { ...list, totalDone: newTotalDone } : list
-      );
-
-      return { listNote: updatedListNote };
-    });
+      )
+    );
   };
 
-  componentDidMount = async () => {
-    try {
-      this.setState({ loading: true });
-      await Promise.all([this.getListNote(), this.getColors()]);
-      this.setState({ loading: false });
-    } catch (error) {
-      console.error("Error loading data:", error.message);
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await Promise.all([getListNote(), getColors()]);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error loading data:", error.message);
+      }
+    };
 
-  render() {
-    const {
-      listForm,
-      reminders,
-      reminderForm,
-      loading,
-      colors,
-      listData,
-      listNote,
-      formType,
-      selectedListId,
-      nameList,
-    } = this.state;
+    fetchData();
+  }, []);
 
-    return (
-      <>
-        <div
-          className="menu-list-notes"
-          style={{
-            display: listForm || reminders || reminderForm ? "none" : "block",
-          }}
-        >
-          {loading && <Loading />}
-          <div className="menu-list-note" id="renderlist-home">
-            <h1>My List</h1>
-            {listNote.map((list) => (
+  return (
+    <>
+      <div
+        className="menu-list-notes"
+        style={{
+          display: listForm || reminders || reminderForm ? "none" : "block",
+        }}
+      >
+        {loading && <Loading />}
+        <div className="menu-list-note" id="renderlist-home">
+          <h1>My List</h1>
+          {listNote &&
+            listNote.map((list) => (
               <List
                 key={list.id}
-                onListNoteClick={this.handleListNoteClick}
-                onListDeleteSuccess={this.deleteListNoteService}
+                onListNoteClick={handleListNoteClick}
+                onListDeleteSuccess={deleteListNoteService}
                 listNote={list}
-                onListNoteItemClick={this.handleListNoteItemClick}
+                onListNoteItemClick={handleListNoteItemClick}
               />
             ))}
-          </div>
-          <div className="button-home">
-            <Button
-              className="add-reminder btn__add--reminder"
-              onClick={() => this.handleFormAddReminder(true)}
-            >
-              New Reminder
-            </Button>
-
-            <Button
-              className="add-list"
-              id="add-list-new"
-              onClick={() => this.handleAddFormListClick("button")}
-            >
-              Add List
-            </Button>
-          </div>
-          {/* )} */}
         </div>
+        <div className="button-home">
+          <Button
+            className="add-reminder btn__add--reminder"
+            onClick={() => handleFormAddReminder(true)}
+          >
+            New Reminder
+          </Button>
 
-        {listForm && (
-          <ListForm
-            onCancelClick={this.handleCancelClick}
-            formType={formType}
-            listData={listData}
-            colors={colors}
-            onSubmitSuccess={this.addListServiceForm}
-            onSubEditForm={this.editListServiceForm}
-          />
-        )}
+          <Button
+            className="add-list"
+            id="add-list-new"
+            onClick={() => handleAddFormListClick("button")}
+          >
+            Add List
+          </Button>
+        </div>
+      </div>
 
-        {reminders && (
-          <Reminders
-            onListsBackClick={this.hanldeBackList}
-            nameList={nameList}
-            selectedListId={selectedListId}
-            updateListTotalCount={this.updateListTotalCount}
-            updateTotalDone={this.updateTotalDone}
-            reminders={this.state.reminders}
-          />
-        )}
+      {listForm && (
+        <ListForm
+          onCancelClick={handleCancelClick}
+          formType={formType}
+          listData={listData}
+          colors={colors}
+          onSubmitSuccess={addListServiceForm}
+          onSubEditForm={editListServiceForm}
+        />
+      )}
 
-        {reminderForm && (
-          <ReminderForm
-            onCancelFormAdd={() => this.handleFormAddReminder(false)}
-            onSubmitAddReminderForm={() => this.handleFormAddReminder(false)}
-            listNote={listNote}
-            updateListNoteCount={this.updateListNoteCount}
-          />
-        )}
-      </>
-    );
-  }
+      {reminders && (
+        <Reminders
+          onListsBackClick={handleBackList}
+          nameList={nameList}
+          selectedListId={selectedListId}
+          updateListTotalCount={updateListTotalCount}
+          updateTotalDone={updateTotalDone}
+          reminders={reminders}
+        />
+      )}
+
+      {reminderForm && (
+        <ReminderForm
+          onCancelFormAdd={() => handleFormAddReminder(false)}
+          onSubmitAddReminderForm={() => handleFormAddReminder(false)}
+          listNote={listNote}
+          updateListNoteCount={updateListNoteCount}
+        />
+      )}
+    </>
+  );
 }
 
 export default Lists;

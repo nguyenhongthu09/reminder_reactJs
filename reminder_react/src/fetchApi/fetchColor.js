@@ -1,11 +1,14 @@
-import { API_URL } from "../constants/apiURL";
+import apiClient from "../config/axios";
 const getColor = async () => {
-  const response = await fetch(`${API_URL}/color`, {
-    method: "GET",
-  });
-  if (response.status === 200) {
-    const colorData = await response.json();
-    return colorData;
+  try {
+    const response = await apiClient.get("/color");
+
+    if (response.status === 200) {
+      const colorData = response.data;
+      return colorData;
+    }
+  } catch (error) {
+    console.error("Error fetching color data:", error.message);
   }
 };
 
