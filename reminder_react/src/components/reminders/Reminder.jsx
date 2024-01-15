@@ -16,7 +16,6 @@ class Reminder extends Component {
         statusCheckbox: null,
       },
       inputText: "",
-      // isInputEmpty: false,
       isDoneButtonDisabled: true,
     };
     this.action = [
@@ -35,7 +34,7 @@ class Reminder extends Component {
     ];
   }
 
-  handleEdit = (noteId, newValue) => {
+  handleEditValue = (noteId, newValue) => {
     this.setState(
       {
         editedNote: { id: noteId, value: newValue },
@@ -103,7 +102,9 @@ class Reminder extends Component {
                     ? this.state.editedNote.value
                     : reminder.title
                 }
-                onBlur={(e) => this.handleEdit(reminder.id, e.target.value)}
+                onBlur={(e) =>
+                  this.handleEditValue(reminder.id, e.target.value)
+                }
               />
             </div>
           </div>
@@ -129,11 +130,9 @@ Reminder.propTypes = {
     idlist: PropTypes.string,
     status: PropTypes.bool,
   }),
-  isDoneButtonDisabled: PropTypes.bool,
-  onEdit: PropTypes.func,
+  onEditReminder: PropTypes.func,
   onReminderDeleSuccess: PropTypes.func,
-  onUpdateStatus: PropTypes.func,
-  updateIsDoneButtonDisabled: PropTypes.func,
+  isDoneButtonDisabled: PropTypes.func,
 };
 
 export default Reminder;
