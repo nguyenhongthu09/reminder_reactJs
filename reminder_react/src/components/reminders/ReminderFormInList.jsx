@@ -47,7 +47,7 @@ class ReminderFormInList extends Component {
 
 ReminderFormInList.propTypes = {
   onCancelFormAdd: PropTypes.func,
-  onSubmitAddReminderForm: PropTypes.func,
+  onBlur: PropTypes.func,
 };
 
 export default ReminderFormInList;
