@@ -3,6 +3,13 @@ import Checkbox from "../core/Checkbox";
 import Input from "../core/Input";
 import PropTypes from "prop-types";
 class ReminderFormInList extends Component {
+  constructor() {
+    super();
+    this.state = {
+      reminderTitle: "",
+      isDoneButtonDisabled: true,
+    };
+  }
   handleBlur = () => {
     const { reminderTitle } = this.state;
     const { onBlur } = this.props;
@@ -48,6 +55,7 @@ class ReminderFormInList extends Component {
 ReminderFormInList.propTypes = {
   onCancelFormAdd: PropTypes.func,
   onBlur: PropTypes.func,
+  onReminderTitleChange: PropTypes.func,
 };
 
 export default ReminderFormInList;

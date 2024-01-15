@@ -216,9 +216,7 @@ class Reminders extends Component {
                     key={note.id}
                     reminder={note}
                     onReminderDeleSuccess={this.deleteReminderService}
-                    onEditReminder={(noteId, newValue, updateType) =>
-                      this.editReminder(noteId, newValue, updateType)
-                    }
+                    onEditReminder={this.editReminder}
                     isDoneButtonDisabled={this.isDoneButtonDisabled}
                   />
                 )
