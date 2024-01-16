@@ -1,43 +1,43 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import List from "../lists/List";
 import { addNewReminder } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
 import Loading from "../core/Loading";
 import PropTypes from "prop-types";
-class ReminderForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isAddButtonDisabled: true,
-      selectedListId: null,
-      reminderTitle: "",
-      loading: false,
-    };
-  }
 
-  handleInputChange = (event) => {
+function ReminderForm({
+  listNote,
+  onCancelFormAdd,
+  onSubmitAddReminderForm,
+  updateListNoteCount,
+}) {
+  const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(true);
+  const [selectedListId, setSelectedListId] = useState(null);
+  const [reminderTitle, setReminderTitle] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [nameList, setNameList] = useState("");
+
+  useEffect(() => {
+    setIsAddButtonDisabled(!reminderTitle.trim() || !selectedListId);
+  }, [reminderTitle, selectedListId]);
+
+  const handleInputChange = (event) => {
     const inputValue = event.target.value;
-    const isAddButtonDisabled =
-      inputValue.trim() === "" || !this.state.selectedListId;
-    this.setState({
-      isAddButtonDisabled: isAddButtonDisabled,
-      reminderTitle: inputValue,
-    });
+    const newIsAddButtonDisabled = inputValue.trim() === "" || !selectedListId;
+    setReminderTitle(inputValue);
+    setIsAddButtonDisabled(newIsAddButtonDisabled);
   };
 
-  handleListSelection = (listNote) => {
-    this.setState({
-      nameList: listNote.name,
-      selectedListId: listNote.id,
-      isAddButtonDisabled: !this.state.reminderTitle.trim() || !listNote.id,
-    });
+  const handleListSelection = (listNote) => {
+    setNameList(listNote.name);
+    setSelectedListId(listNote.id);
+    setIsAddButtonDisabled(!reminderTitle.trim() || !listNote.id);
   };
 
-  handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { reminderTitle, selectedListId } = this.state;
     if (!reminderTitle || !selectedListId) {
       alert("Vui lòng chọn listNote tương ứng");
       return;
@@ -50,80 +50,71 @@ class ReminderForm extends Component {
     };
 
     try {
-      this.setState({ loading: true });
+      setLoading(true);
       await addNewReminder(newReminder);
-      if (this.props.onSubmitAddReminderForm) {
-        const updatedListNote = [...this.props.listNote];
-        this.props.onSubmitAddReminderForm(updatedListNote);
+      if (onSubmitAddReminderForm) {
+        const updatedListNote = [...listNote];
+        onSubmitAddReminderForm(updatedListNote);
         const selectedList = updatedListNote.find(
           (list) => list.id === selectedListId
         );
         const newTotalCount = selectedList ? selectedList.totalCount + 1 : 1;
-        this.props.updateListNoteCount(selectedListId, newTotalCount);
+        updateListNoteCount(selectedListId, newTotalCount);
       }
-      this.setState({ loading: false });
+      setLoading(false);
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {
       console.error("Lỗi khi thêm mới reminder:", error.message);
     }
   };
 
-  render() {
-    const { listNote } = this.props;
-    const { loading, nameList, isAddButtonDisabled } = this.state;
+  return (
+    <>
+      <form action="" id="form__add__note" className="form--add__notes">
+        {loading && <Loading />}
+        <div className="button-detail-list">
+          <Button className="btn-back-note" onClick={onCancelFormAdd}>
+            Cancel
+          </Button>
+          <Button
+            className="add-reminder"
+            disabled={isAddButtonDisabled}
+            id="submitform-addnote"
+            onClick={handleSubmit}
+          >
+            Add
+          </Button>
+        </div>
 
-    return (
-      <>
-        <form action="" id="form__add__note" className="form--add__notes">
-          {loading && <Loading />}
-          <div className="button-detail-list">
-            <Button
-              className="btn-back-note"
-              onClick={this.props.onCancelFormAdd}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="add-reminder"
-              disabled={isAddButtonDisabled}
-              id="submitform-addnote"
-              onClick={this.handleSubmit}
-            >
-              Add
-            </Button>
-          </div>
+        <h1>New reminder</h1>
+        <Input
+          id="add-note-name"
+          className="form-check-name"
+          onChange={handleInputChange}
+        />
 
-          <h1>New reminder</h1>
-          <Input
-            id="add-note-name"
-            className="form-check-name"
-            onFocus={this.handleInputFocus}
-            onChange={this.handleInputChange}
-          />
-
-          <div className="map-list">
-            <div className="title-list-name-choose">
-              <div className="tieude">
-                <span>Choose list</span>
-              </div>
-              <div>
-                <span className="name-list-choose">{nameList}</span>
-              </div>
+        <div className="map-list">
+          <div className="title-list-name-choose">
+            <div className="tieude">
+              <span>Choose list</span>
             </div>
-            <div className="render" id="renderlist">
-              {listNote.map((list) => (
-                <List
-                  key={list.id}
-                  listNote={list}
-                  onListSelect={this.handleListSelection}
-                />
-              ))}
+            <div>
+              <span className="name-list-choose">{nameList}</span>
             </div>
           </div>
-        </form>
-      </>
-    );
-  }
+          <div className="render" id="renderlist">
+            {listNote.map((list) => (
+              <List
+                key={list.id}
+                listNote={list}
+                onListSelect={handleListSelection}
+              />
+            ))}
+          </div>
+        </div>
+      </form>
+    </>
+  );
 }
 
 ReminderForm.propTypes = {
