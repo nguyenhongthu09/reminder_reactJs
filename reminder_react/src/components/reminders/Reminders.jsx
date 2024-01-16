@@ -169,7 +169,7 @@ function Reminders({
     };
 
     fetchData();
-  }, []);
+  }, [selectedListId]);
 
   const hasReminderData = reminders.length === 0;
   const sortedReminders = reminders.slice().sort((a, b) => {

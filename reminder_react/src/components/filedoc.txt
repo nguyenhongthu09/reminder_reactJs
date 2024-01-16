@@ -89,3 +89,10 @@ class Example extends React.Component {
 -> Tóm lại, sử dụng .bind(this) với "function syntax" là để đảm bảo rằng this được chính xác trong hàm, trong khi arrow function giữ giá trị this từ ngữ cảnh của nó.
 
 
+////////////////////////////////////////
++ HOOKS 
+    - useState :  được sử dụng để đơn giản hóa việc thể hiện trạng thái của dữ liệu ra giao diện người dùng (UI). 
+    Khi bạn sử dụng useState thì React sẽ tạo ra một binding dữ liệu một chiều (từ state của component tới UI). 
+    Khi state thay đổi tự động React sẽ xử lý để UI được cập nhật lại. Điều này được React xử lý tự động cho chúng ta.
+    -useEffect :  là một hook trong React được sử dụng để thực hiện các side effect(du lieu cua chuong trinh thay doi) trong functional components.
+     Các side effect có thể bao gồm việc gọi API, thay đổi DOM, đăng ký sự kiện, hoặc thực hiện các tác vụ không đồng bộ khác.
