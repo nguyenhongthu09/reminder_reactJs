@@ -12,7 +12,13 @@ import Loading from "../core/Loading";
 import PropTypes from "prop-types";
 import ReminderFormInList from "./ReminderFormInList";
 
-function Reminders(props) {
+function Reminders({
+  selectedListId,
+  nameList,
+  onListsBackClick,
+  updateListTotalCount,
+  updateTotalDone,
+}) {
   const [reminders, setReminders] = useState([]);
   const [reminderForm, setReminderForm] = useState(false);
   const [reminderTitle, setReminderTitle] = useState("");
@@ -22,7 +28,7 @@ function Reminders(props) {
   // GET REMINDERS
   const getReminders = async () => {
     try {
-      const reminderData = await getReminder(props.selectedListId);
+      const reminderData = await getReminder(selectedListId);
       const checkboxStatus = {};
       reminderData.forEach((reminder) => {
         checkboxStatus[reminder.id] = reminder.status;
@@ -35,7 +41,6 @@ function Reminders(props) {
 
   // ADD REMINDER
   const addReminderService = async () => {
-    const { selectedListId, updateListTotalCount } = props;
     const newReminder = {
       title: reminderTitle,
       status: false,
@@ -78,13 +83,13 @@ function Reminders(props) {
       await delREminder(deleReminderId);
       const newTotalCount = reminders.length - 1;
       if (status) {
-        props.updateListTotalCount(newTotalCount);
+        updateListTotalCount(newTotalCount);
         const newTotalDone = reminders.filter(
           (reminder) => reminder.id !== deleReminderId && reminder.status
         ).length;
-        props.updateTotalDone(newTotalDone);
+        updateTotalDone(newTotalDone);
       } else {
-        props.updateListTotalCount(newTotalCount);
+        updateListTotalCount(newTotalCount);
       }
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
@@ -121,7 +126,7 @@ function Reminders(props) {
             (reminder) => reminder.status
           ).length;
 
-          props.updateTotalDone(newTotalDone);
+          updateTotalDone(newTotalDone);
 
           setReminders(updatedReminders);
           setIsDoneButtonDisabled(true);
@@ -140,10 +145,10 @@ function Reminders(props) {
   };
 
   const hanldeBackList = async () => {
-    if (props.onListsBackClick) {
+    if (onListsBackClick) {
       setLoading(true);
       await getAllList();
-      props.onListsBackClick();
+      onListsBackClick();
       setLoading(false);
     }
   };
@@ -166,7 +171,6 @@ function Reminders(props) {
     fetchData();
   }, []);
 
-  const { nameList } = props;
   const hasReminderData = reminders.length === 0;
   const sortedReminders = reminders.slice().sort((a, b) => {
     return a.status === b.status ? 0 : a.status ? 1 : -1;
@@ -193,7 +197,7 @@ function Reminders(props) {
           {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
           {sortedReminders.map(
             (note) =>
-              note.idlist === props.selectedListId && (
+              note.idlist === selectedListId && (
                 <Reminder
                   key={note.id}
                   reminder={note}

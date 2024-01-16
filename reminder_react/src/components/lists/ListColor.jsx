@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 function ListColor({ colors, onColorClick }) {
   const [selectedColor, setSelectedColor] = useState(null);
 
-  function handleColorClick(color) {
+  const handleColorClick = (color) => {
     setSelectedColor(color);
     onColorClick(color);
-  }
+  };
 
   return (
     <>
