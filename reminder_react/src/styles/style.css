@@ -494,3 +494,6 @@ body {
   --bs-btn-bg: rgb(228, 222, 222);
   border: none;
 }
+.button__keydown{
+  display: none;
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import List from "./List";
 import getAllList from "../../fetchApi/fetchApiList";
 import getColor from "../../fetchApi/fetchColor";
@@ -210,6 +210,7 @@ function Lists() {
               />
             ))}
         </div>
+
         <div className="button-home">
           <Button
             className="add-reminder btn__add--reminder"
@@ -221,7 +222,9 @@ function Lists() {
           <Button
             className="add-list"
             id="add-list-new"
-            onClick={() => handleAddFormListClick("button")}
+            onClick={() => {
+              handleAddFormListClick("button");
+            }}
           >
             Add List
           </Button>

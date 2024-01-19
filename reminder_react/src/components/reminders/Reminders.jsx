@@ -26,13 +26,9 @@ function Reminders({
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] = useState(true);
 
   // GET REMINDERS
-  const getReminders = async () => {
+  const getReminders = async (selectedListId) => {
     try {
       const reminderData = await getReminder(selectedListId);
-      const checkboxStatus = {};
-      reminderData.forEach((reminder) => {
-        checkboxStatus[reminder.id] = reminder.status;
-      });
       setReminders(reminderData);
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
@@ -164,7 +160,7 @@ function Reminders({
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await getReminders();
+      await getReminders(selectedListId);
       setLoading(false);
     };
 

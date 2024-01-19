@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import Dropdown from "../core/Dropdown";
 import Button from "../core/Button";
 import Input from "../core/Input";
@@ -6,19 +6,14 @@ import Icon from "../core/Icon";
 import Checkbox from "../core/Checkbox";
 import PropTypes from "prop-types";
 
-function Reminder({
-  reminder,
-  onEditReminder,
-  onReminderDeleSuccess,
-  isDoneButtonDisabled,
-}) {
+function Reminder({ reminder, onEditReminder, onReminderDeleSuccess }) {
   const [editedNote, setEditedNote] = useState({
     id: null,
     value: "",
     statusCheckbox: null,
   });
-  const [inputText, setInputText] = useState("");
-  const [isDoneButtonDisabledState, setIsDoneButtonDisabled] = useState(true);
+  const [, setInputText] = useState("");
+  const [, setIsDoneButtonDisabled] = useState(true);
 
   const action = [
     {
@@ -46,11 +41,14 @@ function Reminder({
     onEditReminder(noteId, newStatus, "status");
   };
 
-  const handleButtonClick = (id, status) => {
-    if (onReminderDeleSuccess) {
-      onReminderDeleSuccess(id, status);
-    }
-  };
+  const handleButtonClick = useCallback(
+    (id, status) => {
+      if (onReminderDeleSuccess) {
+        onReminderDeleSuccess(id, status);
+      }
+    },
+    [onReminderDeleSuccess]
+  );
 
   const handleInputChange = async (noteId, newValue) => {
     const isDoneButtonDisabled = newValue.trim() === "";
@@ -58,10 +56,6 @@ function Reminder({
     setInputText(newValue);
     setIsDoneButtonDisabled(isDoneButtonDisabled);
   };
-
-  useEffect(() => {
-    isDoneButtonDisabled(isDoneButtonDisabledState);
-  }, [isDoneButtonDisabledState]);
 
   return (
     <div key={reminder.id} id={reminder.id}>

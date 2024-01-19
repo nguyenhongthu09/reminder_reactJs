@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import List from "../lists/List";
 import { addNewReminder } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
@@ -17,6 +17,7 @@ function ReminderForm({
   const [reminderTitle, setReminderTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [nameList, setNameList] = useState("");
+  const inputRef = useRef(null);
 
   useEffect(() => {
     setIsAddButtonDisabled(!reminderTitle.trim() || !selectedListId);
@@ -68,6 +69,10 @@ function ReminderForm({
     }
   };
 
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
   return (
     <>
       <form action="" id="form__add__note" className="form--add__notes">
@@ -88,6 +93,7 @@ function ReminderForm({
 
         <h1>New reminder</h1>
         <Input
+          ref={inputRef}
           id="add-note-name"
           className="form-check-name"
           onChange={handleInputChange}

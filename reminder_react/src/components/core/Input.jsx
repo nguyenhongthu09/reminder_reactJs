@@ -1,34 +1,34 @@
-import React, { Component } from "react";
+import React from "react";
+
 import PropTypes from "prop-types";
 
-class Input extends Component {
-  render() {
-    const {
-      value,
-      onClick,
-      id,
-      onChange,
-      onBlur,
-      placeholder = "Please enter data",
-      autoFocus,
-      type = "text",
-      className = "form-check-name",
-    } = this.props;
-    return (
-      <input
-        type={type}
-        id={id}
-        className={className}
-        onClick={onClick}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        autoFocus={autoFocus}
-      />
-    );
-  }
-}
+const Input = React.forwardRef((props, ref) => {
+  const {
+    value,
+    onClick,
+    id,
+    onChange,
+    onBlur,
+    placeholder = "Please enter data",
+    autoFocus,
+    type = "text",
+    className = "form-check-name",
+  } = props;
+  return (
+    <input
+      type={type}
+      id={id}
+      className={className}
+      onClick={onClick}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      placeholder={placeholder}
+      autoFocus={autoFocus}
+      ref={ref}
+    />
+  );
+});
 
 Input.propTypes = {
   type: PropTypes.string,
@@ -40,6 +40,7 @@ Input.propTypes = {
   value: PropTypes.string,
   placeholder: PropTypes.string,
   autoFocus: PropTypes.bool,
+  ref: PropTypes.any,
 };
 
 export default Input;

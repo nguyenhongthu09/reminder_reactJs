@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Button from "../core/Button";
 import ListColor from "./ListColor";
 import { generateRandomStringId } from "../../untils/common";
@@ -6,144 +6,153 @@ import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Loading from "../core/Loading";
 import PropTypes from "prop-types";
-class ListForm extends Component {
-  constructor() {
-    super();
-    this.state = {
-      id: generateRandomStringId(),
-      name: "",
-      isButtonDisabled: true,
-      loading: false,
-    };
-  }
 
-  handleColorSelect = (selectedColor) => {
-    this.setState({
+const ListForm = ({
+  formType,
+  colors,
+  onCancelClick,
+  onSubEditForm,
+  onSubmitSuccess,
+  listData,
+}) => {
+  const [formData, setFormData] = useState({
+    id: generateRandomStringId(),
+    name: "",
+    isColor: "",
+  });
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const submitButtonRef = useRef(null);
+  const inputRef = useRef(null);
+
+  const handleColorSelect = (selectedColor) => {
+    console.log("Color selected:", selectedColor);
+    setFormData((prevData) => ({
+      ...prevData,
       isColor: selectedColor,
-      isButtonDisabled: false,
-    });
+    }));
+    setIsButtonDisabled(false);
   };
 
-  handleNameChange = (event) => {
+  const handleNameChange = (event) => {
     const inputValue = event.target.value;
-    const isButtonDisabled = inputValue.trim() === "";
-    this.setState({
+    console.log("Name changed:", inputValue);
+    const isDisabled = inputValue.trim() === "";
+    setFormData((prevData) => ({
+      ...prevData,
       name: inputValue,
-      isButtonDisabled: isButtonDisabled,
-    });
+    }));
+    setIsButtonDisabled(isDisabled);
   };
 
-  handleInputClick = () => {
-    this.setState({
-      isButtonDisabled: false,
-    });
+  const handleInputClick = () => {
+    setIsButtonDisabled(false);
   };
 
-  handleSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const { formType, onSubEditForm, onSubmitSuccess } = this.props;
-    const { id, name, isColor } = this.state;
-    const formData = {
-      id: id,
-      name: name,
-      isColor: isColor,
-    };
+
     try {
-      this.setState({ loading: true });
+      setLoading(true);
 
       if (formType === "edit") {
         await onSubEditForm(formData);
       } else {
         await onSubmitSuccess(formData);
       }
-
-      this.setState({ loading: false });
     } catch (error) {
       console.error("Error submitting form:", error.message);
-      this.setState({ loading: false });
-    }
-  };
-  handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      this.handleSubmit(event);
+    } finally {
+      setLoading(false);
     }
   };
 
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyDown);
-    const { formType, listData } = this.props;
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      submitButtonRef.current.click();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
     if (formType === "edit" && listData) {
       const { id, name, isColor } = listData;
-      this.setState({
+      setFormData({
         id: id,
         name: name,
         isColor: isColor,
       });
     }
-  }
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [formType, listData]);
 
-  render() {
-    const { formType, colors } = this.props;
-    const { isColor, name, loading, isButtonDisabled } = this.state;
+  useEffect(() => {
+    submitButtonRef.current.focus();
+    inputRef.current.focus();
+  }, []);
 
-    return (
-      <form
-        onSubmit={this.handleSubmit}
-        id="form_edit_list"
-        action=""
-        className={`form-edit-list ${formType}`}
-      >
-        {loading && <Loading />}
-        <div className="form__edit__list">
-          <Button
-            id="btn-xoa"
-            className="button-cancel"
-            onClick={this.props.onCancelClick}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={isButtonDisabled}
-            type="submit"
-            id="btnsubedit"
-            className="button-done"
-          >
-            {formType === "edit" ? "Edit" : "Done"}
-          </Button>
-        </div>
-        <h1>{formType === "add" ? "Add List" : "Edit List"}</h1>
-
-        <div className="form_add_list_name">
-          <div
-            className="fill-icon-color fill-color-edit"
-            id="icon-color-edit"
-            style={{ backgroundColor: isColor }}
-          >
-            <span className="fill-color">
-              <Icon type="notelist"></Icon>
-            </span>
-          </div>
-          <Input
-            id="name_edit-list"
-            placeholder="Name List"
-            value={formType === "edit" ? name : undefined}
-            onChange={this.handleNameChange}
-            onClick={this.handleInputClick}
-          />
-          <p id="name_error" className="error-message">
-            Please enter a list name.
-          </p>
-        </div>
-        <div
-          className="color-list-icon  render-list-color-edit"
-          id="color-list-add-list"
+  return (
+    <form
+      onSubmit={handleSubmit}
+      id="form_edit_list"
+      action=""
+      className={`form-edit-list ${formType}`}
+    >
+      {loading && <Loading />}
+      <div className="form__edit__list">
+        <Button
+          ref={submitButtonRef}
+          type="submit"
+          className="button__keydown"
+        />
+        <Button id="btn-xoa" className="button-cancel" onClick={onCancelClick}>
+          Cancel
+        </Button>
+        <Button
+          disabled={isButtonDisabled}
+          type="submit"
+          id="btnsubedit"
+          className="button-done"
         >
-          <ListColor colors={colors} onColorClick={this.handleColorSelect} />
+          {formType === "edit" ? "Edit" : "Done"}
+        </Button>
+      </div>
+      <h1>{formType === "add" ? "Add List" : "Edit List"}</h1>
+
+      <div className="form_add_list_name">
+        <div
+          className="fill-icon-color fill-color-edit"
+          id="icon-color-edit"
+          style={{ backgroundColor: formData.isColor }}
+        >
+          <span className="fill-color">
+            <Icon type="notelist"></Icon>
+          </span>
         </div>
-      </form>
-    );
-  }
-}
+        <Input
+          id="name_edit-list"
+          placeholder="Name List"
+          value={formData.name}
+          onChange={handleNameChange}
+          onClick={handleInputClick}
+          ref={inputRef}
+        />
+        <p id="name_error" className="error-message">
+          Please enter a list name.
+        </p>
+      </div>
+      <div
+        className="color-list-icon  render-list-color-edit"
+        id="color-list-add-list"
+      >
+        <ListColor colors={colors} onColorClick={handleColorSelect} />
+      </div>
+    </form>
+  );
+};
 
 ListForm.propTypes = {
   formType: PropTypes.oneOf(["add", "edit"]),
@@ -153,4 +162,5 @@ ListForm.propTypes = {
   onSubmitSuccess: PropTypes.func,
   listData: PropTypes.object,
 };
+
 export default ListForm;
