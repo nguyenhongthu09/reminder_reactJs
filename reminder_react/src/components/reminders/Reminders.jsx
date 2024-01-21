@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import Reminder from "./Reminder";
 import {
   delREminder,
@@ -152,7 +152,6 @@ function Reminders({
   const showReminderForm = () => {
     setReminderForm(true);
   };
-
   const isDoneButtonDisabledHandler = (isDoneButtonDisabled) => {
     setIsDoneButtonDisabled(isDoneButtonDisabled);
   };
@@ -232,4 +231,4 @@ Reminders.propTypes = {
   updateTotalDone: PropTypes.func,
 };
 
-export default Reminders;
+export default memo(Reminders);

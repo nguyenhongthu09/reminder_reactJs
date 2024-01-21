@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, memo } from "react";
 import Button from "../core/Button";
 import ListColor from "./ListColor";
 import { generateRandomStringId } from "../../untils/common";
@@ -7,14 +7,14 @@ import Icon from "../core/Icon";
 import Loading from "../core/Loading";
 import PropTypes from "prop-types";
 
-const ListForm = ({
+function ListForm({
   formType,
   colors,
   onCancelClick,
   onSubEditForm,
   onSubmitSuccess,
   listData,
-}) => {
+}) {
   const [formData, setFormData] = useState({
     id: generateRandomStringId(),
     name: "",
@@ -24,19 +24,19 @@ const ListForm = ({
   const [loading, setLoading] = useState(false);
   const submitButtonRef = useRef(null);
   const inputRef = useRef(null);
-
-  const handleColorSelect = (selectedColor) => {
-    console.log("Color selected:", selectedColor);
+  const handleColorSelect = useCallback((selectedColor) => {
+   
     setFormData((prevData) => ({
       ...prevData,
       isColor: selectedColor,
     }));
     setIsButtonDisabled(false);
-  };
+    console.log("render thu");
+  }, [setFormData]);
 
   const handleNameChange = (event) => {
+    console.log("input ");
     const inputValue = event.target.value;
-    console.log("Name changed:", inputValue);
     const isDisabled = inputValue.trim() === "";
     setFormData((prevData) => ({
       ...prevData,
@@ -46,6 +46,7 @@ const ListForm = ({
   };
 
   const handleInputClick = () => {
+    console.log("render");
     setIsButtonDisabled(false);
   };
 
@@ -72,7 +73,6 @@ const ListForm = ({
       submitButtonRef.current.click();
     }
   };
-
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
 
@@ -93,7 +93,7 @@ const ListForm = ({
     submitButtonRef.current.focus();
     inputRef.current.focus();
   }, []);
-
+  console.log("list form");
   return (
     <form
       onSubmit={handleSubmit}
@@ -152,7 +152,7 @@ const ListForm = ({
       </div>
     </form>
   );
-};
+}
 
 ListForm.propTypes = {
   formType: PropTypes.oneOf(["add", "edit"]),
@@ -163,4 +163,4 @@ ListForm.propTypes = {
   listData: PropTypes.object,
 };
 
-export default ListForm;
+export default memo(ListForm);

@@ -18,7 +18,9 @@ function ReminderForm({
   const [loading, setLoading] = useState(false);
   const [nameList, setNameList] = useState("");
   const inputRef = useRef(null);
-
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
   useEffect(() => {
     setIsAddButtonDisabled(!reminderTitle.trim() || !selectedListId);
   }, [reminderTitle, selectedListId]);
@@ -68,11 +70,7 @@ function ReminderForm({
       console.error("Lỗi khi thêm mới reminder:", error.message);
     }
   };
-
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
-
+console.log("re-render rmeidner");
   return (
     <>
       <form action="" id="form__add__note" className="form--add__notes">

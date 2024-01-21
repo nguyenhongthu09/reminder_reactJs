@@ -1,115 +1,119 @@
-import React, { Component } from "react";
+import React from "react";
 import Dropdown from "../core/Dropdown";
 import Icon from "../core/Icon";
 import Button from "../core/Button";
 import PropTypes from "prop-types";
-class List extends Component {
-  constructor() {
-    super();
-    this.action = [
-      {
-        id: 1,
-        key: "delete",
-        icon: (
-          <Button className="dropdown-item">
-            <Icon type="delete"></Icon>
-          </Button>
-        ),
-        onClick: (id, action) => {
-          this.handleButtonClick(id, action);
-        },
-      },
-      {
-        id: 2,
-        key: "edit",
-        icon: (
-          <Button className="dropdown-item">
-            <Icon type="edit"></Icon>
-          </Button>
-        ),
-        onClick: (id, action) => {
-          this.handleButtonClick(id, action);
-        },
-      },
-    ];
-  }
 
-  handleCLickNote = (list) => {
-    if (this.props.onListNoteItemClick) {
-      this.props.onListNoteItemClick(list);
+function List({
+  listNote,
+  onListNoteItemClick,
+  onListSelect,
+  onListNoteClick,
+  onListDeleteSuccess,
+}) {
+  const action = [
+    {
+      id: 1,
+      key: "delete",
+      icon: (
+        <Button className="dropdown-item">
+          <Icon type="delete"></Icon>
+        </Button>
+      ),
+      onClick: (id, action) => {
+        handleButtonClick(id, action);
+      },
+    },
+    {
+      id: 2,
+      key: "edit",
+      icon: (
+        <Button className="dropdown-item">
+          <Icon type="edit"></Icon>
+        </Button>
+      ),
+      onClick: (id, action) => {
+        handleButtonClick(id, action);
+      },
+    },
+  ];
+
+  const handleCLickNote = (list) => {
+    console.log("1");
+    if (onListNoteItemClick) {
+      onListNoteItemClick(list);
     }
   };
 
-  handleChooseNameList = (list) => {
-    if (this.props.onListSelect) {
-      this.props.onListSelect(list);
+  const handleChooseNameList = (list) => {
+    console.log("2");
+    if (onListSelect) {
+      onListSelect(list);
     }
   };
-  handleButtonClick = (id, action) => {
+
+  const handleButtonClick = (id, action) => {
+    console.log("3");
     if (action.id === 2) {
-      if (id && this.props.onListNoteClick) {
-        const listnote = this.props.listNote;
-        this.props.onListNoteClick(listnote);
+      if (id && onListNoteClick) {
+        const listnote = listNote;
+        onListNoteClick(listnote);
       }
     }
     if (action.id === 1) {
-      if (id && this.props.onListDeleteSuccess) {
-        this.props.onListDeleteSuccess(id);
+      if (id && onListDeleteSuccess) {
+        onListDeleteSuccess(id);
       }
     }
   };
 
-  render() {
-    const { listNote } = this.props;
-
-    return (
-      <div>
-        <div className="listnote" key={listNote.id} id={listNote.id}>
+  return (
+    <div>
+      <div className="listnote" key={listNote.id} id={listNote.id}>
+        <div
+          className="list-note"
+          id={listNote.id}
+          onClick={() => handleCLickNote(listNote)}
+        >
           <div
-            className="list-note"
-            id={listNote.id}
-            onClick={() => this.handleCLickNote(listNote)}
+            className="item-list-none-left"
+            onClick={() => handleChooseNameList(listNote)}
           >
             <div
-              className="item-list-none-left"
-              onClick={() => this.handleChooseNameList(listNote)}
+              className="icon-list-note"
+              style={{ backgroundColor: listNote.isColor }}
             >
-              <div
-                className="icon-list-note"
-                style={{ backgroundColor: listNote.isColor }}
-              >
-                <span className="icon-list">
-                  <Icon type="notelist"></Icon>
-                </span>
-              </div>
-              <span className="name-list">{listNote.name}</span>
-            </div>
-            <div className="item-list-none-right">
-              <span
-                className="number-items-notes"
-                id={`total-done-${listNote.id}`}
-              >
-                {listNote.totalDone}
-              </span>
-              <span
-                className="number-items-note"
-                id={`total-count-${listNote.id}`}
-              >
-                /{listNote.totalCount}
+              <span className="icon-list">
+                <Icon type="notelist"></Icon>
               </span>
             </div>
+            <span className="name-list">{listNote.name}</span>
           </div>
-          <div className="icon-home-list-del">
-            <Dropdown
-              id={listNote.id}
-              actions={this.action}
-              onClick={(id, action) => action.onClick(id, action)}
-            />
+          <div className="item-list-none-right">
+            <span
+              className="number-items-notes"
+              id={`total-done-${listNote.id}`}
+            >
+              {listNote.totalDone}
+            </span>
+            <span
+              className="number-items-note"
+              id={`total-count-${listNote.id}`}
+            >
+              /{listNote.totalCount}
+            </span>
           </div>
         </div>
+        <div className="icon-home-list-del">
+          <Dropdown
+            id={listNote.id}
+            actions={action}
+            onClick={(id, action) => action.onClick(id, action)}
+          />
+        </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 List.propTypes = {

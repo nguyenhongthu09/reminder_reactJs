@@ -12,7 +12,7 @@ function Reminder({ reminder, onEditReminder, onReminderDeleSuccess }) {
     value: "",
     statusCheckbox: null,
   });
-  const [, setInputText] = useState("");
+
   const [, setIsDoneButtonDisabled] = useState(true);
 
   const action = [
@@ -53,7 +53,6 @@ function Reminder({ reminder, onEditReminder, onReminderDeleSuccess }) {
   const handleInputChange = async (noteId, newValue) => {
     const isDoneButtonDisabled = newValue.trim() === "";
     setEditedNote({ id: noteId, value: newValue, statusCheckbox: null });
-    setInputText(newValue);
     setIsDoneButtonDisabled(isDoneButtonDisabled);
   };
 
