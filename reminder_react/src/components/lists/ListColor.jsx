@@ -1,16 +1,14 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 function ListColor({ colors, onColorClick }) {
   const [selectedColor, setSelectedColor] = useState(null);
 
   const handleColorClick = (color) => {
-   
     setSelectedColor(color);
     onColorClick(color);
-    console.log("re-render");
   };
-console.log("list color");
+
   return (
     <>
       {colors.map((color, index) => (

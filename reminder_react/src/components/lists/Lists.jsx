@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback , useMemo} from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import List from "./List";
 import getAllList from "../../fetchApi/fetchApiList";
 import getColor from "../../fetchApi/fetchColor";
@@ -39,7 +39,6 @@ function Lists() {
       console.error("Error fetching listNote:", error.message);
     }
   };
-  
 
   //GET COLOR
   const getColors = async () => {
@@ -154,40 +153,40 @@ function Lists() {
     );
   };
 
- //update khi them moi va xoa trong remidner
- const updateListTotalCount = (newTotalCount) => {
-  setListNote((prevListNote) =>
-    prevListNote.map((list) =>
-      list.id === selectedListId
-        ? { ...list, totalCount: newTotalCount }
-        : list
-    )
-  );
-};
-
-//update total co status la true
-const updateTotalDone = (newTotalDone) => {
-  setListNote((prevListNote) =>
-    prevListNote.map((list) =>
-      list.id === selectedListId ? { ...list, totalDone: newTotalDone } : list
-    )
-  );
-};
-
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      await Promise.all([getListNote(), getColors()]);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error loading data:", error.message);
-    }
+  //update khi them moi va xoa trong remidner
+  const updateListTotalCount = (newTotalCount) => {
+    setListNote((prevListNote) =>
+      prevListNote.map((list) =>
+        list.id === selectedListId
+          ? { ...list, totalCount: newTotalCount }
+          : list
+      )
+    );
   };
 
-  fetchData();
-}, []);
- 
+  //update total co status la true
+  const updateTotalDone = (newTotalDone) => {
+    setListNote((prevListNote) =>
+      prevListNote.map((list) =>
+        list.id === selectedListId ? { ...list, totalDone: newTotalDone } : list
+      )
+    );
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await Promise.all([getListNote(), getColors()]);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error loading data:", error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <div
@@ -239,7 +238,6 @@ useEffect(() => {
           colors={colors}
           onSubmitSuccess={addListServiceForm}
           onSubEditForm={editListServiceForm}
-          
         />
       )}
 
