@@ -18,7 +18,7 @@ const getAllList = async () => {
           return listItem;
         })
       );
-      console.log(a, "log thu a");
+     
       return a;
     }
   } catch (error) {

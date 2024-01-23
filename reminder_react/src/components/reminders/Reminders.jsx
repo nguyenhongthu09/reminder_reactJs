@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, { useState, useEffect, memo } from "react";
 import Reminder from "./Reminder";
 import {
   delREminder,
@@ -26,7 +26,7 @@ function Reminders({
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] = useState(true);
 
   // GET REMINDERS
-  const getReminders = async (selectedListId) => {
+  const getReminders = async () => {
     try {
       const reminderData = await getReminder(selectedListId);
       setReminders(reminderData);
@@ -159,12 +159,12 @@ function Reminders({
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await getReminders(selectedListId);
+      await getReminders();
       setLoading(false);
     };
 
     fetchData();
-  }, [selectedListId]);
+  }, []);
 
   const hasReminderData = reminders.length === 0;
   const sortedReminders = reminders.slice().sort((a, b) => {

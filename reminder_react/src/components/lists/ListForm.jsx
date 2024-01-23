@@ -24,18 +24,18 @@ function ListForm({
   const [loading, setLoading] = useState(false);
   const submitButtonRef = useRef(null);
   const inputRef = useRef(null);
-  const handleColorSelect = useCallback((selectedColor) => {
-   
-    setFormData((prevData) => ({
-      ...prevData,
-      isColor: selectedColor,
-    }));
-    setIsButtonDisabled(false);
-    console.log("render thu");
-  }, [setFormData]);
+  const handleColorSelect = useCallback(
+    (selectedColor) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        isColor: selectedColor,
+      }));
+      setIsButtonDisabled(false);
+    },
+    [setFormData]
+  );
 
   const handleNameChange = (event) => {
-    console.log("input ");
     const inputValue = event.target.value;
     const isDisabled = inputValue.trim() === "";
     setFormData((prevData) => ({
@@ -46,7 +46,6 @@ function ListForm({
   };
 
   const handleInputClick = () => {
-    console.log("render");
     setIsButtonDisabled(false);
   };
 
@@ -75,7 +74,7 @@ function ListForm({
   };
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
-
+    console.log("add");
     if (formType === "edit" && listData) {
       const { id, name, isColor } = listData;
       setFormData({
@@ -86,6 +85,7 @@ function ListForm({
     }
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      console.log("remove lisst");
     };
   }, [formType, listData]);
 

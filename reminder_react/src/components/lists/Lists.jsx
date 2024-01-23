@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import List from "./List";
 import getAllList from "../../fetchApi/fetchApiList";
 import getColor from "../../fetchApi/fetchColor";
@@ -12,6 +12,7 @@ import {
 } from "../../fetchApi/fetchApiList";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
+
 function Lists() {
   const [listNote, setListNote] = useState([]);
   const [colors, setColors] = useState([]);
@@ -52,7 +53,7 @@ function Lists() {
   };
 
   // ADD LISTNOTE
-  const addListServiceForm = async (newList) => {
+  const addListServiceForm = useCallback(async (newList) => {
     try {
       if (formType === "add") {
         newList.totalDone = 0;
@@ -64,10 +65,10 @@ function Lists() {
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
     }
-  };
+  }, [setListNote,formType]);
 
   //EDIT LISTNOTE
-  const editListServiceForm = async (list) => {
+  const editListServiceForm = useCallback(async (list) => {
     try {
       if (formType === "edit") {
         const updatedListNote = listNote.map((listNote) =>
@@ -99,10 +100,10 @@ function Lists() {
     } catch (error) {
       console.error("Lỗi khi gửi dữ liệu:", error.message);
     }
-  };
+  }, [formType, listNote]);
 
   //DELETE LISTNOTE
-  const deleteListNoteService = async (deletedListId) => {
+  const deleteListNoteService = useCallback(async (deletedListId) => {
     try {
       await delList(deletedListId);
     } catch (error) {
@@ -112,12 +113,12 @@ function Lists() {
     setListNote((prevListNote) =>
       prevListNote.filter((list) => list.id !== deletedListId)
     );
-  };
+  }, []);
 
-  const handleListNoteClick = (listNote) => {
+  const handleListNoteClick = useCallback((listNote) => {
     setFormTypeHandler("edit");
     setListData(listNote);
-  };
+  }, []);
 
   const handleAddFormListClick = (source) => {
     setFormTypeHandler("add");
@@ -126,15 +127,15 @@ function Lists() {
     }
   };
 
-  const handleCancelClick = () => {
+  const handleCancelClick = useCallback(() => {
     setListForm(false);
-  };
+  }, []);
 
-  const handleListNoteItemClick = (listNote) => {
+  const handleListNoteItemClick = useCallback((listNote) => {
     setReminders(true);
     setSelectedListId(listNote.id);
     setNameList(listNote.name);
-  };
+  }, []);
 
   const handleBackList = () => {
     setReminders(false);
@@ -172,8 +173,10 @@ function Lists() {
       )
     );
   };
-
+ 
   useEffect(() => {
+    
+    console.log("Component did mount use");
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -183,7 +186,6 @@ function Lists() {
         console.error("Error loading data:", error.message);
       }
     };
-
     fetchData();
   }, []);
 
@@ -209,7 +211,6 @@ function Lists() {
               />
             ))}
         </div>
-
         <div className="button-home">
           <Button
             className="add-reminder btn__add--reminder"

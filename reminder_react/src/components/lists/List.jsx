@@ -1,4 +1,4 @@
-import React from "react";
+import React , {memo}from "react";
 import Dropdown from "../core/Dropdown";
 import Icon from "../core/Icon";
 import Button from "../core/Button";
@@ -66,7 +66,7 @@ function List({
       }
     }
   };
-
+console.log("lisst");
   return (
     <div>
       <div className="listnote" key={listNote.id} id={listNote.id}>
@@ -130,4 +130,4 @@ List.propTypes = {
   onListDeleteSuccess: PropTypes.func,
 };
 
-export default List;
+export default memo(List);
