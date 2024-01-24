@@ -98,19 +98,19 @@ function ListForm({
     onCancelClick();
   };
 
-  useEffect(() => {
-    return () => {
-      // eslint-disable-next-line no-restricted-globals
-      const userConfirmation = confirm("Ban co muon dong form?");
-      if (userConfirmation) {
-        setListForm(false);
-        console.log("confirmed");
-      } else {
-        setListForm(true);
-        console.log("canceled");
-      }
-    };
-  }, [setListForm]);
+  // useEffect(() => {
+  //   return () => {
+  //     // eslint-disable-next-line no-restricted-globals
+  //     const userConfirmation = confirm("Ban co muon dong form?");
+  //     if (userConfirmation) {
+  //       setListForm(false);
+  //       console.log("confirmed");
+  //     } else {
+  //       setListForm(true);
+  //       console.log("canceled");
+  //     }
+  //   };
+  // }, [setListForm]);
 
   return (
     <form

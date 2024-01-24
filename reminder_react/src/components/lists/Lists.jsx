@@ -25,6 +25,7 @@ function Lists() {
   const [listData, setListData] = useState(null);
   const [nameList, setNameList] = useState("");
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [addNew, setAddNew] = useState(false);
   const setFormTypeHandler = (type) => {
     setListForm(type === "add" || type === "edit");
     setFormType(type);
@@ -62,7 +63,7 @@ function Lists() {
           await addNewList(newList);
           setListForm(false);
           setListNote((prevListNote) => [...prevListNote, newList]);
-          setShowSuccessAlert(true);
+          setAddNew(true);
         }
       } catch (error) {
         console.error("Lỗi khi gửi dữ liệu:", error.message);
@@ -194,19 +195,17 @@ function Lists() {
     };
     fetchData();
   }, []);
-  const handleAlertClose = () => {
-    setShowSuccessAlert(false);
-  };
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleAlertClose();
-      console.log("timer");
-    }, 3000);
 
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [showSuccessAlert]);
+  useEffect(() => {
+  
+    if (addNew && listNote.length > 0) {
+      setShowSuccessAlert(true);
+    setTimeout(() => {
+        setShowSuccessAlert(false);
+        setAddNew(false);
+      }, 2000);
+    }
+  }, [addNew, listNote]);
 
   return (
     <>
