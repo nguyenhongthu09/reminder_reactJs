@@ -14,6 +14,7 @@ function ListForm({
   onSubEditForm,
   onSubmitSuccess,
   listData,
+  setListForm,
 }) {
   const [formData, setFormData] = useState({
     id: generateRandomStringId(),
@@ -24,6 +25,8 @@ function ListForm({
   const [loading, setLoading] = useState(false);
   const submitButtonRef = useRef(null);
   const inputRef = useRef(null);
+  // const [showConfirmForm, setShowConfirmForm] = useState(false);
+
   const handleColorSelect = useCallback(
     (selectedColor) => {
       setFormData((prevData) => ({
@@ -54,7 +57,6 @@ function ListForm({
 
     try {
       setLoading(true);
-
       if (formType === "edit") {
         await onSubEditForm(formData);
       } else {
@@ -68,32 +70,48 @@ function ListForm({
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && submitButtonRef.current) {
       submitButtonRef.current.click();
     }
   };
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    console.log("add");
+    console.log("name");
     if (formType === "edit" && listData) {
       const { id, name, isColor } = listData;
+
       setFormData({
         id: id,
         name: name,
         isColor: isColor,
       });
     }
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      console.log("remove lisst");
-    };
-  }, [formType, listData]);
+  }, []);
 
   useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
     submitButtonRef.current.focus();
     inputRef.current.focus();
   }, []);
-  console.log("list form");
+
+  const handleCancelClick = () => {
+    // setShowConfirmForm(true);
+    onCancelClick();
+  };
+
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line no-restricted-globals
+      const userConfirmation = confirm("Ban co muon dong form?");
+      if (userConfirmation) {
+        setListForm(false);
+        console.log("confirmed");
+      } else {
+        setListForm(true);
+        console.log("canceled");
+      }
+    };
+  }, [setListForm]);
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -108,7 +126,11 @@ function ListForm({
           type="submit"
           className="button__keydown"
         />
-        <Button id="btn-xoa" className="button-cancel" onClick={onCancelClick}>
+        <Button
+          id="btn-xoa"
+          className="button-cancel"
+          onClick={handleCancelClick}
+        >
           Cancel
         </Button>
         <Button

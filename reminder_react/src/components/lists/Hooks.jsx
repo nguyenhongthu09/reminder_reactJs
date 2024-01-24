@@ -20,6 +20,8 @@ function ComponentHook() {
         
   }, []);
 
+
+
   return (
     <div>
       {listNote.map((item, index) => (
@@ -36,3 +38,28 @@ export default ComponentHook;
 
 
 
+// import React, { useState, useEffect } from "react";
+// import { generateRandomStringId } from "../../untils/common";
+
+// function ComponentHook({ formType, listData }) {
+//   const [, setFormData] = useState({
+//     id: generateRandomStringId(),
+//     name: "",
+//     isColor: "",
+//   });
+
+//   useEffect(() => {
+//     if (formType === "edit" && listData) {
+//       const { id, name, isColor } = listData;
+//       setFormData({
+//         id: id,
+//         name: name,
+//         isColor: isColor,
+//       });
+//     }
+//   }, [formType, listData]);
+
+//   return <div>{console.log("log vi du")}</div>;
+// }
+
+// export default ComponentHook;

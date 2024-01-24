@@ -24,7 +24,7 @@ function Lists() {
   const [loading, setLoading] = useState(false);
   const [listData, setListData] = useState(null);
   const [nameList, setNameList] = useState("");
-
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const setFormTypeHandler = (type) => {
     setListForm(type === "add" || type === "edit");
     setFormType(type);
@@ -53,54 +53,61 @@ function Lists() {
   };
 
   // ADD LISTNOTE
-  const addListServiceForm = useCallback(async (newList) => {
-    try {
-      if (formType === "add") {
-        newList.totalDone = 0;
-        newList.totalCount = 0;
-        await addNewList(newList);
-        setListForm(false);
-        setListNote((prevListNote) => [...prevListNote, newList]);
+  const addListServiceForm = useCallback(
+    async (newList) => {
+      try {
+        if (formType === "add") {
+          newList.totalDone = 0;
+          newList.totalCount = 0;
+          await addNewList(newList);
+          setListForm(false);
+          setListNote((prevListNote) => [...prevListNote, newList]);
+          setShowSuccessAlert(true);
+        }
+      } catch (error) {
+        console.error("Lỗi khi gửi dữ liệu:", error.message);
       }
-    } catch (error) {
-      console.error("Lỗi khi gửi dữ liệu:", error.message);
-    }
-  }, [setListNote,formType]);
+    },
+    [setListNote, formType]
+  );
 
   //EDIT LISTNOTE
-  const editListServiceForm = useCallback(async (list) => {
-    try {
-      if (formType === "edit") {
-        const updatedListNote = listNote.map((listNote) =>
-          listNote.id === list.id
-            ? {
-                ...listNote,
-                name: list.name,
-                isColor: list.isColor,
-              }
-            : listNote
-        );
-        const updatedList = updatedListNote.find(
-          (listNote) => listNote.id === list.id
-        );
+  const editListServiceForm = useCallback(
+    async (list) => {
+      try {
+        if (formType === "edit") {
+          const updatedListNote = listNote.map((listNote) =>
+            listNote.id === list.id
+              ? {
+                  ...listNote,
+                  name: list.name,
+                  isColor: list.isColor,
+                }
+              : listNote
+          );
+          const updatedList = updatedListNote.find(
+            (listNote) => listNote.id === list.id
+          );
 
-        setListForm(false);
-        setListNote(updatedListNote);
-        console.log("Cập nhật thành công", updatedList);
-        const currentTotalDone = updatedList.totalDone;
-        const currentTotalCount = updatedList.totalCount;
-        await updateListData(
-          list.id,
-          list.name,
-          list.isColor,
-          currentTotalDone,
-          currentTotalCount
-        );
+          setListForm(false);
+          setListNote(updatedListNote);
+          console.log("Cập nhật thành công", updatedList);
+          const currentTotalDone = updatedList.totalDone;
+          const currentTotalCount = updatedList.totalCount;
+          await updateListData(
+            list.id,
+            list.name,
+            list.isColor,
+            currentTotalDone,
+            currentTotalCount
+          );
+        }
+      } catch (error) {
+        console.error("Lỗi khi gửi dữ liệu:", error.message);
       }
-    } catch (error) {
-      console.error("Lỗi khi gửi dữ liệu:", error.message);
-    }
-  }, [formType, listNote]);
+    },
+    [formType, listNote]
+  );
 
   //DELETE LISTNOTE
   const deleteListNoteService = useCallback(async (deletedListId) => {
@@ -173,9 +180,8 @@ function Lists() {
       )
     );
   };
- 
+
   useEffect(() => {
-    
     console.log("Component did mount use");
     const fetchData = async () => {
       try {
@@ -188,15 +194,33 @@ function Lists() {
     };
     fetchData();
   }, []);
+  const handleAlertClose = () => {
+    setShowSuccessAlert(false);
+  };
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleAlertClose();
+      console.log("timer");
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [showSuccessAlert]);
 
   return (
     <>
       <div
         className="menu-list-notes"
-        style={{
-          display: listForm || reminders || reminderForm ? "none" : "block",
-        }}
+        // style={{
+        //   display: listForm || reminders || reminderForm ? "none" : "block",
+        // }}
       >
+        {showSuccessAlert && (
+          <div className="success-alert">
+            <p>ListNote added successfully!</p>
+          </div>
+        )}
         {loading && <Loading />}
         <div className="menu-list-note" id="renderlist-home">
           <h1>My List</h1>
@@ -239,7 +263,12 @@ function Lists() {
           colors={colors}
           onSubmitSuccess={addListServiceForm}
           onSubEditForm={editListServiceForm}
+          setListForm={setListForm}
         />
+        // <ComponentClass
+        // formType={formType}
+        //   listData={listData}
+        // />
       )}
 
       {reminders && (

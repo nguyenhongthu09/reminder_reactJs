@@ -180,7 +180,7 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, 0%);
-  margin-top: 30px;
+  margin-top: 10px;
   height: 800px;
   background-color: #d8d2d2;
   border: 1px solid black;
@@ -257,7 +257,7 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, 0%);
-  margin-top: 30px;
+  margin-top: 10px;
   height: 800px;
   background-color: #d8d2d2;
   border: 1px solid black;
@@ -494,6 +494,7 @@ body {
   --bs-btn-bg: rgb(228, 222, 222);
   border: none;
 }
-.button__keydown{
+
+.button__keydown {
   display: none;
 }
