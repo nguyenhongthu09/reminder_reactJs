@@ -1,15 +1,15 @@
-import { useState } from "react";
-import Lists from "./lists/Lists";
-import ComponentList from "./lists/ComponentList"
+// import Lists from "./lists/Lists";
+// import { ListProvider } from "../context/ListContext";
+// import ListContextEx from "./lists/ListContextEx"
+import { ListProvider } from "../store";
+import ContextListEx from "./lists/ComponentContext"
 function App() {
-
-  // const [isShow, setIsShow] = useState(true)
   return (
     <div className="App">
-      {/* <ComponentList/> */}
-      <Lists/>
-   {/* {isShow && <Lists />}   
-   <button onClick={()=>setIsShow(prevState => !prevState)}>chang</button> */}
+      <ListProvider>
+        {/* <Lists /> */}
+        <ContextListEx/>
+      </ListProvider>
     </div>
   );
 }

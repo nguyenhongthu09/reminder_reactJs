@@ -66,7 +66,7 @@ function List({
       }
     }
   };
-console.log("lisst");
+
   return (
     <div>
       <div className="listnote" key={listNote.id} id={listNote.id}>

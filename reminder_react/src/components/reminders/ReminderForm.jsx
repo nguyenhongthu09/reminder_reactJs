@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import List from "../lists/List";
 import { addNewReminder } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
 import Loading from "../core/Loading";
 import PropTypes from "prop-types";
+// import { ListContext } from "../../context/ListContext";
 
 function ReminderForm({
   listNote,
@@ -18,6 +19,7 @@ function ReminderForm({
   const [loading, setLoading] = useState(false);
   const [nameList, setNameList] = useState("");
   const inputRef = useRef(null);
+  // const context = useContext(ListContext);
   useEffect(() => {
     inputRef.current.focus();
   }, []);
@@ -70,7 +72,7 @@ function ReminderForm({
       console.error("Lỗi khi thêm mới reminder:", error.message);
     }
   };
-console.log("re-render rmeidner");
+
   return (
     <>
       <form action="" id="form__add__note" className="form--add__notes">

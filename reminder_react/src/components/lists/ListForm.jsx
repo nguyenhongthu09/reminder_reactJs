@@ -14,7 +14,6 @@ function ListForm({
   onSubEditForm,
   onSubmitSuccess,
   listData,
-  setListForm,
 }) {
   const [formData, setFormData] = useState({
     id: generateRandomStringId(),
@@ -25,7 +24,6 @@ function ListForm({
   const [loading, setLoading] = useState(false);
   const submitButtonRef = useRef(null);
   const inputRef = useRef(null);
-  // const [showConfirmForm, setShowConfirmForm] = useState(false);
 
   const handleColorSelect = useCallback(
     (selectedColor) => {
@@ -94,23 +92,9 @@ function ListForm({
   }, []);
 
   const handleCancelClick = () => {
-    // setShowConfirmForm(true);
     onCancelClick();
   };
 
-  // useEffect(() => {
-  //   return () => {
-  //     // eslint-disable-next-line no-restricted-globals
-  //     const userConfirmation = confirm("Ban co muon dong form?");
-  //     if (userConfirmation) {
-  //       setListForm(false);
-  //       console.log("confirmed");
-  //     } else {
-  //       setListForm(true);
-  //       console.log("canceled");
-  //     }
-  //   };
-  // }, [setListForm]);
 
   return (
     <form
