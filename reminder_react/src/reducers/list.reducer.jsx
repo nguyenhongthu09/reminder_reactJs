@@ -10,6 +10,7 @@ const initState = {
 };
 
 function listNoteReducer(state = initState, action) {
+  console.log(action, "action");
   const { type, payload } = action;
   switch (type) {
     case GET_LIST_NOTE:

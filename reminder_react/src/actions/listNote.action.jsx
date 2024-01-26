@@ -33,7 +33,7 @@ const createListNote = async (list, dispatch) => {
 const updateListNote = async (listId, updatedList, dispatch) => {
   try {
     const { name, isColor } = updatedList; 
-    await updateListData(listId, name, isColor); 
+    await updateListData( name, isColor); 
     dispatch({ type: EDIT_LIST, payload: { listId, updatedList } });
     console.log(updatedList, "update action");
   } catch (error) {

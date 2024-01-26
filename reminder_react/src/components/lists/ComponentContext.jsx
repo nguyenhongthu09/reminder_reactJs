@@ -63,7 +63,7 @@ function ContextListEx() {
     try {
       if (formType === "edit") {
         const updatedList = {
-          id: list.id,
+          // id: list.id,
           name: list.name,
           isColor: list.isColor,
         };
