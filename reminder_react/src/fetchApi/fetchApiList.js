@@ -62,15 +62,9 @@ export const updateListData = async (id, newName, newColor) => {
 
     if (response.status === 200) {
       const updatedList = response.data;
-      // Xử lý dữ liệu trả về từ server
-      // const processedData = {
-      //   id: updatedList.id,
-      //   name: updatedList.name.name, // Lấy trường 'name' từ đối tượng 'name'
-      //   isColor: updatedList.name.isColor, // Lấy trường 'isColor' từ đối tượng 'name'
-      // };
-      // console.log("Update successful", processedData);
+    
       console.log("Update successful", updatedList);
-      return updatedList; // Trả về dữ liệu đã được xử lý
+      return updatedList;
     }
   } catch (error) {
     console.error("Error during update:", error);

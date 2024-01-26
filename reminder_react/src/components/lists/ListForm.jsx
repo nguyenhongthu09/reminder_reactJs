@@ -95,7 +95,6 @@ function ListForm({
     onCancelClick();
   };
 
-
   return (
     <form
       onSubmit={handleSubmit}

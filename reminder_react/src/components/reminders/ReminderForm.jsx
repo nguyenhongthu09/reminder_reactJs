@@ -5,10 +5,10 @@ import Button from "../core/Button";
 import Input from "../core/Input";
 import Loading from "../core/Loading";
 import PropTypes from "prop-types";
-// import { ListContext } from "../../context/ListContext";
+import { ListContext } from "../../context/ListContext";
 
 function ReminderForm({
-  listNote,
+  // listNote,
   onCancelFormAdd,
   onSubmitAddReminderForm,
   updateListNoteCount,
@@ -19,7 +19,7 @@ function ReminderForm({
   const [loading, setLoading] = useState(false);
   const [nameList, setNameList] = useState("");
   const inputRef = useRef(null);
-  // const context = useContext(ListContext);
+  const context = useContext(ListContext);
   useEffect(() => {
     inputRef.current.focus();
   }, []);
@@ -58,7 +58,7 @@ function ReminderForm({
       setLoading(true);
       await addNewReminder(newReminder);
       if (onSubmitAddReminderForm) {
-        const updatedListNote = [...listNote];
+        const updatedListNote = [...context.listNote];
         onSubmitAddReminderForm(updatedListNote);
         const selectedList = updatedListNote.find(
           (list) => list.id === selectedListId
@@ -109,7 +109,7 @@ function ReminderForm({
             </div>
           </div>
           <div className="render" id="renderlist">
-            {listNote.map((list) => (
+            {context.listNote.map((list) => (
               <List
                 key={list.id}
                 listNote={list}
