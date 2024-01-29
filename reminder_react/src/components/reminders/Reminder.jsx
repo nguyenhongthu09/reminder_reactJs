@@ -1,20 +1,21 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useContext } from "react";
 import Dropdown from "../core/Dropdown";
 import Button from "../core/Button";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Checkbox from "../core/Checkbox";
 import PropTypes from "prop-types";
-
-function Reminder({ reminder, onEditReminder, onReminderDeleSuccess }) {
+import { ReminderContext } from "../../context/ReminderContext";
+import { ListContext } from "../../context/ListContext";
+function Reminder({ reminder, setIsDoneButtonDisabled }) {
   const [editedNote, setEditedNote] = useState({
     id: null,
     value: "",
     statusCheckbox: null,
   });
 
-  const [, setIsDoneButtonDisabled] = useState(true);
-
+  const context = useContext(ReminderContext);
+  const contextList = useContext(ListContext);
   const action = [
     {
       id: 1,
@@ -33,22 +34,37 @@ function Reminder({ reminder, onEditReminder, onReminderDeleSuccess }) {
   const handleEditValue = (noteId, newValue) => {
     setEditedNote({ id: noteId, value: newValue, statusCheckbox: null });
     setIsDoneButtonDisabled(true);
-    onEditReminder(noteId, newValue, "title");
+
+    context.updateReminder(noteId, newValue, "title");
   };
 
   const handleStatus = (noteId, newStatus) => {
     setEditedNote({ id: noteId, statusCheckbox: newStatus });
-    onEditReminder(noteId, newStatus, "status");
+    context.updateReminder(noteId, newStatus, "status");
+    const updatedReminders = context.reminder.map((reminder) =>
+      reminder.id === noteId ? { ...reminder, status: newStatus } : reminder
+    );
+    context.setReminder(updatedReminders);
+    const newTotalDone = updatedReminders.filter(
+      (reminder) => reminder.status
+    ).length;
+
+    contextList.updateTotalDone(newTotalDone);
   };
 
-  const handleButtonClick = useCallback(
-    (id, status) => {
-      if (onReminderDeleSuccess) {
-        onReminderDeleSuccess(id, status);
-      }
-    },
-    [onReminderDeleSuccess]
-  );
+  const handleButtonClick = (id, status) => {
+    context.deleteReminder(id);
+    const newTotalCount = context.reminder.length - 1;
+    if (status) {
+      contextList.updateListTotalCount(newTotalCount);
+      const newTotalDone = context.reminder.filter(
+        (reminder) => reminder.id !== id && reminder.status
+      ).length;
+      contextList.updateTotalDone(newTotalDone);
+    } else {
+      contextList.updateListTotalCount(newTotalCount);
+    }
+  };
 
   const handleInputChange = async (noteId, newValue) => {
     const isDoneButtonDisabled = newValue.trim() === "";
@@ -86,7 +102,7 @@ function Reminder({ reminder, onEditReminder, onReminderDeleSuccess }) {
           <Dropdown
             id={reminder.id}
             actions={action}
-            onClick={(id) => handleButtonClick(reminder.id, reminder.status)}
+            onClick={() => handleButtonClick(reminder.id, reminder.status)}
           />
         </div>
       </div>

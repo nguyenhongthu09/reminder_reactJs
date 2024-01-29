@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef, memo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  memo,
+  useContext,
+} from "react";
 import Button from "../core/Button";
 import ListColor from "./ListColor";
 import { generateRandomStringId } from "../../untils/common";
@@ -6,14 +13,13 @@ import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Loading from "../core/Loading";
 import PropTypes from "prop-types";
-
+import { ListContext } from "../../context/ListContext";
 function ListForm({
   formType,
   colors,
   onCancelClick,
-  onSubEditForm,
-  onSubmitSuccess,
   listData,
+  setListForm,
 }) {
   const [formData, setFormData] = useState({
     id: generateRandomStringId(),
@@ -24,7 +30,7 @@ function ListForm({
   const [loading, setLoading] = useState(false);
   const submitButtonRef = useRef(null);
   const inputRef = useRef(null);
-
+  const context = useContext(ListContext);
   const handleColorSelect = useCallback(
     (selectedColor) => {
       setFormData((prevData) => ({
@@ -56,9 +62,13 @@ function ListForm({
     try {
       setLoading(true);
       if (formType === "edit") {
-        await onSubEditForm(formData);
+        context.editListNote(formData);
+        console.log(formData, " log form data");
+        setListForm(false);
       } else {
-        await onSubmitSuccess(formData);
+        context.addListNote(formData);
+        console.log(formData, " log form data");
+        setListForm(false);
       }
     } catch (error) {
       console.error("Error submitting form:", error.message);

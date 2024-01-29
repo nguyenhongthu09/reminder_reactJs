@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useState, createContext } from "react";
 import React from "react";
-import { addNewList, updateListData, delList } from "../fetchApi/fetchApiList";
+import getAllList, {
+  addNewList,
+  updateListData,
+  delList,
+} from "../fetchApi/fetchApiList";
 
-export const ListContext = React.createContext();
+export const ListContext = createContext({});
 export const ListProvider = ({ children }) => {
   const [listNote, setListNote] = useState([]);
+  const [selectedListId, setSelectedListId] = useState(null);
+  const getListNote = async () => {
+    const listData = await getAllList();
+    setListNote(listData);
+  };
 
   const addListNote = async (newListNote) => {
+    newListNote.totalDone = 0;
+    newListNote.totalCount = 0;
     await addNewList({
       id: newListNote.id,
       name: newListNote.name,
@@ -31,12 +42,48 @@ export const ListProvider = ({ children }) => {
       prevList.filter((list) => list.id !== deletedListNoteId)
     );
   };
+
+  // update khi them moi trong form
+  const updateListNoteCount = (listId, newTotalCount) => {
+    setListNote((prevListNote) =>
+      prevListNote.map((list) =>
+        list.id === listId ? { ...list, totalCount: newTotalCount } : list
+      )
+    );
+  };
+
+  // update khi them moi va xoa trong reminder
+  const updateListTotalCount = (newTotalCount) => {
+    setListNote((prevListNote) =>
+      prevListNote.map((list) =>
+        list.id === selectedListId
+          ? { ...list, totalCount: newTotalCount }
+          : list
+      )
+    );
+  };
+
+  // update total co status la true
+  const updateTotalDone = (newTotalDone) => {
+    setListNote((prevListNote) =>
+      prevListNote.map((list) =>
+        list.id === selectedListId ? { ...list, totalDone: newTotalDone } : list
+      )
+    );
+  };
+
   const value = {
     listNote,
     addListNote,
     editListNote,
     deleteListNote,
     setListNote,
+    getListNote,
+    selectedListId,
+    setSelectedListId,
+    updateListNoteCount,
+    updateListTotalCount,
+    updateTotalDone,
   };
 
   return <ListContext.Provider value={value}>{children}</ListContext.Provider>;

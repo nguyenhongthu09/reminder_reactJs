@@ -1,25 +1,21 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import List from "../lists/List";
-import { addNewReminder } from "../../fetchApi/fetchApiREminder";
 import Button from "../core/Button";
 import Input from "../core/Input";
 import Loading from "../core/Loading";
 import PropTypes from "prop-types";
 import { ListContext } from "../../context/ListContext";
-
-function ReminderForm({
-  // listNote,
-  onCancelFormAdd,
-  onSubmitAddReminderForm,
-  updateListNoteCount,
-}) {
+import { ReminderContext } from "../../context/ReminderContext";
+function ReminderForm({ onCancelFormAdd, setReminderForm }) {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(true);
   const [selectedListId, setSelectedListId] = useState(null);
   const [reminderTitle, setReminderTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [nameList, setNameList] = useState("");
+
   const inputRef = useRef(null);
   const context = useContext(ListContext);
+  const contextReminder = useContext(ReminderContext);
   useEffect(() => {
     inputRef.current.focus();
   }, []);
@@ -56,16 +52,16 @@ function ReminderForm({
 
     try {
       setLoading(true);
-      await addNewReminder(newReminder);
-      if (onSubmitAddReminderForm) {
-        const updatedListNote = [...context.listNote];
-        onSubmitAddReminderForm(updatedListNote);
-        const selectedList = updatedListNote.find(
-          (list) => list.id === selectedListId
-        );
-        const newTotalCount = selectedList ? selectedList.totalCount + 1 : 1;
-        updateListNoteCount(selectedListId, newTotalCount);
-      }
+      contextReminder.addReminder(newReminder);
+      setReminderForm(false);
+      console.log(newReminder, "newreminder form");
+      const updatedListNote = [...context.listNote];
+      const selectedList = updatedListNote.find(
+        (list) => list.id === selectedListId
+      );
+      const newTotalCount = selectedList ? selectedList.totalCount + 1 : 1;
+      context.updateListNoteCount(selectedListId, newTotalCount);
+
       setLoading(false);
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {

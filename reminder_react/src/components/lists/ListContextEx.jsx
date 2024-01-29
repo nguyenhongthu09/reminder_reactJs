@@ -2,22 +2,16 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import List from "./List";
 import getColor from "../../fetchApi/fetchColor";
 import ListForm from "./ListForm";
-import Reminders from "../reminders/Reminders";
+import Reminders from "../reminders/ReminderContext";
 import ReminderForm from "../reminders/ReminderForm";
-import {
-  addNewList,
-  updateListData,
-  delList,
-} from "../../fetchApi/fetchApiList";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
 import { ListContext } from "../../context/ListContext";
-import getAllList from "../../fetchApi/fetchApiList";
+
 function Lists() {
   const [colors, setColors] = useState([]);
   const [listForm, setListForm] = useState(false);
   const [formType, setFormType] = useState("");
-  const [selectedListId, setSelectedListId] = useState(null);
   const [reminderForm, setReminderForm] = useState(false);
   const [reminders, setReminders] = useState(false);
   const [loading] = useState(false);
@@ -40,41 +34,6 @@ function Lists() {
     }
   };
 
-  // ADD LISTNOTE
-  const handleAddListNote = useCallback(
-    (newList) => {
-      if (formType === "add") {
-        newList.totalDone = 0;
-        newList.totalCount = 0;
-        context.addListNote(newList);
-        setListForm(false);
-        console.log(newList, "newlist");
-      }
-    },
-    [formType]
-  );
-
-  //EDIT LISTNOTE
-  const handleUpdateListNote = useCallback(
-    (list) => {
-      if (formType === "edit") {
-        context.editListNote({
-          id: list.id,
-          name: list.name,
-          isColor: list.isColor,
-        });
-        setListForm(false);
-        console.log("Cập nhật thành công", list);
-      }
-    },
-    [formType]
-  );
-
-  //DELETE LISTNOTE
-  const handleDeleteListNote = (deletedListId) => {
-    context.deleteListNote(deletedListId);
-  };
-
   const handleListNoteClick = (listNote) => {
     setFormTypeHandler("edit");
     setListData(listNote);
@@ -93,7 +52,7 @@ function Lists() {
 
   const handleListNoteItemClick = (listNote) => {
     setReminders(true);
-    setSelectedListId(listNote.id);
+    context.setSelectedListId(listNote.id);
     setNameList(listNote.name);
   };
 
@@ -105,39 +64,10 @@ function Lists() {
     setReminderForm(openForm);
   };
 
-  // update khi them moi trong form
-  const updateListNoteCount = (listId, newTotalCount) => {
-    context.setListNote((prevListNote) =>
-      prevListNote.map((list) =>
-        list.id === listId ? { ...list, totalCount: newTotalCount } : list
-      )
-    );
-  };
-
-  //update khi them moi va xoa trong remidner
-  const updateListTotalCount = (newTotalCount) => {
-    context.setListNote((prevListNote) =>
-      prevListNote.map((list) =>
-        list.id === selectedListId
-          ? { ...list, totalCount: newTotalCount }
-          : list
-      )
-    );
-  };
-
-  //update total co status la true
-  const updateTotalDone = (newTotalDone) => {
-    context.setListNote((prevListNote) =>
-      prevListNote.map((list) =>
-        list.id === selectedListId ? { ...list, totalDone: newTotalDone } : list
-      )
-    );
-  };
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const listData = await getAllList();
-        context.setListNote(listData);
+        context.getListNote();
         await getColors();
       } catch (error) {
         console.error("Error loading data:", error.message);
@@ -156,7 +86,6 @@ function Lists() {
             <List
               key={list.id}
               onListNoteClick={handleListNoteClick}
-              onListDeleteSuccess={handleDeleteListNote}
               listNote={list}
               onListNoteItemClick={handleListNoteItemClick}
             />
@@ -188,27 +117,19 @@ function Lists() {
           formType={formType}
           listData={listData}
           colors={colors}
-          onSubmitSuccess={handleAddListNote}
-          onSubEditForm={handleUpdateListNote}
+          setListForm={setListForm}
         />
       )}
 
       {reminders && (
-        <Reminders
-          onListsBackClick={handleBackList}
-          nameList={nameList}
-          selectedListId={selectedListId}
-          updateListTotalCount={updateListTotalCount}
-          updateTotalDone={updateTotalDone}
-          // reminders={reminders}
-        />
+        <Reminders onListsBackClick={handleBackList} nameList={nameList} />
       )}
 
       {reminderForm && (
         <ReminderForm
           onCancelFormAdd={() => handleFormAddReminder(false)}
           onSubmitAddReminderForm={() => handleFormAddReminder(false)}
-          updateListNoteCount={updateListNoteCount}
+          setReminderForm={setReminderForm}
         />
       )}
     </>
