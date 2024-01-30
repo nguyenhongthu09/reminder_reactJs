@@ -1,21 +1,23 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Dropdown from "../core/Dropdown";
 import Button from "../core/Button";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Checkbox from "../core/Checkbox";
 import PropTypes from "prop-types";
-import { ReminderContext } from "../../context/ReminderContext";
-import { ListContext } from "../../context/ListContext";
-function Reminder({ reminder, setIsDoneButtonDisabled }) {
+
+function Reminder({
+  reminder,
+  setIsDoneButtonDisabled,
+  onDeleteReminder,
+  onUpdateReminder,
+}) {
   const [editedNote, setEditedNote] = useState({
     id: null,
     value: "",
     statusCheckbox: null,
   });
 
-  const context = useContext(ReminderContext);
-  const contextList = useContext(ListContext);
   const action = [
     {
       id: 1,
@@ -34,36 +36,18 @@ function Reminder({ reminder, setIsDoneButtonDisabled }) {
   const handleEditValue = (noteId, newValue) => {
     setEditedNote({ id: noteId, value: newValue, statusCheckbox: null });
     setIsDoneButtonDisabled(true);
-
-    context.updateReminder(noteId, newValue, "title");
+    console.log("updateType in handleEditValue:", "title");
+    onUpdateReminder(noteId, newValue, "title");
   };
 
   const handleStatus = (noteId, newStatus) => {
     setEditedNote({ id: noteId, statusCheckbox: newStatus });
-    context.updateReminder(noteId, newStatus, "status");
-    const updatedReminders = context.reminder.map((reminder) =>
-      reminder.id === noteId ? { ...reminder, status: newStatus } : reminder
-    );
-    context.setReminder(updatedReminders);
-    const newTotalDone = updatedReminders.filter(
-      (reminder) => reminder.status
-    ).length;
-
-    contextList.updateTotalDone(newTotalDone);
+    onUpdateReminder(noteId, newStatus, "status");
   };
 
   const handleButtonClick = (id, status) => {
-    context.deleteReminder(id);
-    const newTotalCount = context.reminder.length - 1;
-    if (status) {
-      contextList.updateListTotalCount(newTotalCount);
-      const newTotalDone = context.reminder.filter(
-        (reminder) => reminder.id !== id && reminder.status
-      ).length;
-      contextList.updateTotalDone(newTotalDone);
-    } else {
-      contextList.updateListTotalCount(newTotalCount);
-    }
+    console.log(id, " xoa thanh cong");
+    onDeleteReminder(id, status);
   };
 
   const handleInputChange = async (noteId, newValue) => {

@@ -16,6 +16,7 @@ function ReminderForm({ onCancelFormAdd, setReminderForm }) {
   const inputRef = useRef(null);
   const context = useContext(ListContext);
   const contextReminder = useContext(ReminderContext);
+
   useEffect(() => {
     inputRef.current.focus();
   }, []);

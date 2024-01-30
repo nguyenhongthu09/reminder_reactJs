@@ -7,15 +7,16 @@ import PropTypes from "prop-types";
 import ReminderFormInList from "./ReminderFormInList";
 import { ReminderContext } from "../../context/ReminderContext";
 import { ListContext } from "../../context/ListContext";
+
 function Reminders({ nameList, onListsBackClick }) {
-  const [reminderForm, setReminderForm] = useState(false);
+  const [isReminderForm, setIsReminderForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] = useState(true);
-  const context = useContext(ReminderContext);
+  const contextReminder = useContext(ReminderContext);
   const contextList = useContext(ListContext);
 
   const handleCloseReminderForm = () => {
-    setReminderForm(false);
+    setIsReminderForm(false);
   };
 
   const hanldeBackList = async () => {
@@ -28,21 +29,42 @@ function Reminders({ nameList, onListsBackClick }) {
   };
 
   const showReminderForm = () => {
-    setReminderForm(true);
+    setIsReminderForm(true);
+  };
+  //DELETE REMIDNER
+  const deleteReminder = async (id, status) => {
+    try {
+      setLoading(true);
+      contextReminder.deleteReminder(id);
+      const newTotalCount = contextReminder.reminder.length - 1;
+      if (status) {
+        contextList.updateListTotalCount(newTotalCount);
+        const newTotalDone = contextReminder.reminder.filter(
+          (reminder) => reminder.id !== id && reminder.status
+        ).length;
+        contextList.updateTotalDone(newTotalDone);
+      } else {
+        contextList.updateListTotalCount(newTotalCount);
+      }
+    } catch (error) {
+      console.error("Error fetching reminder:", error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      context.getAllReminder(contextList.selectedListId);
+      contextReminder.getAllReminder(contextList.selectedListId);
       setLoading(false);
     };
 
     fetchData();
   }, []);
 
-  const hasReminderData = context.reminder.length === 0;
-  const sortedReminders = context.reminder.slice().sort((a, b) => {
+  const hasReminderData = contextReminder.reminder.length === 0;
+  const sortedReminders = contextReminder.reminder.slice().sort((a, b) => {
     return a.status === b.status ? 0 : a.status ? 1 : -1;
   });
 
@@ -72,15 +94,17 @@ function Reminders({ nameList, onListsBackClick }) {
                   key={note.id}
                   reminder={note}
                   setIsDoneButtonDisabled={setIsDoneButtonDisabled}
+                  onDeleteReminder={deleteReminder}
+                  onUpdateReminder={contextReminder.updateReminder}
                 />
               )
           )}
         </div>
-        {reminderForm && (
+        {isReminderForm && (
           <ReminderFormInList
             onCancelFormAdd={handleCloseReminderForm}
             setIsDoneButtonDisabled={setIsDoneButtonDisabled}
-            setReminderForm={setReminderForm}
+            setReminderForm={setIsReminderForm}
           />
         )}
 

@@ -1,74 +1,82 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import List from "./List";
-import getColor from "../../fetchApi/fetchColor";
 import ListForm from "./ListForm";
 import Reminders from "../reminders/ReminderContext";
 import ReminderForm from "../reminders/ReminderForm";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
 import { ListContext } from "../../context/ListContext";
-
+import { generateRandomStringId } from "../../untils/common";
 function Lists() {
-  const [colors, setColors] = useState([]);
-  const [listForm, setListForm] = useState(false);
+  const [isListForm, setIsListForm] = useState(false);
   const [formType, setFormType] = useState("");
-  const [reminderForm, setReminderForm] = useState(false);
-  const [reminders, setReminders] = useState(false);
-  const [loading] = useState(false);
-  const [listData, setListData] = useState(null);
+  const [isReminderForm, setIsReminderForm] = useState(false);
+  const [isReminders, setIsReminders] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [listData, setListData] = useState({
+    id: null,
+    name: "",
+    isColor: "",
+  });
   const [nameList, setNameList] = useState("");
   const context = useContext(ListContext);
   const setFormTypeHandler = (type) => {
-    setListForm(type === "add" || type === "edit");
+    setIsListForm(type === "add" || type === "edit");
     setFormType(type);
   };
 
-  //GET COLOR
-  const getColors = async () => {
-    try {
-      const colorData = await getColor();
-
-      setColors(colorData.map((colors) => colors.color));
-    } catch (error) {
-      console.error("Error fetching colorData:", error.message);
-    }
-  };
-
   const handleListNoteClick = (listNote) => {
+    console.log(listNote, " lisstnote");
     setFormTypeHandler("edit");
     setListData(listNote);
   };
 
   const handleAddFormListClick = (source) => {
+    console.log(source, " add form");
     setFormTypeHandler("add");
     if (source === "button") {
-      setListForm(true);
+      setIsListForm(true);
+      setListData({
+        id: generateRandomStringId(),
+        name: "",
+        isColor: "",
+      });
     }
   };
 
   const handleCancelClick = useCallback(() => {
-    setListForm(false);
+    setIsListForm(false);
   }, []);
 
   const handleListNoteItemClick = (listNote) => {
-    setReminders(true);
+    setIsReminders(true);
     context.setSelectedListId(listNote.id);
     setNameList(listNote.name);
   };
 
   const handleBackList = () => {
-    setReminders(false);
+    setIsReminders(false);
   };
 
   const handleFormAddReminder = (openForm) => {
-    setReminderForm(openForm);
+    setIsReminderForm(openForm);
+  };
+
+  //DELETE LISTNOTE
+  const deleteListNote = async (deletedListId) => {
+    setIsLoading(true);
+    await context.deleteListNote(deletedListId);
+    setIsLoading(false);
+    console.log(deletedListId, "id cua listnot via xoa");
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        context.getListNote();
-        await getColors();
+        setIsLoading(true);
+        await context.getListNote();
+        context.getColors();
+        setIsLoading(false);
       } catch (error) {
         console.error("Error loading data:", error.message);
       }
@@ -79,7 +87,7 @@ function Lists() {
   return (
     <>
       <div className="menu-list-notes">
-        {loading && <Loading />}
+        {isLoading && <Loading />}
         <div className="menu-list-note" id="renderlist-home">
           <h1>My List</h1>
           {context.listNote.map((list) => (
@@ -88,6 +96,7 @@ function Lists() {
               onListNoteClick={handleListNoteClick}
               listNote={list}
               onListNoteItemClick={handleListNoteItemClick}
+              onListDeleteSuccess={deleteListNote}
             />
           ))}
         </div>
@@ -111,25 +120,25 @@ function Lists() {
         </div>
       </div>
 
-      {listForm && (
+      {isListForm && (
         <ListForm
           onCancelClick={handleCancelClick}
           formType={formType}
           listData={listData}
-          colors={colors}
-          setListForm={setListForm}
+          setListForm={setIsListForm}
+          setListData={setListData}
         />
       )}
 
-      {reminders && (
+      {isReminders && (
         <Reminders onListsBackClick={handleBackList} nameList={nameList} />
       )}
 
-      {reminderForm && (
+      {isReminderForm && (
         <ReminderForm
           onCancelFormAdd={() => handleFormAddReminder(false)}
           onSubmitAddReminderForm={() => handleFormAddReminder(false)}
-          setReminderForm={setReminderForm}
+          setReminderForm={setIsReminderForm}
         />
       )}
     </>

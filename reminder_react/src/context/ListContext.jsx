@@ -5,14 +5,22 @@ import getAllList, {
   updateListData,
   delList,
 } from "../fetchApi/fetchApiList";
+import getColor from "../fetchApi/fetchColor";
 
 export const ListContext = createContext({});
 export const ListProvider = ({ children }) => {
   const [listNote, setListNote] = useState([]);
   const [selectedListId, setSelectedListId] = useState(null);
+  const [colors, setColors] = useState([]);
   const getListNote = async () => {
     const listData = await getAllList();
     setListNote(listData);
+  };
+
+  const getColors = async () => {
+    const colorData = await getColor();
+
+    setColors(colorData.map((colors) => colors.color));
   };
 
   const addListNote = async (newListNote) => {
@@ -84,6 +92,9 @@ export const ListProvider = ({ children }) => {
     updateListNoteCount,
     updateListTotalCount,
     updateTotalDone,
+    colors,
+    setColors,
+    getColors,
   };
 
   return <ListContext.Provider value={value}>{children}</ListContext.Provider>;

@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import Button from "../core/Button";
 import ListColor from "./ListColor";
-import { generateRandomStringId } from "../../untils/common";
+
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Loading from "../core/Loading";
@@ -16,36 +16,32 @@ import PropTypes from "prop-types";
 import { ListContext } from "../../context/ListContext";
 function ListForm({
   formType,
-  colors,
   onCancelClick,
   listData,
   setListForm,
+  setListData,
 }) {
-  const [formData, setFormData] = useState({
-    id: generateRandomStringId(),
-    name: "",
-    isColor: "",
-  });
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const submitButtonRef = useRef(null);
   const inputRef = useRef(null);
   const context = useContext(ListContext);
+
   const handleColorSelect = useCallback(
     (selectedColor) => {
-      setFormData((prevData) => ({
+      setListData((prevData) => ({
         ...prevData,
         isColor: selectedColor,
       }));
       setIsButtonDisabled(false);
     },
-    [setFormData]
+    [setListData]
   );
 
   const handleNameChange = (event) => {
     const inputValue = event.target.value;
     const isDisabled = inputValue.trim() === "";
-    setFormData((prevData) => ({
+    setListData((prevData) => ({
       ...prevData,
       name: inputValue,
     }));
@@ -58,16 +54,15 @@ function ListForm({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
       setLoading(true);
       if (formType === "edit") {
-        context.editListNote(formData);
-        console.log(formData, " log form data");
+        context.editListNote(listData);
+        console.log(listData, " log form data");
         setListForm(false);
       } else {
-        context.addListNote(formData);
-        console.log(formData, " log form data");
+        context.addListNote(listData);
+        console.log(listData, " log form data");
         setListForm(false);
       }
     } catch (error) {
@@ -82,18 +77,6 @@ function ListForm({
       submitButtonRef.current.click();
     }
   };
-  useEffect(() => {
-    console.log("name");
-    if (formType === "edit" && listData) {
-      const { id, name, isColor } = listData;
-
-      setFormData({
-        id: id,
-        name: name,
-        isColor: isColor,
-      });
-    }
-  }, []);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
@@ -141,7 +124,7 @@ function ListForm({
         <div
           className="fill-icon-color fill-color-edit"
           id="icon-color-edit"
-          style={{ backgroundColor: formData.isColor }}
+          style={{ backgroundColor: listData.isColor }}
         >
           <span className="fill-color">
             <Icon type="notelist"></Icon>
@@ -150,7 +133,7 @@ function ListForm({
         <Input
           id="name_edit-list"
           placeholder="Name List"
-          value={formData.name}
+          value={listData.name}
           onChange={handleNameChange}
           onClick={handleInputClick}
           ref={inputRef}
@@ -163,7 +146,7 @@ function ListForm({
         className="color-list-icon  render-list-color-edit"
         id="color-list-add-list"
       >
-        <ListColor colors={colors} onColorClick={handleColorSelect} />
+        <ListColor onColorClick={handleColorSelect} />
       </div>
     </form>
   );

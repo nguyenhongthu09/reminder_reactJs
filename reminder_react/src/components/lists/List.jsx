@@ -1,14 +1,15 @@
-import React, { memo, useContext } from "react";
+import React, { memo } from "react";
 import Dropdown from "../core/Dropdown";
 import Icon from "../core/Icon";
 import Button from "../core/Button";
 import PropTypes from "prop-types";
-import { ListContext } from "../../context/ListContext";
+
 function List({
   listNote,
   onListNoteItemClick,
-  onListSelect,
   onListNoteClick,
+  onListDeleteSuccess,
+  onListSelect,
 }) {
   const action = [
     {
@@ -36,24 +37,19 @@ function List({
       },
     },
   ];
-  const context = useContext(ListContext);
 
   const handleCLickNote = (list) => {
-    console.log("1");
     if (onListNoteItemClick) {
       onListNoteItemClick(list);
     }
   };
-
   const handleChooseNameList = (list) => {
-    console.log("2");
     if (onListSelect) {
       onListSelect(list);
     }
   };
 
   const handleButtonClick = (id, action) => {
-    console.log("3");
     if (action.id === 2) {
       if (id && onListNoteClick) {
         const listnote = listNote;
@@ -61,7 +57,7 @@ function List({
       }
     }
     if (action.id === 1) {
-      context.deleteListNote(id);
+      onListDeleteSuccess(id);
     }
   };
 

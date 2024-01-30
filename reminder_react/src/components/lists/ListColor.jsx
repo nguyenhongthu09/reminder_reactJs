@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState , useContext } from "react";
 import PropTypes from "prop-types";
-
-function ListColor({ colors, onColorClick }) {
+import { ListContext } from "../../context/ListContext";
+function ListColor({  onColorClick }) {
   const [selectedColor, setSelectedColor] = useState(null);
-
+  const context = useContext(ListContext)
   const handleColorClick = (color) => {
     setSelectedColor(color);
     onColorClick(color);
@@ -11,7 +11,7 @@ function ListColor({ colors, onColorClick }) {
 
   return (
     <>
-      {colors.map((color, index) => (
+      {context.colors.map((color, index) => (
         <div
           key={index}
           className={`color-swatch ${

@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useContext } from "react";
 import React from "react";
 import {
   getReminder,
@@ -6,11 +6,13 @@ import {
   addNewReminder,
   updateReminderData,
 } from "../fetchApi/fetchApiREminder";
+import { ListContext } from "./ListContext";
 
 export const ReminderContext = createContext({});
 
 export const ReminderProvider = ({ children }) => {
   const [reminder, setReminder] = useState([]);
+  const contextList = useContext(ListContext);
   const getAllReminder = async (selectedListId) => {
     const reminderData = await getReminder(selectedListId);
     setReminder(reminderData);
@@ -26,7 +28,6 @@ export const ReminderProvider = ({ children }) => {
     setReminder((prevReminder) => [...prevReminder, newReminder]);
     console.log(newReminder, " newreminder context");
   };
-
   const updateReminder = async (editedNoteId, newData, updateType) => {
     let updatedReminder;
     if (updateType === "title") {
@@ -37,11 +38,23 @@ export const ReminderProvider = ({ children }) => {
       updatedReminder = await updateReminderData(editedNoteId, {
         status: newData,
       });
+
+      if (updatedReminder) {
+        const updatedReminders = reminder.map((note) =>
+          note.id === updatedReminder.id ? updatedReminder : note
+        );
+        const newTotalDone = updatedReminders.filter(
+          (note) => note.status
+        ).length;
+
+        contextList.updateTotalDone(newTotalDone);
+        setReminder(updatedReminders);
+      }
     } else {
       console.error("Loại cập nhật không hợp lệ");
       return;
     }
-    console.log(updatedReminder, " Cập nhật thành công");
+   
   };
 
   const deleteReminder = async (idDeleNote) => {
