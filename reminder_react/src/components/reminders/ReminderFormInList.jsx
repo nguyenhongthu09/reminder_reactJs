@@ -3,20 +3,16 @@ import Checkbox from "../core/Checkbox";
 import Input from "../core/Input";
 import PropTypes from "prop-types";
 import { ReminderContext } from "../../context/ReminderContext";
-import { generateRandomStringId } from "../../untils/common";
+import { generateRandomStringId } from "../../utils/common";
 import { ListContext } from "../../context/ListContext";
 
-function ReminderFormInList({
-  onCancelFormAdd,
-  setReminderForm,
-  setIsDoneButtonDisabled,
-}) {
+function ReminderFormInList({ setIsReminderForm, setIsDoneButtonDisabled }) {
   const [reminderTitle, setReminderTitle] = useState("");
   const contextReminder = useContext(ReminderContext);
   const contextList = useContext(ListContext);
   const handleBlur = async () => {
     if (reminderTitle.trim() === "") {
-      onCancelFormAdd();
+      setIsReminderForm(false);
       return;
     } else {
       const newReminder = {
@@ -26,10 +22,9 @@ function ReminderFormInList({
         idlist: contextList.selectedListId,
       };
       await contextReminder.addReminder(newReminder);
-      const newTotalCount = contextReminder.reminder.length + 1;
-      contextList.updateListTotalCount(newTotalCount);
+
       setReminderTitle("");
-      setReminderForm(false);
+      setIsReminderForm(false);
     }
     setReminderTitle("");
   };

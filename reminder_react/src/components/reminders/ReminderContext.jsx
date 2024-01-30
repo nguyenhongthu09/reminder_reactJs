@@ -15,10 +15,6 @@ function Reminders({ nameList, onListsBackClick }) {
   const contextReminder = useContext(ReminderContext);
   const contextList = useContext(ListContext);
 
-  const handleCloseReminderForm = () => {
-    setIsReminderForm(false);
-  };
-
   const hanldeBackList = async () => {
     if (onListsBackClick) {
       setLoading(true);
@@ -35,17 +31,7 @@ function Reminders({ nameList, onListsBackClick }) {
   const deleteReminder = async (id, status) => {
     try {
       setLoading(true);
-      contextReminder.deleteReminder(id);
-      const newTotalCount = contextReminder.reminder.length - 1;
-      if (status) {
-        contextList.updateListTotalCount(newTotalCount);
-        const newTotalDone = contextReminder.reminder.filter(
-          (reminder) => reminder.id !== id && reminder.status
-        ).length;
-        contextList.updateTotalDone(newTotalDone);
-      } else {
-        contextList.updateListTotalCount(newTotalCount);
-      }
+      contextReminder.deleteReminder(id, status);
     } catch (error) {
       console.error("Error fetching reminder:", error.message);
     } finally {
@@ -56,15 +42,15 @@ function Reminders({ nameList, onListsBackClick }) {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      contextReminder.getAllReminder(contextList.selectedListId);
+      contextReminder.getAllReminders();
       setLoading(false);
     };
 
     fetchData();
   }, []);
 
-  const hasReminderData = contextReminder.reminder.length === 0;
-  const sortedReminders = contextReminder.reminder.slice().sort((a, b) => {
+  const hasReminderData = contextReminder.reminders.length === 0;
+  const sortedReminders = contextReminder.reminders.slice().sort((a, b) => {
     return a.status === b.status ? 0 : a.status ? 1 : -1;
   });
 
@@ -102,9 +88,8 @@ function Reminders({ nameList, onListsBackClick }) {
         </div>
         {isReminderForm && (
           <ReminderFormInList
-            onCancelFormAdd={handleCloseReminderForm}
             setIsDoneButtonDisabled={setIsDoneButtonDisabled}
-            setReminderForm={setIsReminderForm}
+            setIsReminderForm={setIsReminderForm}
           />
         )}
 

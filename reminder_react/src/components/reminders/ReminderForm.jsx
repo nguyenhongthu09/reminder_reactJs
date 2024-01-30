@@ -6,8 +6,8 @@ import Loading from "../core/Loading";
 import PropTypes from "prop-types";
 import { ListContext } from "../../context/ListContext";
 import { ReminderContext } from "../../context/ReminderContext";
-import { generateRandomStringId } from "../../untils/common";
-function ReminderForm({ onCancelFormAdd, setReminderForm }) {
+import { generateRandomStringId } from "../../utils/common";
+function ReminderForm({ setIsReminderForm }) {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(true);
   const [reminderTitle, setReminderTitle] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ function ReminderForm({ onCancelFormAdd, setReminderForm }) {
     try {
       setLoading(true);
       contextReminder.addReminder(newReminder);
-      setReminderForm(false);
+      setIsReminderForm(false);
       console.log(newReminder, "newreminder form");
       const updatedTotalCount = selectedList.totalCount + 1;
       context.updateListNoteCount(selectedList.id, updatedTotalCount);
@@ -64,12 +64,16 @@ function ReminderForm({ onCancelFormAdd, setReminderForm }) {
     }
   };
 
+  const handleCancelForm = () => {
+    setIsReminderForm(false);
+  };
+
   return (
     <>
       <form action="" id="form__add__note" className="form--add__notes">
         {loading && <Loading />}
         <div className="button-detail-list">
-          <Button className="btn-back-note" onClick={onCancelFormAdd}>
+          <Button className="btn-back-note" onClick={handleCancelForm}>
             Cancel
           </Button>
           <Button
@@ -127,7 +131,6 @@ ReminderForm.propTypes = {
     })
   ),
   onCancelFormAdd: PropTypes.func,
-  onSubmitAddReminderForm: PropTypes.func,
   updateListNoteCount: PropTypes.func,
 };
 

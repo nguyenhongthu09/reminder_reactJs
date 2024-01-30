@@ -1,6 +1,6 @@
 import axios from "axios";
-import { API_URL } from "../constants/apiURL";
 
+const API_URL = "http://localhost:8000";
 const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
@@ -8,4 +8,4 @@ const apiClient = axios.create({
   },
 });
 
-export  default apiClient;
+export default apiClient;

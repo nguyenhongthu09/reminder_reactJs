@@ -85,16 +85,14 @@ export const ListProvider = ({ children }) => {
     addListNote,
     editListNote,
     deleteListNote,
-    setListNote,
     getListNote,
-    selectedListId,
-    setSelectedListId,
     updateListNoteCount,
     updateListTotalCount,
     updateTotalDone,
     colors,
-    setColors,
     getColors,
+    setSelectedListId,
+    selectedListId,
   };
 
   return <ListContext.Provider value={value}>{children}</ListContext.Provider>;

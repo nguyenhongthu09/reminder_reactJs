@@ -6,7 +6,7 @@ import ReminderForm from "../reminders/ReminderForm";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
 import { ListContext } from "../../context/ListContext";
-import { generateRandomStringId } from "../../untils/common";
+import { generateRandomStringId } from "../../utils/common";
 function Lists() {
   const [isListForm, setIsListForm] = useState(false);
   const [formType, setFormType] = useState("");
@@ -43,10 +43,6 @@ function Lists() {
       });
     }
   };
-
-  const handleCancelClick = useCallback(() => {
-    setIsListForm(false);
-  }, []);
 
   const handleListNoteItemClick = (listNote) => {
     setIsReminders(true);
@@ -122,10 +118,9 @@ function Lists() {
 
       {isListForm && (
         <ListForm
-          onCancelClick={handleCancelClick}
           formType={formType}
           listData={listData}
-          setListForm={setIsListForm}
+          setIsListForm={setIsListForm}
           setListData={setListData}
         />
       )}
@@ -134,13 +129,7 @@ function Lists() {
         <Reminders onListsBackClick={handleBackList} nameList={nameList} />
       )}
 
-      {isReminderForm && (
-        <ReminderForm
-          onCancelFormAdd={() => handleFormAddReminder(false)}
-          onSubmitAddReminderForm={() => handleFormAddReminder(false)}
-          setReminderForm={setIsReminderForm}
-        />
-      )}
+      {isReminderForm && <ReminderForm setIsReminderForm={setIsReminderForm} />}
     </>
   );
 }

@@ -14,13 +14,7 @@ import Icon from "../core/Icon";
 import Loading from "../core/Loading";
 import PropTypes from "prop-types";
 import { ListContext } from "../../context/ListContext";
-function ListForm({
-  formType,
-  onCancelClick,
-  listData,
-  setListForm,
-  setListData,
-}) {
+function ListForm({ formType, listData, setIsListForm, setListData }) {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const submitButtonRef = useRef(null);
@@ -59,11 +53,11 @@ function ListForm({
       if (formType === "edit") {
         context.editListNote(listData);
         console.log(listData, " log form data");
-        setListForm(false);
+        setIsListForm(false);
       } else {
         context.addListNote(listData);
         console.log(listData, " log form data");
-        setListForm(false);
+        setIsListForm(false);
       }
     } catch (error) {
       console.error("Error submitting form:", error.message);
@@ -85,7 +79,7 @@ function ListForm({
   }, []);
 
   const handleCancelClick = () => {
-    onCancelClick();
+    setIsListForm(false);
   };
 
   return (

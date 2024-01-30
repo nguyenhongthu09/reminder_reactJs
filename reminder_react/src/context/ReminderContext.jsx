@@ -11,11 +11,11 @@ import { ListContext } from "./ListContext";
 export const ReminderContext = createContext({});
 
 export const ReminderProvider = ({ children }) => {
-  const [reminder, setReminder] = useState([]);
+  const [reminders, setReminders] = useState([]);
   const contextList = useContext(ListContext);
-  const getAllReminder = async (selectedListId) => {
-    const reminderData = await getReminder(selectedListId);
-    setReminder(reminderData);
+  const getAllReminders = async () => {
+    const reminderData = await getReminder(contextList.selectedListId);
+    setReminders(reminderData);
   };
 
   const addReminder = async (newReminder) => {
@@ -25,7 +25,9 @@ export const ReminderProvider = ({ children }) => {
       status: false,
       idlist: newReminder.idlist,
     });
-    setReminder((prevReminder) => [...prevReminder, newReminder]);
+    setReminders((prevReminder) => [...prevReminder, newReminder]);
+    const newTotalCount = reminders.length + 1;
+    contextList.updateListTotalCount(newTotalCount);
     console.log(newReminder, " newreminder context");
   };
   const updateReminder = async (editedNoteId, newData, updateType) => {
@@ -40,7 +42,7 @@ export const ReminderProvider = ({ children }) => {
       });
 
       if (updatedReminder) {
-        const updatedReminders = reminder.map((note) =>
+        const updatedReminders = reminders.map((note) =>
           note.id === updatedReminder.id ? updatedReminder : note
         );
         const newTotalDone = updatedReminders.filter(
@@ -48,27 +50,35 @@ export const ReminderProvider = ({ children }) => {
         ).length;
 
         contextList.updateTotalDone(newTotalDone);
-        setReminder(updatedReminders);
+        setReminders(updatedReminders);
       }
     } else {
       console.error("Loại cập nhật không hợp lệ");
       return;
     }
-   
   };
 
-  const deleteReminder = async (idDeleNote) => {
+  const deleteReminder = async (idDeleNote, status) => {
     await delREminder(idDeleNote);
-    setReminder((prevReminder) =>
+    setReminders((prevReminder) =>
       prevReminder.filter((note) => note.id !== idDeleNote)
     );
+    const newTotalCount = reminders.length - 1;
+    if (status) {
+      contextList.updateListTotalCount(newTotalCount);
+      const newTotalDone = reminders.filter(
+        (reminder) => reminder.id !== idDeleNote && reminder.status
+      ).length;
+      contextList.updateTotalDone(newTotalDone);
+    } else {
+      contextList.updateListTotalCount(newTotalCount);
+    }
     console.log(idDeleNote, "xoa thanh cong");
   };
 
   const value = {
-    reminder,
-    setReminder,
-    getAllReminder,
+    reminders,
+    getAllReminders,
     deleteReminder,
     addReminder,
     updateReminder,
