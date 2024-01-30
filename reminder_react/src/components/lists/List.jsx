@@ -44,6 +44,7 @@ function List({
     }
   };
   const handleChooseNameList = (list) => {
+    console.log(list, "log list");
     if (onListSelect) {
       onListSelect(list);
     }

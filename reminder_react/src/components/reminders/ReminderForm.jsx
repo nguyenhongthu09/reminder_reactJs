@@ -6,13 +6,12 @@ import Loading from "../core/Loading";
 import PropTypes from "prop-types";
 import { ListContext } from "../../context/ListContext";
 import { ReminderContext } from "../../context/ReminderContext";
+import { generateRandomStringId } from "../../untils/common";
 function ReminderForm({ onCancelFormAdd, setReminderForm }) {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(true);
-  const [selectedListId, setSelectedListId] = useState(null);
   const [reminderTitle, setReminderTitle] = useState("");
   const [loading, setLoading] = useState(false);
-  const [nameList, setNameList] = useState("");
-
+  const [selectedList, setSelectedList] = useState(null);
   const inputRef = useRef(null);
   const context = useContext(ListContext);
   const contextReminder = useContext(ReminderContext);
@@ -21,34 +20,34 @@ function ReminderForm({ onCancelFormAdd, setReminderForm }) {
     inputRef.current.focus();
   }, []);
   useEffect(() => {
-    setIsAddButtonDisabled(!reminderTitle.trim() || !selectedListId);
-  }, [reminderTitle, selectedListId]);
+    setIsAddButtonDisabled(!reminderTitle.trim() || !selectedList);
+  }, [reminderTitle]);
 
   const handleInputChange = (event) => {
     const inputValue = event.target.value;
-    const newIsAddButtonDisabled = inputValue.trim() === "" || !selectedListId;
+    const newIsAddButtonDisabled = inputValue.trim() === "" || !selectedList;
     setReminderTitle(inputValue);
     setIsAddButtonDisabled(newIsAddButtonDisabled);
   };
 
   const handleListSelection = (listNote) => {
-    setNameList(listNote.name);
-    setSelectedListId(listNote.id);
+    setSelectedList(listNote);
     setIsAddButtonDisabled(!reminderTitle.trim() || !listNote.id);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!reminderTitle || !selectedListId) {
+    if (!reminderTitle || !selectedList) {
       alert("Vui lòng chọn listNote tương ứng");
       return;
     }
 
     const newReminder = {
+      id: generateRandomStringId(),
       title: reminderTitle,
       status: false,
-      idlist: selectedListId,
+      idlist: selectedList.id,
     };
 
     try {
@@ -56,13 +55,8 @@ function ReminderForm({ onCancelFormAdd, setReminderForm }) {
       contextReminder.addReminder(newReminder);
       setReminderForm(false);
       console.log(newReminder, "newreminder form");
-      const updatedListNote = [...context.listNote];
-      const selectedList = updatedListNote.find(
-        (list) => list.id === selectedListId
-      );
-      const newTotalCount = selectedList ? selectedList.totalCount + 1 : 1;
-      context.updateListNoteCount(selectedListId, newTotalCount);
-
+      const updatedTotalCount = selectedList.totalCount + 1;
+      context.updateListNoteCount(selectedList.id, updatedTotalCount);
       setLoading(false);
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {
@@ -102,7 +96,9 @@ function ReminderForm({ onCancelFormAdd, setReminderForm }) {
               <span>Choose list</span>
             </div>
             <div>
-              <span className="name-list-choose">{nameList}</span>
+              <span className="name-list-choose">
+                {selectedList ? selectedList.name : "No list selected"}
+              </span>
             </div>
           </div>
           <div className="render" id="renderlist">
