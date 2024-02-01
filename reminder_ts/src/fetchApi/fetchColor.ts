@@ -13,7 +13,7 @@ const getColor = async (): Promise<Color[]> => {
     }
   } catch (error) {
     console.error("Error fetching color data:", error.message);
-    throw error; // Re-throw the error to handle it in the calling code
+    throw error;
   }
 };
 

@@ -63,7 +63,7 @@ export const getReminderTotal = async (
 
     if (response.status === 200) {
       const reminderData = response.data;
-      const totalCount = parseInt(response.headers["x-total-count"], 10); // Chuyển đổi sang kiểu number
+      const totalCount = parseInt(response.headers["x-total-count"], 10); 
       return { reminderData, totalCount };
     } else {
       throw new Error("Failed to fetch reminder data");
@@ -85,7 +85,7 @@ export const getReminderDone = async (listId: string): Promise<{ reminderDataDon
 
     if (response.status === 200) {
       const reminderDataDone = response.data;
-      const totalDone = parseInt(response.headers["x-total-count"], 10); // Chuyển đổi sang kiểu number
+      const totalDone = parseInt(response.headers["x-total-count"], 10); 
       return { reminderDataDone, totalDone };
     } else {
       throw new Error("Failed to fetch reminder data");
