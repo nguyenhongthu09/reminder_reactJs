@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, ReactNode } from "react";
+import { useState, createContext, useContext } from "react";
 import React from "react";
 import {
   getReminder,
@@ -8,19 +8,8 @@ import {
 } from "../fetchApi/fetchApiREminder.ts";
 import { ListContext } from "./listNote.context.tsx";
 import { ReminderType } from "../types/reminder.type.ts";
-
-interface ReminderContextType {
-  reminders: ReminderType[];
-  getAllReminders: () => Promise<void>;
-  deleteReminder: (idDeleNote: string, status: boolean) => Promise<void>;
-  addReminder: (newReminder: ReminderType) => Promise<void>;
-  updateReminder: (
-    editedNoteId: string,
-    newData: string | boolean,
-    updateType: string
-  ) => Promise<void>;
-}
-
+import { ReminderProviderProps } from "../types/reminder.provider.type.ts";
+import { ReminderContextType } from "../types/reminder.context.type.ts";
 export const ReminderContext = createContext<ReminderContextType>({
   reminders: [],
   getAllReminders: () => Promise.resolve(),
@@ -28,10 +17,6 @@ export const ReminderContext = createContext<ReminderContextType>({
   addReminder: () => Promise.resolve(),
   updateReminder: () => Promise.resolve(),
 });
-
-interface ReminderProviderProps {
-  children: ReactNode;
-}
 
 export const ReminderProvider = ({ children }: ReminderProviderProps) => {
   const [reminders, setReminders] = useState<ReminderType[]>([]);
@@ -73,17 +58,17 @@ export const ReminderProvider = ({ children }: ReminderProviderProps) => {
   };
 
   const updateReminder = async (
-    editedNoteId: string,
+    idEditReminder: string,
     newData: string | boolean,
     updateType: string
   ) => {
     let updatedReminder;
     if (updateType === "title") {
-      updatedReminder = await updateReminderData(editedNoteId, {
+      updatedReminder = await updateReminderData(idEditReminder, {
         title: newData as string,
       });
     } else if (updateType === "status") {
-      updatedReminder = await updateReminderData(editedNoteId, {
+      updatedReminder = await updateReminderData(idEditReminder, {
         status: newData as boolean,
       });
 
@@ -104,22 +89,22 @@ export const ReminderProvider = ({ children }: ReminderProviderProps) => {
     }
   };
 
-  const deleteReminder = async (idDeleNote: string, status: boolean) => {
-    await delREminder(idDeleNote);
+  const deleteReminder = async (idDeleReminder: string, status: boolean) => {
+    await delREminder(idDeleReminder);
     setReminders((prevReminder) =>
-      prevReminder.filter((note) => note.id !== idDeleNote)
+      prevReminder.filter((note) => note.id !== idDeleReminder)
     );
     const newTotalCount = reminders.length - 1;
     if (status) {
       contextList.updateListTotalCount(newTotalCount);
       const newTotalDone = reminders.filter(
-        (reminder) => reminder.id !== idDeleNote && reminder.status
+        (reminder) => reminder.id !== idDeleReminder && reminder.status
       ).length;
       contextList.updateTotalDone(newTotalDone);
     } else {
       contextList.updateListTotalCount(newTotalCount);
     }
-    console.log(idDeleNote, "xoa thanh cong");
+    console.log(idDeleReminder, "xoa thanh cong");
   };
 
   const value = {

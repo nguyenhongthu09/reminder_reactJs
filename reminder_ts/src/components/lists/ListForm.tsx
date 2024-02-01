@@ -30,8 +30,8 @@ const ListForm: React.FC<ListFormProps> = ({
   setIsListForm,
   setListData,
 }) => {
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const context = useContext(ListContext);

@@ -11,17 +11,9 @@ interface Action {
 interface DropdownProps {
   actions?: Action[];
   id?: string;
-  // onActionClick?: (actionId: number) => void;
 }
 
 class Dropdown extends Component<DropdownProps> {
-  // handleActionClick = (actionId: number) => {
-  //   const { onActionClick } = this.props;
-  //   if (onActionClick && typeof onActionClick === "function") {
-  //     onActionClick(actionId);
-  //   }
-  // };
-
   render() {
     const { actions = [], id } = this.props;
     return (
@@ -41,11 +33,7 @@ class Dropdown extends Component<DropdownProps> {
         >
           {Array.isArray(actions) &&
             actions.map((action) => (
-              <li
-                key={action.id}
-                // id={action.id.toString()}
-                onClick={action.onClick}
-              >
+              <li key={action.id} onClick={action.onClick}>
                 {action.icon}
               </li>
             ))}

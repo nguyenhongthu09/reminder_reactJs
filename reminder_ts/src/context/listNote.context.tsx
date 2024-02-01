@@ -1,4 +1,4 @@
-import { useState, createContext, ReactNode } from "react";
+import { useState, createContext } from "react";
 import React from "react";
 import getAllList, {
   addNewList,
@@ -7,40 +7,25 @@ import getAllList, {
 } from "../fetchApi/fetchApiList.ts";
 import getColor from "../fetchApi/fetchColor.ts";
 import { ListNote } from "../types/listNote.type.ts";
-import { Color } from "../types/color.type";
+import { Color } from "../types/color.type.ts";
+import { ListProviderProps } from "../types/listNote.provider.type.ts";
+import { ListContextType } from "../types/listNote.context.type.ts";
 export const ListContext = createContext<ListContextType>({
   listNote: [],
   addListNote: () => Promise.resolve(),
   editListNote: () => Promise.resolve(),
   deleteListNote: () => Promise.resolve(),
   getListNote: () => Promise.resolve(),
+  getColors: () => Promise.resolve(),
   updateListNoteCount: () => {},
   updateListTotalCount: () => {},
   updateTotalDone: () => {},
   setSelectedListId: () => {},
   selectedListId: "",
   colors: [],
-  getColors: async () => {},
 });
 
-interface ListProviderProps {
-  children: ReactNode;
-}
 
-interface ListContextType {
-  listNote: ListNote[];
-  addListNote: (newListNote: ListNote) => Promise<void>;
-  editListNote: (editedListNote: ListNote) => Promise<void>;
-  deleteListNote: (deletedListNoteId: string) => Promise<void>;
-  getListNote: () => Promise<void>;
-  updateListNoteCount: (listId: string, newTotalCount: number) => void;
-  updateListTotalCount: (newTotalCount: number) => void;
-  updateTotalDone: (newTotalDone: number) => void;
-  colors: Color[];
-  getColors: () => Promise<void>;
-  setSelectedListId: (listId: string) => void;
-  selectedListId: string;
-}
 export const ListProvider = ({ children }: ListProviderProps) => {
   const [listNote, setListNote] = useState<ListNote[]>([]);
   const [selectedListId, setSelectedListId] = useState<string>("");
