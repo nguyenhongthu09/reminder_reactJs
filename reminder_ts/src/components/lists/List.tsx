@@ -19,6 +19,7 @@ const List: React.FC<ListProps> = ({
   onListDeleteSuccess,
   onListSelect,
 }) => {
+  
   const handleCLickNote = () => {
     onListNoteItemClick && onListNoteItemClick(listNote);
   };
