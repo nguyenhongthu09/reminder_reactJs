@@ -33,7 +33,7 @@ export const ListProvider = ({ children }: ListProviderProps) => {
   const getListNote = async () => {
     const listData = await getAllList();
     if (Array.isArray(listData)) {
-      setListNote(listData);
+      setListNote(listData as ListNote[]);
     }
   };
 

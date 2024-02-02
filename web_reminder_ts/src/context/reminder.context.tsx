@@ -63,31 +63,28 @@ export const ReminderProvider = ({ children }: ReminderProviderProps) => {
     updateType: string
   ) => {
     let updatedReminder: ReminderType | undefined;
+  
     if (updateType === "title") {
-      updatedReminder = await updateReminderData(idEditReminder, {
-        title: newData as string,
-      });
+      updatedReminder = await updateReminderData(idEditReminder, { title: newData as string });
     } else if (updateType === "status") {
-      updatedReminder = await updateReminderData(idEditReminder, {
-        status: newData as boolean,
-      });
-
-      if (updatedReminder) {
-        const updatedReminders = reminders.map((note) =>
-          note.id === updatedReminder!.id ? updatedReminder! : note
-        );
-        const newTotalDone = updatedReminders.filter(
-          (note) => note.status
-        ).length;
-
-        contextList.updateTotalDone(newTotalDone);
-        setReminders(updatedReminders);
-      }
+      updatedReminder = await updateReminderData(idEditReminder, { status: newData as boolean });
     } else {
       console.error("Loại cập nhật không hợp lệ");
       return;
     }
+  
+    if (updatedReminder) {
+      const updatedReminders = reminders.map((note) =>
+        note.id === updatedReminder!.id ? updatedReminder! : note
+      );
+      const newTotalDone = updatedReminders.filter((note) => note.status).length;
+  
+      contextList.updateTotalDone(newTotalDone);
+      setReminders(updatedReminders.filter(Boolean));
+    }
   };
+  
+
 
   const deleteReminder = async (idDeleReminder: string, status: boolean) => {
     await delREminder(idDeleReminder);

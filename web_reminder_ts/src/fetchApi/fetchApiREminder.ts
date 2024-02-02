@@ -35,9 +35,9 @@ export const delREminder = async (id: string) => {
   await apiClient.delete(`/reminder/${id}`);
 };
 
-export const updateReminderData = async (id: string, data: any) => {
+export const updateReminderData = async (id: string, newData: Partial<ReminderType>) => {
   try {
-    const response = await apiClient.patch(`/reminder/${id}`, data);
+    const response = await apiClient.patch(`/reminder/${id}`, newData);
 
     if (response.status === 200) {
       const updatedReminder = response.data;
@@ -45,14 +45,15 @@ export const updateReminderData = async (id: string, data: any) => {
       return updatedReminder;
     }
   } catch (error) {
-    console.error("Error updating reminder:");
+    console.error("Error updating reminder:", error);
     return null;
   }
 };
 
+
 export const getReminderTotal = async (
   listId: string
-): Promise<{ reminderData: any; totalCount: number }> => {
+): Promise<{ reminderData: ReminderType[]; totalCount: number }> => {
   try {
     const response = await apiClient.get(`/reminder?idlist=${listId}`, {
       params: {
@@ -63,35 +64,40 @@ export const getReminderTotal = async (
 
     if (response.status === 200) {
       const reminderData = response.data;
-      const totalCount = parseInt(response.headers["x-total-count"], 10); 
+      const totalCount = parseInt(response.headers["x-total-count"], 10);
       return { reminderData, totalCount };
     } else {
       throw new Error("Failed to fetch reminder data");
     }
   } catch (error) {
     console.error("Error fetching reminder total:");
-    return { reminderData: null, totalCount: 0 };
+    return { reminderData: [], totalCount: 0 };
   }
 };
 
-export const getReminderDone = async (listId: string): Promise<{ reminderDataDone: any; totalDone: number }> => {
+export const getReminderDone = async (
+  listId: string
+): Promise<{ reminderDataDone: ReminderType[]; totalDone: number }> => {
   try {
-    const response = await apiClient.get(`/reminder?idlist=${listId}&status=true`, {
-      params: {
-        _page: 1,
-        _limit: 1,
-      },
-    });
+    const response = await apiClient.get(
+      `/reminder?idlist=${listId}&status=true`,
+      {
+        params: {
+          _page: 1,
+          _limit: 1,
+        },
+      }
+    );
 
     if (response.status === 200) {
       const reminderDataDone = response.data;
-      const totalDone = parseInt(response.headers["x-total-count"], 10); 
+      const totalDone = parseInt(response.headers["x-total-count"], 10);
       return { reminderDataDone, totalDone };
     } else {
       throw new Error("Failed to fetch reminder data");
     }
   } catch (error) {
     console.error("Error fetching reminder total:");
-    return { reminderDataDone: null, totalDone: 0 };
+    return { reminderDataDone: [], totalDone: 0 };
   }
 };

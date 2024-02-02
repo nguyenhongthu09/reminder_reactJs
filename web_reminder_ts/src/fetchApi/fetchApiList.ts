@@ -7,40 +7,49 @@ export const getAllList = async () => {
     const response = await apiClient.get("/listNote");
 
     if (response.status === 200) {
-      const listData = response.data;
+      const listData: ListNote[] = response.data;
       console.log(listData, " listnote");
 
       const total = await Promise.all(
-        listData.map(async (listItem: any) => {
-          const reminderResponse = await getReminderTotal(listItem.id);
-          console.log(reminderResponse, " reminder");
+        listData.map(async (listItem) => {
+          try {
+            const reminderResponse = await getReminderTotal(listItem.id);
+            console.log(reminderResponse, " reminder");
 
-          const reminderData = reminderResponse?.reminderData;
+            const reminderData = reminderResponse.reminderData;
 
-          const totalCount = reminderResponse?.totalCount ?? 0;
-          console.log(totalCount, "totalCount");
+            const totalCount = reminderResponse.totalCount ?? 0;
+            console.log(totalCount, "totalCount");
 
-          const reminderDoneResponse = await getReminderDone(listItem.id);
-          console.log(reminderDoneResponse, "remidner done");
-          const reminderDataDone = reminderDoneResponse?.reminderDataDone;
-          const totalDone = reminderDoneResponse?.totalDone ?? 0;
-          return {
-            id: listItem.id,
-            name: listItem.name,
-            isColor: listItem.isColor,
-            totalCount: totalCount,
-            totalDone: totalDone,
-            reminders: reminderData?.reminders || [],
-            remindersDone: reminderDataDone?.remindersDone || [],
-          };
+            const reminderDoneResponse = await getReminderDone(listItem.id);
+            console.log(reminderDoneResponse, "remidner done");
+            const reminderDataDone = reminderDoneResponse.reminderDataDone;
+            const totalDone = reminderDoneResponse.totalDone ?? 0;
+
+            return {
+              id: listItem.id,
+              name: listItem.name,
+              isColor: listItem.isColor,
+              totalCount: totalCount,
+              totalDone: totalDone,
+              reminders: reminderData || [],
+              remindersDone: reminderDataDone || [],
+            };
+          } catch (error) {
+            console.error("Error fetching reminders:", error);
+            return null;
+          }
         })
       );
-      return total;
+      const filteredTotal = total.filter((item) => item !== null);
+
+      return filteredTotal;
     }
   } catch (error) {
     console.error("Error fetching list:", error);
   }
 };
+
 
 export const addNewList = async (list: ListNote) => {
   try {
