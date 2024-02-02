@@ -1,0 +1,12 @@
+  totalCount?: number; 
+  Dấu chấm hỏi ? sau tên thuộc tính là một cách để chỉ định rằng thuộc tính đó là tùy chọn, có nghĩa là nó có thể có giá trị hoặc có thể không.
+  Trong trường hợp này,
+   totalCount có thể được sử dụng để lưu trữ số lượng các mục trong danh sách, nhưng nó không bắt buộc phải có giá trị ngay từ khi đối tượng được khởi tạo.
+    Thay vào đó, nó có thể được cập nhật hoặc thêm vào sau khi đối tượng đã được tạo.
+     Điều này cho phép bạn linh hoạt trong việc sử dụng đối tượng IListNote mà không cần phải cung cấp giá trị cho totalCount mỗi khi tạo mới một đối tượng mới.
+
+
++setListNote(listData as IListNote[]);
+=> listData as IListNote[] chuyển đổi listData thành một mảng các đối tượng IListNote. 
+Điều này giả định rằng listData đã được khởi tạo hoặc đã được đảm bảo là một mảng của các đối tượng có 
+cấu trúc giống IListNote.

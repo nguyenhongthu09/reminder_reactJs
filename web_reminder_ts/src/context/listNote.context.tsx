@@ -60,14 +60,19 @@ export const ListProvider = ({ children }: IListProvider) => {
   };
 
   const addListNote = async (newListNote: IListNote): Promise<void> => {
-    newListNote.totalDone = 0;
-    newListNote.totalCount = 0;
-    await addNewList({
-      id: newListNote.id,
-      name: newListNote.name,
-      isColor: newListNote.isColor,
-    });
-    setListNote((prevList) => [...prevList, newListNote]);
+    try {
+      const newList = { ...newListNote };
+      const createdListNote = await addNewList(newList);
+      const updatedListNote = {
+        ...createdListNote,
+        totalDone: 0,
+        totalCount: 0,
+      };
+      setListNote((prevList) => [...prevList, updatedListNote]);
+    } catch (error) {
+      console.error("Lỗi khi thêm mới danh sách:", error);
+      throw error;
+    }
   };
 
   const editListNote = async (editedListNote: IListNote): Promise<void> => {
