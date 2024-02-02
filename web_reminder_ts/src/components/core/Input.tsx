@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FocusEvent } from "react";
 
-interface InputProps {
+interface IInputProps {
   value?: string;
   onClick?: () => void;
   id?: string;
@@ -12,7 +12,7 @@ interface InputProps {
   className?: string;
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+const Input = React.forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
   const {
     value,
     onClick,

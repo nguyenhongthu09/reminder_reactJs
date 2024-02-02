@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
-interface IconProps {
+interface IIconProps {
   type: string;
 }
 
-class Icon extends Component<IconProps> {
+class Icon extends Component<IIconProps> {
   render() {
     const { type } = this.props;
 

@@ -6,14 +6,14 @@ import Loading from "../core/Loading";
 import ReminderFormInList from "./ReminderFormInList";
 import { ReminderContext } from "../../context/reminder.context";
 import { ListContext } from "../../context/listNote.context";
-import { ReminderType } from "../../types/reminder.type";
+import { IReminderType } from "../../types/reminder.type";
 
-interface RemindersProps {
+interface IRemindersProps {
   nameList: string;
   onListsBackClick?: () => void;
 }
 
-const Reminders: React.FC<RemindersProps> = ({
+const Reminders: React.FC<IRemindersProps> = ({
   nameList,
   onListsBackClick,
 }) => {
@@ -24,7 +24,7 @@ const Reminders: React.FC<RemindersProps> = ({
   const contextReminder = useContext(ReminderContext);
   const contextList = useContext(ListContext);
 
-  const hanldeBackList = async () => {
+  const hanldeBackList = async (): Promise<void> => {
     if (onListsBackClick) {
       setLoading(true);
       await getAllList();
@@ -37,7 +37,7 @@ const Reminders: React.FC<RemindersProps> = ({
     setIsReminderForm(true);
   };
   //DELETE REMIDNER
-  const deleteReminder = async (id: string, status: boolean) => {
+  const deleteReminder = async (id: string, status: boolean): Promise<void> => {
     try {
       setLoading(true);
       contextReminder.deleteReminder(id, status);
@@ -49,17 +49,13 @@ const Reminders: React.FC<RemindersProps> = ({
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      contextReminder.getAllReminders();
-      setLoading(false);
-    };
-
-    fetchData();
+    setLoading(true);
+    contextReminder.getAllReminders().then(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const hasReminderData: boolean = contextReminder.reminders.length === 0;
-  const sortedReminders: ReminderType[] = contextReminder.reminders
+  const sortedReminders: IReminderType[] = contextReminder.reminders
     .slice()
     .sort((a, b) => {
       return a.status === b.status ? 0 : a.status ? 1 : -1;

@@ -1,12 +1,11 @@
 import React, { useState, useContext } from "react";
-
 import { ListContext } from "../../context/listNote.context";
-
-interface Props {
+import { IColor } from "../../types/color.type";
+interface IColorProps {
   onColorClick: (color: string) => void;
 }
 
-const ListColor: React.FC<Props> = ({ onColorClick }) => {
+const ListColor: React.FC<IColorProps> = ({ onColorClick }) => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const context = useContext(ListContext);
 
@@ -17,7 +16,7 @@ const ListColor: React.FC<Props> = ({ onColorClick }) => {
 
   return (
     <>
-      {context.colors.map((color, index) => (
+      {context.colors.map((color: IColor, index: number) => (
         <div
           key={index}
           className={`color-swatch ${

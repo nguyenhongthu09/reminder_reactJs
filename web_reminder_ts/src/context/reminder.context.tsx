@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, ReactNode } from "react";
 import React from "react";
 import {
   getReminder,
@@ -7,10 +7,25 @@ import {
   updateReminderData,
 } from "../fetchApi/fetchApiREminder";
 import { ListContext } from "./listNote.context";
-import { ReminderType } from "../types/reminder.type";
-import { ReminderProviderProps } from "../types/reminder.provider.type";
-import { ReminderContextType } from "../types/reminder.context.type";
-export const ReminderContext = createContext<ReminderContextType>({
+import { IReminderType } from "../types/reminder.type";
+
+interface IReminderProvider {
+  children: ReactNode;
+}
+
+interface IReminderContextType {
+  reminders: IReminderType[];
+  getAllReminders: () => Promise<void>;
+  deleteReminder: (idDeleReminder: string, status: boolean) => Promise<void>;
+  addReminder: (newReminder: IReminderType) => Promise<void>;
+  updateReminder: (
+    idEditReminder: string,
+    newData: string | boolean,
+    updateType: string
+  ) => Promise<void>;
+}
+
+export const ReminderContext = createContext<IReminderContextType>({
   reminders: [],
   getAllReminders: () => Promise.resolve(),
   deleteReminder: () => Promise.resolve(),
@@ -18,18 +33,20 @@ export const ReminderContext = createContext<ReminderContextType>({
   updateReminder: () => Promise.resolve(),
 });
 
-export const ReminderProvider = ({ children }: ReminderProviderProps) => {
-  const [reminders, setReminders] = useState<ReminderType[]>([]);
+export const ReminderProvider = ({ children }: IReminderProvider) => {
+  const [reminders, setReminders] = useState<IReminderType[]>([]);
   const contextList = useContext(ListContext);
 
-  const getAllReminders = async () => {
+  const getAllReminders = async (): Promise<void> => {
     if (contextList.selectedListId) {
       const reminderData = await getReminder(contextList.selectedListId);
+      console.log(reminderData, "remidner");
+
       setReminders(reminderData);
     }
   };
 
-  const addReminder = async (newReminder: ReminderType) => {
+  const addReminder = async (newReminder: IReminderType): Promise<void> => {
     try {
       await addNewReminder({
         id: newReminder.id,
@@ -61,32 +78,39 @@ export const ReminderProvider = ({ children }: ReminderProviderProps) => {
     idEditReminder: string,
     newData: string | boolean,
     updateType: string
-  ) => {
-    let updatedReminder: ReminderType | undefined;
-  
+  ): Promise<void> => {
+    let updatedReminder: IReminderType | undefined;
+
     if (updateType === "title") {
-      updatedReminder = await updateReminderData(idEditReminder, { title: newData as string });
+      updatedReminder = await updateReminderData(idEditReminder, {
+        title: newData as string,
+      });
     } else if (updateType === "status") {
-      updatedReminder = await updateReminderData(idEditReminder, { status: newData as boolean });
+      updatedReminder = await updateReminderData(idEditReminder, {
+        status: newData as boolean,
+      });
     } else {
       console.error("Loại cập nhật không hợp lệ");
       return;
     }
-  
+
     if (updatedReminder) {
       const updatedReminders = reminders.map((note) =>
         note.id === updatedReminder!.id ? updatedReminder! : note
       );
-      const newTotalDone = updatedReminders.filter((note) => note.status).length;
-  
+      const newTotalDone = updatedReminders.filter(
+        (note) => note.status
+      ).length;
+
       contextList.updateTotalDone(newTotalDone);
       setReminders(updatedReminders.filter(Boolean));
     }
   };
-  
 
-
-  const deleteReminder = async (idDeleReminder: string, status: boolean) => {
+  const deleteReminder = async (
+    idDeleReminder: string,
+    status: boolean
+  ): Promise<void> => {
     await delREminder(idDeleReminder);
     setReminders((prevReminder) =>
       prevReminder.filter((note) => note.id !== idDeleReminder)

@@ -1,5 +1,4 @@
-interface Color {
+interface IColor {
   color: string;
 }
-
-export type { Color };
+export type { IColor };

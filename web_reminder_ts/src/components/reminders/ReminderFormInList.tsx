@@ -5,25 +5,25 @@ import Input from "../core/Input";
 import { ReminderContext } from "../../context/reminder.context";
 import { generateRandomStringId } from "../../utils/common";
 import { ListContext } from "../../context/listNote.context";
-import { ReminderType } from "../../types/reminder.type";
-interface ReminderFormInListProps {
+import { IReminderType } from "../../types/reminder.type";
+interface IReminderFormInListProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDoneButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ReminderFormInList: React.FC<ReminderFormInListProps> = ({
+const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   setIsReminderForm,
   setIsDoneButtonDisabled,
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const contextReminder = useContext(ReminderContext);
   const contextList = useContext(ListContext);
-  const handleBlur = async () => {
+  const handleBlur = async (): Promise<void> => {
     if (reminderTitle.trim() === "") {
       setIsReminderForm(false);
       return;
     } else {
-      const newReminder: ReminderType = {
+      const newReminder: IReminderType = {
         id: generateRandomStringId(),
         title: reminderTitle,
         status: false,

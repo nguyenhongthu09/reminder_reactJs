@@ -1,20 +1,22 @@
 import apiClient from "../config/axios";
-import { ReminderType } from "../types/reminder.type";
-export const getReminder = async (listId: string) => {
-  try {
-    const response = await apiClient.get(`/reminder?idlist=${listId}`);
+import { IReminderType } from "../types/reminder.type";
 
-    if (response.status === 200) {
-      const reminderData = response.data;
-      return reminderData;
-    }
-  } catch (error) {
-    console.error("Error fetching reminders:");
-    return null;
+export const getReminder = async (listId: string): Promise<IReminderType[]> => {
+  const response = await apiClient.get(`/reminder?idlist=${listId}`);
+
+  if (response.status !== 200) {
+    throw new Error(`Error fetching reminders: Status code ${response.status}`);
   }
+
+  const reminderData: IReminderType[] = response.data;
+  return reminderData;
 };
 
-export const addNewReminder = async (reminder: ReminderType) => {
+
+
+export const addNewReminder = async (
+  reminder: IReminderType
+): Promise<IReminderType> => {
   try {
     const response = await apiClient.post("/reminder", reminder);
 
@@ -23,19 +25,24 @@ export const addNewReminder = async (reminder: ReminderType) => {
       return createdReminderData;
     } else {
       console.error("Error adding new reminder, status code:", response.status);
-      return null;
+      throw new Error(
+        `Error adding new reminder, status code: ${response.status}`
+      );
     }
   } catch (error) {
-    console.error("Error during adding new reminder:");
-    return null;
+    console.error("Error during adding new reminder:", error);
+    throw error;
   }
 };
 
-export const delREminder = async (id: string) => {
+export const delREminder = async (id: string): Promise<void> => {
   await apiClient.delete(`/reminder/${id}`);
 };
 
-export const updateReminderData = async (id: string, newData: Partial<ReminderType>) => {
+export const updateReminderData = async (
+  id: string,
+  newData: Partial<IReminderType>
+): Promise<IReminderType | undefined> => {
   try {
     const response = await apiClient.patch(`/reminder/${id}`, newData);
 
@@ -46,14 +53,12 @@ export const updateReminderData = async (id: string, newData: Partial<ReminderTy
     }
   } catch (error) {
     console.error("Error updating reminder:", error);
-    return null;
   }
 };
 
-
 export const getReminderTotal = async (
   listId: string
-): Promise<{ reminderData: ReminderType[]; totalCount: number }> => {
+): Promise<{ totalCount: number }> => {
   try {
     const response = await apiClient.get(`/reminder?idlist=${listId}`, {
       params: {
@@ -63,21 +68,20 @@ export const getReminderTotal = async (
     });
 
     if (response.status === 200) {
-      const reminderData = response.data;
       const totalCount = parseInt(response.headers["x-total-count"], 10);
-      return { reminderData, totalCount };
+      return { totalCount };
     } else {
       throw new Error("Failed to fetch reminder data");
     }
   } catch (error) {
     console.error("Error fetching reminder total:");
-    return { reminderData: [], totalCount: 0 };
+    return { totalCount: 0 };
   }
 };
 
 export const getReminderDone = async (
   listId: string
-): Promise<{ reminderDataDone: ReminderType[]; totalDone: number }> => {
+): Promise<{ totalDone: number }> => {
   try {
     const response = await apiClient.get(
       `/reminder?idlist=${listId}&status=true`,
@@ -90,14 +94,13 @@ export const getReminderDone = async (
     );
 
     if (response.status === 200) {
-      const reminderDataDone = response.data;
       const totalDone = parseInt(response.headers["x-total-count"], 10);
-      return { reminderDataDone, totalDone };
+      return { totalDone };
     } else {
       throw new Error("Failed to fetch reminder data");
     }
   } catch (error) {
     console.error("Error fetching reminder total:");
-    return { reminderDataDone: [], totalDone: 0 };
+    return { totalDone: 0 };
   }
 };

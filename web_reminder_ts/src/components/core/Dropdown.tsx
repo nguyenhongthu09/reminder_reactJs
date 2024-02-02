@@ -1,19 +1,14 @@
 import React, { Component } from "react";
 import Icon from "./Icon";
 import Button from "./Button";
+import { IAction } from "../../types/action.type";
 
-interface Action {
-  id: number;
-  icon: React.ReactNode;
-  onClick: () => void;
-}
-
-interface DropdownProps {
-  actions?: Action[];
+interface IDropdownProps {
+  actions?: IAction[];
   id?: string;
 }
 
-class Dropdown extends Component<DropdownProps> {
+class Dropdown extends Component<IDropdownProps> {
   render() {
     const { actions = [], id } = this.props;
     return (

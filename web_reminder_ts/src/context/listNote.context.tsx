@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, ReactNode } from "react";
 import React from "react";
 import getAllList, {
   addNewList,
@@ -6,11 +6,28 @@ import getAllList, {
   updateListData,
 } from "../fetchApi/fetchApiList";
 import getColor from "../fetchApi/fetchColor";
-import { ListNote } from "../types/listNote.type";
-import { Color } from "../types/color.type";
-import { ListProviderProps } from "../types/listNote.provider.type";
-import { ListContextType } from "../types/listNote.context.type";
-export const ListContext = createContext<ListContextType>({
+import { IListNote } from "../types/listNote.type";
+import { IColor } from "../types/color.type";
+
+interface IListProvider {
+  children: ReactNode;
+}
+interface IListContextType {
+  listNote: IListNote[];
+  addListNote: (newListNote: IListNote) => Promise<void>;
+  editListNote: (editedListNote: IListNote) => Promise<void>;
+  deleteListNote: (deletedListNoteId: string) => Promise<void>;
+  getListNote: () => Promise<void>;
+  updateListNoteCount: (listId: string, newTotalCount: number) => void;
+  updateListTotalCount: (newTotalCount: number) => void;
+  updateTotalDone: (newTotalDone: number) => void;
+  colors: IColor[];
+  getColors: () => Promise<void>;
+  setSelectedListId: React.Dispatch<React.SetStateAction<string>>;
+  selectedListId: string;
+}
+
+export const ListContext = createContext<IListContextType>({
   listNote: [],
   addListNote: () => Promise.resolve(),
   editListNote: () => Promise.resolve(),
@@ -20,29 +37,29 @@ export const ListContext = createContext<ListContextType>({
   updateListNoteCount: () => {},
   updateListTotalCount: () => {},
   updateTotalDone: () => {},
-  setSelectedListId: () => {},
   selectedListId: "",
+  setSelectedListId: () => {},
   colors: [],
 });
 
-export const ListProvider = ({ children }: ListProviderProps) => {
-  const [listNote, setListNote] = useState<ListNote[]>([]);
+export const ListProvider = ({ children }: IListProvider) => {
+  const [listNote, setListNote] = useState<IListNote[]>([]);
   const [selectedListId, setSelectedListId] = useState<string>("");
-  const [colors, setColors] = useState<Color[]>([]);
+  const [colors, setColors] = useState<IColor[]>([]);
 
-  const getListNote = async () => {
+  const getListNote = async (): Promise<void> => {
     const listData = await getAllList();
     if (Array.isArray(listData)) {
-      setListNote(listData as ListNote[]);
+      setListNote(listData as IListNote[]);
     }
   };
 
-  const getColors = async () => {
+  const getColors = async (): Promise<void> => {
     const colorData = await getColor();
     setColors(colorData.map((color) => ({ color: color.color })));
   };
 
-  const addListNote = async (newListNote: ListNote) => {
+  const addListNote = async (newListNote: IListNote): Promise<void> => {
     newListNote.totalDone = 0;
     newListNote.totalCount = 0;
     await addNewList({
@@ -53,7 +70,7 @@ export const ListProvider = ({ children }: ListProviderProps) => {
     setListNote((prevList) => [...prevList, newListNote]);
   };
 
-  const editListNote = async (editedListNote: ListNote) => {
+  const editListNote = async (editedListNote: IListNote): Promise<void> => {
     const { id, totalDone, totalCount, ...updateList } = editedListNote;
     await updateListData(id, updateList.name, updateList.isColor);
     setListNote((prevList) =>
@@ -63,7 +80,7 @@ export const ListProvider = ({ children }: ListProviderProps) => {
     );
   };
 
-  const deleteListNote = async (deletedListNoteId: string) => {
+  const deleteListNote = async (deletedListNoteId: string): Promise<void> => {
     await delList(deletedListNoteId);
     setListNote((prevList) =>
       prevList.filter((list) => list.id !== deletedListNoteId)
@@ -71,7 +88,7 @@ export const ListProvider = ({ children }: ListProviderProps) => {
   };
 
   // update khi them moi trong form
-  const updateListNoteCount = (listId: string, newTotalCount: number) => {
+  const updateListNoteCount = (listId: string, newTotalCount: number): void => {
     setListNote((prevListNote) =>
       prevListNote.map((list) =>
         list.id === listId ? { ...list, totalCount: newTotalCount } : list
@@ -80,7 +97,7 @@ export const ListProvider = ({ children }: ListProviderProps) => {
   };
 
   // update khi them moi va xoa trong reminder
-  const updateListTotalCount = (newTotalCount: number) => {
+  const updateListTotalCount = (newTotalCount: number): void => {
     setListNote((prevListNote) =>
       prevListNote.map((list) =>
         list.id === selectedListId
@@ -91,7 +108,7 @@ export const ListProvider = ({ children }: ListProviderProps) => {
   };
 
   // update total co status la true
-  const updateTotalDone = (newTotalDone: number) => {
+  const updateTotalDone = (newTotalDone: number): void => {
     setListNote((prevListNote) =>
       prevListNote.map((list) =>
         list.id === selectedListId ? { ...list, totalDone: newTotalDone } : list

@@ -4,10 +4,11 @@ import Button from "../core/Button";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Checkbox from "../core/Checkbox";
-import { ReminderType } from "../../types/reminder.type";
+import { IReminderType } from "../../types/reminder.type";
+import { IAction } from "../../types/action.type";
 
-interface ReminderProps {
-  reminder: ReminderType;
+interface IReminderProps {
+  reminder: IReminderType;
   setIsDoneButtonDisabled: (disabled: boolean) => void;
   onDeleteReminder: (id: string, status: boolean) => void;
   onUpdateReminder: (
@@ -17,20 +18,20 @@ interface ReminderProps {
   ) => void;
 }
 
-const Reminder: React.FC<ReminderProps> = ({
+const Reminder: React.FC<IReminderProps> = ({
   reminder,
   setIsDoneButtonDisabled,
   onDeleteReminder,
   onUpdateReminder,
 }) => {
-  const [editedNote, setEditedNote] = useState<ReminderType>({
+  const [editedNote, setEditedNote] = useState<IReminderType>({
     id: "",
     title: "",
     status: false,
     idlist: "",
   });
 
-  const action = [
+  const action: IAction[] = [
     {
       id: 1,
       key: "delete",

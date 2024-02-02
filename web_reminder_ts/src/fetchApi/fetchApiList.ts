@@ -1,29 +1,20 @@
 import { getReminderTotal, getReminderDone } from "./fetchApiREminder";
 import apiClient from "../config/axios";
-import { ListNote } from "../types/listNote.type";
+import { IListNote } from "../types/listNote.type";
 
-export const getAllList = async () => {
+export const getAllList = async (): Promise<IListNote[]> => {
   try {
     const response = await apiClient.get("/listNote");
 
     if (response.status === 200) {
-      const listData: ListNote[] = response.data;
-      console.log(listData, " listnote");
+      const listData: IListNote[] = response.data;
 
       const total = await Promise.all(
         listData.map(async (listItem) => {
           try {
             const reminderResponse = await getReminderTotal(listItem.id);
-            console.log(reminderResponse, " reminder");
-
-            const reminderData = reminderResponse.reminderData;
-
             const totalCount = reminderResponse.totalCount ?? 0;
-            console.log(totalCount, "totalCount");
-
             const reminderDoneResponse = await getReminderDone(listItem.id);
-            console.log(reminderDoneResponse, "remidner done");
-            const reminderDataDone = reminderDoneResponse.reminderDataDone;
             const totalDone = reminderDoneResponse.totalDone ?? 0;
 
             return {
@@ -32,8 +23,6 @@ export const getAllList = async () => {
               isColor: listItem.isColor,
               totalCount: totalCount,
               totalDone: totalDone,
-              reminders: reminderData || [],
-              remindersDone: reminderDataDone || [],
             };
           } catch (error) {
             console.error("Error fetching reminders:", error);
@@ -41,17 +30,21 @@ export const getAllList = async () => {
           }
         })
       );
-      const filteredTotal = total.filter((item) => item !== null);
+      const filteredTotal = total.filter(
+        (item) => item !== null
+      ) as IListNote[];
 
       return filteredTotal;
+    } else {
+      throw new Error("Failed to fetch list data");
     }
   } catch (error) {
     console.error("Error fetching list:", error);
+    throw error;
   }
 };
 
-
-export const addNewList = async (list: ListNote) => {
+export const addNewList = async (list: IListNote): Promise<IListNote> => {
   try {
     const response = await apiClient.post("/listNote", list);
 
@@ -59,15 +52,18 @@ export const addNewList = async (list: ListNote) => {
       console.log("Thêm mới thành công");
       const createdListNote = response.data;
       console.log("Dữ liệu trả về từ server:", createdListNote);
+      return createdListNote;
     } else {
       console.error("Lỗi khi thêm mới, mã trạng thái:", response.status);
+      throw new Error("Failed to add new list");
     }
   } catch (error) {
-    console.error("Lỗi trong quá trình thêm mới:");
+    console.error("Lỗi trong quá trình thêm mới:", error);
+    throw error;
   }
 };
 
-export const delList = async (id: string) => {
+export const delList = async (id: string): Promise<void> => {
   try {
     await apiClient.delete(`/listNote/${id}`);
   } catch (error) {
@@ -79,7 +75,7 @@ export const updateListData = async (
   id: string,
   newName: string,
   newColor: string
-) => {
+): Promise<void> => {
   try {
     const response = await apiClient.put(`/listNote/${id}`, {
       name: newName,

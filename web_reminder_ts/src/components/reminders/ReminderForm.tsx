@@ -6,17 +6,17 @@ import Loading from "../core/Loading";
 import { ListContext } from "../../context/listNote.context";
 import { ReminderContext } from "../../context/reminder.context";
 import { generateRandomStringId } from "../../utils/common";
-import { ListNote } from "../../types/listNote.type";
+import { IListNote } from "../../types/listNote.type";
 
-interface ReminderFormProps {
+interface IReminderFormProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ReminderForm: React.FC<ReminderFormProps> = ({ setIsReminderForm }) => {
+const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState<boolean>(true);
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedList, setSelectedList] = useState<ListNote | null>(null);
+  const [selectedList, setSelectedList] = useState<IListNote | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const context = useContext(ListContext);
   const contextReminder = useContext(ReminderContext);
@@ -28,7 +28,7 @@ const ReminderForm: React.FC<ReminderFormProps> = ({ setIsReminderForm }) => {
   }, []);
   useEffect(() => {
     setIsAddButtonDisabled(!reminderTitle.trim() || !selectedList);
-  }, [reminderTitle]);
+  }, [reminderTitle, selectedList]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -37,12 +37,14 @@ const ReminderForm: React.FC<ReminderFormProps> = ({ setIsReminderForm }) => {
     setIsAddButtonDisabled(newIsAddButtonDisabled);
   };
 
-  const handleListSelection = (listNote: ListNote) => {
+  const handleListSelection = (listNote: IListNote) => {
     setSelectedList(listNote);
     setIsAddButtonDisabled(!reminderTitle.trim() || !listNote.id);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
 
     if (!reminderTitle || !selectedList) {

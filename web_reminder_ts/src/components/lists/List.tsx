@@ -2,32 +2,32 @@ import React, { memo } from "react";
 import Dropdown from "../core/Dropdown";
 import Icon from "../core/Icon";
 import Button from "../core/Button";
-import { ListNote } from "../../types/listNote.type";
-
-interface ListProps {
-  listNote: ListNote;
-  onListNoteItemClick?: (list: ListNote) => void;
-  onListSelect?: (list: ListNote) => void;
-  onListNoteClick?: (list: ListNote) => void;
+import { IListNote } from "../../types/listNote.type";
+import { IAction } from "../../types/action.type";
+interface IListProps {
+  listNote: IListNote;
+  onListNoteItemClick?: (list: IListNote) => void;
+  onListSelect?: (list: IListNote) => void;
+  onListNoteClick?: (list: IListNote) => void;
   onListDeleteSuccess?: (id: string) => void;
 }
 
-const List: React.FC<ListProps> = ({
+const List: React.FC<IListProps> = ({
   listNote,
   onListNoteItemClick,
   onListNoteClick,
   onListDeleteSuccess,
   onListSelect,
 }) => {
-  const handleCLickNote = () => {
+  const handleCLickNote = (): void => {
     onListNoteItemClick && onListNoteItemClick(listNote);
   };
 
-  const handleChooseNameList = () => {
+  const handleChooseNameList = (): void => {
     onListSelect && onListSelect(listNote);
   };
 
-  const actions = [
+  const actions: IAction[] = [
     {
       id: 1,
       key: "delete",
@@ -50,7 +50,7 @@ const List: React.FC<ListProps> = ({
     },
   ];
 
-  const handleButtonClick = (actionId: number) => {
+  const handleButtonClick = (actionId: number): void => {
     if (actionId === 2) {
       onListNoteClick && onListNoteClick(listNote);
     } else if (actionId === 1) {

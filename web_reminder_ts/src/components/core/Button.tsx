@@ -1,10 +1,10 @@
 import React, { ButtonHTMLAttributes, forwardRef } from "react";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   toggleForId?: string;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+const Button = forwardRef<HTMLButtonElement, IButtonProps>((props, ref) => {
   const {
     children,
     onClick,

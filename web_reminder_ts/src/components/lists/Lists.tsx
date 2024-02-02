@@ -7,15 +7,16 @@ import Button from "../core/Button";
 import Loading from "../core/Loading";
 import { ListContext } from "../../context/listNote.context";
 import { generateRandomStringId } from "../../utils/common";
-import { ListNote } from "../../types/listNote.type";
-function Lists() {
+import { IListNote } from "../../types/listNote.type";
+
+const Lists = () => {
   const [isListForm, setIsListForm] = useState<boolean>(false);
   const [formType, setFormType] = useState<string>("");
 
   const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
   const [isReminders, setIsReminders] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [listData, setListData] = useState<ListNote>({
+  const [listData, setListData] = useState<IListNote>({
     id: "",
     name: "",
     isColor: "",
@@ -29,7 +30,7 @@ function Lists() {
     setFormType(type);
   };
 
-  const handleListNoteClick = (listNote: ListNote) => {
+  const handleListNoteClick = (listNote: IListNote) => {
     setFormTypeHandler("edit");
     setListData(listNote);
   };
@@ -46,7 +47,7 @@ function Lists() {
     }
   };
 
-  const handleListNoteItemClick = (listNote: ListNote) => {
+  const handleListNoteItemClick = (listNote: IListNote) => {
     setIsReminders(true);
     context.setSelectedListId(listNote.id);
     setNameList(listNote.name);
@@ -61,7 +62,7 @@ function Lists() {
   };
 
   //DELETE LISTNOTE
-  const deleteListNote = async (deletedListId: string) => {
+  const deleteListNote = async (deletedListId: string): Promise<void> => {
     setIsLoading(true);
     await context.deleteListNote(deletedListId);
     setIsLoading(false);
@@ -69,7 +70,7 @@ function Lists() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
         setIsLoading(true);
         await context.getListNote();
@@ -80,6 +81,7 @@ function Lists() {
       }
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -134,6 +136,6 @@ function Lists() {
       {isReminderForm && <ReminderForm setIsReminderForm={setIsReminderForm} />}
     </>
   );
-}
+};
 
 export default Lists;

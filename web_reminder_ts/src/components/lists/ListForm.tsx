@@ -8,7 +8,7 @@ import React, {
   FormEvent,
 } from "react";
 import Button from "../core/Button";
-import { ListNote } from "../../types/listNote.type";
+import { IListNote } from "../../types/listNote.type";
 import ListColor from "./ListColor";
 
 import Input from "../core/Input";
@@ -17,14 +17,14 @@ import Loading from "../core/Loading";
 
 import { ListContext } from "../../context/listNote.context";
 
-interface ListFormProps {
+interface IListFormProps {
   formType: string;
-  listData: ListNote;
+  listData: IListNote;
   setIsListForm: React.Dispatch<React.SetStateAction<boolean>>;
-  setListData: React.Dispatch<React.SetStateAction<ListNote>>;
+  setListData: React.Dispatch<React.SetStateAction<IListNote>>;
 }
 
-const ListForm: React.FC<ListFormProps> = ({
+const ListForm: React.FC<IListFormProps> = ({
   formType,
   listData,
   setIsListForm,
@@ -57,7 +57,9 @@ const ListForm: React.FC<ListFormProps> = ({
   const handleInputClick = () => {
     setIsButtonDisabled(false);
   };
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
     try {
       setLoading(true);

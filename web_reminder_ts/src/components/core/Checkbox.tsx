@@ -1,6 +1,6 @@
 import React, { ChangeEvent, Component } from "react";
 
-interface CheckboxProps {
+interface ICheckboxProps {
   type?: string;
   className?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -8,7 +8,7 @@ interface CheckboxProps {
   id?: string;
 }
 
-class Checkbox extends Component<CheckboxProps> {
+class Checkbox extends Component<ICheckboxProps> {
   render() {
     const {
       type = "checkbox",
