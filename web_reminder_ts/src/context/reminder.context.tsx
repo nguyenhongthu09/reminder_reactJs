@@ -62,31 +62,31 @@ export const ReminderProvider = ({ children }: ReminderProviderProps) => {
     newData: string | boolean,
     updateType: string
   ) => {
-    // let updatedReminder;
-    // if (updateType === "title") {
-    //   updatedReminder = await updateReminderData(idEditReminder, {
-    //     title: newData as string,
-    //   });
-    // } else if (updateType === "status") {
-    //   updatedReminder = await updateReminderData(idEditReminder, {
-    //     status: newData as boolean,
-    //   });
+    let updatedReminder: ReminderType | undefined;
+    if (updateType === "title") {
+      updatedReminder = await updateReminderData(idEditReminder, {
+        title: newData as string,
+      });
+    } else if (updateType === "status") {
+      updatedReminder = await updateReminderData(idEditReminder, {
+        status: newData as boolean,
+      });
 
-    //   if (updatedReminder) {
-    //     const updatedReminders = reminders.map((note) =>
-    //       note.id === updatedReminder.id ? updatedReminder : note
-    //     );
-    //     const newTotalDone = updatedReminders.filter(
-    //       (note) => note.status
-    //     ).length;
+      if (updatedReminder) {
+        const updatedReminders = reminders.map((note) =>
+          note.id === updatedReminder!.id ? updatedReminder! : note
+        );
+        const newTotalDone = updatedReminders.filter(
+          (note) => note.status
+        ).length;
 
-    //     contextList.updateTotalDone(newTotalDone);
-    //     setReminders(updatedReminders);
-    //   }
-    // } else {
-    //   console.error("Loại cập nhật không hợp lệ");
-    //   return;
-    // }
+        contextList.updateTotalDone(newTotalDone);
+        setReminders(updatedReminders);
+      }
+    } else {
+      console.error("Loại cập nhật không hợp lệ");
+      return;
+    }
   };
 
   const deleteReminder = async (idDeleReminder: string, status: boolean) => {
