@@ -77,14 +77,18 @@ export const ListProvider = ({ children }: IListProvider) => {
 
   const editListNote = async (editedListNote: IListNote): Promise<void> => {
     const { id, totalDone, totalCount, ...updateList } = editedListNote;
-    await updateListData(id, updateList.name, updateList.isColor);
-    setListNote((prevList) =>
-      prevList.map((list) =>
-        list.id === id ? { ...list, ...updateList } : list
-      )
-    );
+    try {
+      const updatedList = await updateListData(id, updateList.name, updateList.isColor);
+      setListNote((prevList) =>
+        prevList.map((list) =>
+          list.id === id ? { ...list, ...updatedList } : list
+        )
+      );
+    } catch (error) {
+      console.error("Lỗi trong quá trình chỉnh sửa:", error);
+      throw error;
+    }
   };
-
   const deleteListNote = async (deletedListNoteId: string): Promise<void> => {
     await delList(deletedListNoteId);
     setListNote((prevList) =>

@@ -48,13 +48,14 @@ export const ReminderProvider = ({ children }: IReminderProvider) => {
 
   const addReminder = async (newReminder: IReminderType): Promise<void> => {
     try {
-      await addNewReminder({
+      const newNote = {
         id: newReminder.id,
         title: newReminder.title,
         status: false,
         idlist: newReminder.idlist,
-      });
-      setReminders((prevReminder) => [...prevReminder, newReminder]);
+      };
+      const createdReminder = await addNewReminder(newNote);
+      setReminders((prevReminder) => [...prevReminder, createdReminder]);
 
       const listNote = contextList.listNote.find(
         (list) => list.id === newReminder.idlist
@@ -79,7 +80,7 @@ export const ReminderProvider = ({ children }: IReminderProvider) => {
     newData: string | boolean,
     updateType: string
   ): Promise<void> => {
-    let updatedReminder: IReminderType | undefined;
+    let updatedReminder: IReminderType;
 
     if (updateType === "title") {
       updatedReminder = await updateReminderData(idEditReminder, {

@@ -12,8 +12,6 @@ export const getReminder = async (listId: string): Promise<IReminderType[]> => {
   return reminderData;
 };
 
-
-
 export const addNewReminder = async (
   reminder: IReminderType
 ): Promise<IReminderType> => {
@@ -42,7 +40,7 @@ export const delREminder = async (id: string): Promise<void> => {
 export const updateReminderData = async (
   id: string,
   newData: Partial<IReminderType>
-): Promise<IReminderType | undefined> => {
+): Promise<IReminderType> => {
   try {
     const response = await apiClient.patch(`/reminder/${id}`, newData);
 
@@ -50,9 +48,12 @@ export const updateReminderData = async (
       const updatedReminder = response.data;
       console.log(updatedReminder, "update reminder successful");
       return updatedReminder;
+    } else {
+      throw new Error("Failed to update reminder");
     }
   } catch (error) {
     console.error("Error updating reminder:", error);
+    throw error;
   }
 };
 

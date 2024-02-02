@@ -75,7 +75,7 @@ export const updateListData = async (
   id: string,
   newName: string,
   newColor: string
-): Promise<void> => {
+): Promise<IListNote> => {
   try {
     const response = await apiClient.put(`/listNote/${id}`, {
       name: newName,
@@ -85,10 +85,14 @@ export const updateListData = async (
     if (response.status === 200) {
       const updatedList = response.data;
       console.log("Cập nhật thành công", updatedList);
-      return updatedList;
+      return updatedList; // Trả về dữ liệu từ phản hồi của API
+    } else {
+      throw new Error("Failed to update list");
     }
   } catch (error) {
     console.error("Lỗi trong quá trình cập nhật:", error);
+    throw error;
   }
 };
+
 export default getAllList;
