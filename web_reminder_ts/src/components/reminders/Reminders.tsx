@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo, useContext } from "react";
-import Reminder from "./Reminder";
+import Reminder from "./atomics/Reminder";
 import Button from "../core/Button";
 import getAllList from "../../fetchApi/fetchApiList";
 import Loading from "../core/Loading";
@@ -51,7 +51,7 @@ const Reminders: React.FC<IRemindersProps> = ({
   useEffect(() => {
     setLoading(true);
     contextReminder.getAllReminders().then(() => setLoading(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const hasReminderData: boolean = contextReminder.reminders.length === 0;

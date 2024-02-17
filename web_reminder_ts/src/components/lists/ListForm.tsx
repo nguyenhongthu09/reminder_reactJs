@@ -2,7 +2,6 @@ import React, {
   useState,
   useEffect,
   useRef,
-  memo,
   useContext,
   ChangeEvent,
   FormEvent,
@@ -10,18 +9,23 @@ import React, {
 import Button from "../core/Button";
 import { IListNote } from "../../types/listNote.type";
 import ListColor from "./ListColor";
-
+import {
+  addListNote,
+  updateListNote,
+} from "../../store/redux/actions/listNote.action";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Loading from "../core/Loading";
-
-import { ListContext } from "../../context/listNote.context";
+// import { ListContext } from "../../context/listNote.context";
+import { connect } from "react-redux";
 
 interface IListFormProps {
   formType: string;
   listData: IListNote;
   setIsListForm: React.Dispatch<React.SetStateAction<boolean>>;
   setListData: React.Dispatch<React.SetStateAction<IListNote>>;
+  addListNote: (listData: IListNote) => Promise<void>;
+  updateListNote: (listData: IListNote) => Promise<void>;
 }
 
 const ListForm: React.FC<IListFormProps> = ({
@@ -29,12 +33,14 @@ const ListForm: React.FC<IListFormProps> = ({
   listData,
   setIsListForm,
   setListData,
+  addListNote,
+  updateListNote,
 }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const context = useContext(ListContext);
+  // const context = useContext(ListContext);
 
   const handleColorSelect = (selectedColor: string) => {
     setListData((prevData) => ({
@@ -64,10 +70,13 @@ const ListForm: React.FC<IListFormProps> = ({
     try {
       setLoading(true);
       if (formType === "edit") {
-        context.editListNote(listData);
+        await updateListNote(listData);
+        console.log(listData, "chinh sua");
+
         setIsListForm(false);
       } else {
-        context.addListNote(listData);
+        await addListNote(listData);
+        console.log(listData, "them may");
         setIsListForm(false);
       }
     } catch (error) {
@@ -157,4 +166,11 @@ const ListForm: React.FC<IListFormProps> = ({
   );
 };
 
-export default memo(ListForm);
+const mapDispathToProps = (dispatch: any) => {
+  return {
+    addListNote: (listData: IListNote) => dispatch(addListNote(listData)),
+    updateListNote: (listData: IListNote) => dispatch(updateListNote(listData)),
+  };
+};
+
+export default connect(null, mapDispathToProps)(ListForm);

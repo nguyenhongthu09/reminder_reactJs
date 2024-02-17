@@ -1,9 +1,9 @@
 import React, { memo } from "react";
-import Dropdown from "../core/Dropdown";
-import Icon from "../core/Icon";
-import Button from "../core/Button";
-import { IListNote } from "../../types/listNote.type";
-import { IAction } from "../../types/action.type";
+import Dropdown from "../../core/Dropdown";
+import Icon from "../../core/Icon";
+import Button from "../../core/Button";
+import { IListNote } from "../../../types/listNote.type";
+import { IAction } from "../../../types/action.type";
 interface IListProps {
   listNote: IListNote;
   onListNoteItemClick?: (list: IListNote) => void;
@@ -54,6 +54,8 @@ const List: React.FC<IListProps> = ({
     if (actionId === 2) {
       onListNoteClick && onListNoteClick(listNote);
     } else if (actionId === 1) {
+      console.log(listNote.id, " id xoa");
+      
       onListDeleteSuccess && onListDeleteSuccess(listNote.id);
     }
   };

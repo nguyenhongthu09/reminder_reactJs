@@ -1,18 +1,34 @@
 import React, { useState, useEffect, useContext } from "react";
-import List from "./List";
+import List from "./atomics/List";
 import ListForm from "./ListForm";
 import Reminders from "../reminders/Reminders";
 import ReminderForm from "../reminders/ReminderForm";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
-import { ListContext } from "../../context/listNote.context";
 import { generateRandomStringId } from "../../utils/common";
 import { IListNote } from "../../types/listNote.type";
+import {
+  getListNote,
+  deleteListNote,
+  getColors,
+} from "../../store/redux/actions/listNote.action";
+import { connect } from "react-redux";
+import { ListContext } from "../../store/context/listNote.context";
+interface IListProps {
+  listNote: IListNote[];
+  getListNote: () => Promise<void>;
+  getColors: () => Promise<void>;
+  deleteListNote: (listId: string) => Promise<void>;
+}
 
-const Lists = () => {
+const Lists: React.FC<IListProps> = ({
+  listNote,
+  getListNote,
+  getColors,
+  deleteListNote,
+}) => {
   const [isListForm, setIsListForm] = useState<boolean>(false);
   const [formType, setFormType] = useState<string>("");
-
   const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
   const [isReminders, setIsReminders] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -22,9 +38,7 @@ const Lists = () => {
     isColor: "",
   });
   const [nameList, setNameList] = useState<string>("");
-
   const context = useContext(ListContext);
-
   const setFormTypeHandler = (type: string) => {
     setIsListForm(type === "add" || type === "edit");
     setFormType(type);
@@ -62,22 +76,24 @@ const Lists = () => {
   };
 
   //DELETE LISTNOTE
-  const deleteListNote = async (deletedListId: string): Promise<void> => {
+  const deleListNote = async (listId: string): Promise<void> => {
     setIsLoading(true);
-    await context.deleteListNote(deletedListId);
+    console.log(listId, " id");
+    await deleteListNote(listId);
     setIsLoading(false);
-    console.log(deletedListId, "id cua listnot via xoa");
+    console.log(listId, "id cua listnot via xoa");
   };
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         setIsLoading(true);
-        await context.getListNote();
-        context.getColors();
+        await getListNote();
+        await getColors();
         setIsLoading(false);
       } catch (error) {
         console.error("Error loading data:");
+        console.log(error);
       }
     };
     fetchData();
@@ -90,13 +106,13 @@ const Lists = () => {
         {isLoading && <Loading />}
         <div className="menu-list-note" id="renderlist-home">
           <h1>My List</h1>
-          {context.listNote.map((list) => (
+          {listNote.map((list: IListNote) => (
             <List
               key={list.id}
               onListNoteClick={handleListNoteClick}
               listNote={list}
               onListNoteItemClick={handleListNoteItemClick}
-              onListDeleteSuccess={deleteListNote}
+              onListDeleteSuccess={deleListNote}
             />
           ))}
         </div>
@@ -138,4 +154,18 @@ const Lists = () => {
   );
 };
 
-export default Lists;
+const mapStateToProps = (state: any) => {
+  return {
+    listNote: state.listReducer.listNote,
+    colors: state.listReducer.colors,
+  };
+};
+const mapDispathToProps = (dispatch: any) => {
+  return {
+    getListNote: () => dispatch(getListNote()),
+    getColors: () => dispatch(getColors()),
+    deleteListNote: (listId: string) => dispatch(deleteListNote(listId)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispathToProps)(Lists);

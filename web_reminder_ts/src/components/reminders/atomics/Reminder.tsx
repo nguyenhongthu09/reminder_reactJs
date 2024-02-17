@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Dropdown from "../core/Dropdown";
-import Button from "../core/Button";
-import Input from "../core/Input";
-import Icon from "../core/Icon";
-import Checkbox from "../core/Checkbox";
-import { IReminderType } from "../../types/reminder.type";
-import { IAction } from "../../types/action.type";
+import Dropdown from "../../core/Dropdown";
+import Button from "../../core/Button";
+import Input from "../../core/Input";
+import Icon from "../../core/Icon";
+import Checkbox from "../../core/Checkbox";
+import { IReminderType } from "../../../types/reminder.type";
+import { IAction } from "../../../types/action.type";
 
 interface IReminderProps {
   reminder: IReminderType;

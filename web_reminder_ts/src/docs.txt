@@ -10,3 +10,14 @@
 => listData as IListNote[] chuyển đổi listData thành một mảng các đối tượng IListNote. 
 Điều này giả định rằng listData đã được khởi tạo hoặc đã được đảm bảo là một mảng của các đối tượng có 
 cấu trúc giống IListNote.
+/////////////////
+Actions đơn giản là các events. Chúng là cách mà chúng ta send data từ app đến Redux store.
+   Những data này có thể là từ sự tương tác của user vs app, API calls hoặc cũng có thể là từ form submission.
+
+Reducers là các function nguyên thủy chúng lấy state hiện tại của app, thực hiện một action và trả về một state mới. 
+  Những states này được lưu như những objects và chúng định rõ cách state của một ứng dụng thay đổi trong việc phản hồi một action được gửi đến store.
+
+Store lưu trạng thái ứng dụng và nó là duy nhất trong bất kỳ một ứng dụng Redux nào. 
+  Bạn có thể access các state được lưu, update state, và đăng ký or hủy đăng ký các listeners thông qua helper methods.
+
+  

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import List from "../lists/List";
+import List from "../lists/atomics/List";
 import Button from "../core/Button";
 import Input from "../core/Input";
 import Loading from "../core/Loading";
@@ -7,18 +7,26 @@ import { ListContext } from "../../context/listNote.context";
 import { ReminderContext } from "../../context/reminder.context";
 import { generateRandomStringId } from "../../utils/common";
 import { IListNote } from "../../types/listNote.type";
+import { getListNote } from "../../store/redux/actions/listNote.action";
+import { connect } from "react-redux";
 
 interface IReminderFormProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
+  listNote: IListNote[];
+  getListNote: () => Promise<void>;
 }
 
-const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
+const ReminderForm: React.FC<IReminderFormProps> = ({
+  setIsReminderForm,
+  listNote,
+  getListNote,
+}) => {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState<boolean>(true);
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedList, setSelectedList] = useState<IListNote | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const context = useContext(ListContext);
+  // const context = useContext(ListContext);
   const contextReminder = useContext(ReminderContext);
 
   useEffect(() => {
@@ -117,7 +125,7 @@ const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
             </div>
           </div>
           <div className="render" id="renderlist">
-            {context.listNote.map((list) => (
+            {listNote.map((list) => (
               <List
                 key={list.id}
                 listNote={list}
@@ -131,4 +139,15 @@ const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
   );
 };
 
-export default ReminderForm;
+const mapStateToProps = (state: any) => {
+  return {
+    listNote: state.listReducer.listNote,
+  };
+};
+const mapDispathToProps = (dispatch: any) => {
+  return {
+    getListNote: () => dispatch(getListNote()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispathToProps)(ReminderForm);
