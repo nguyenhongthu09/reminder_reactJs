@@ -2,7 +2,6 @@ import React, {
   useState,
   useEffect,
   useRef,
-  useContext,
   ChangeEvent,
   FormEvent,
 } from "react";
@@ -16,7 +15,6 @@ import {
 import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Loading from "../core/Loading";
-// import { ListContext } from "../../context/listNote.context";
 import { connect } from "react-redux";
 
 interface IListFormProps {
@@ -40,7 +38,6 @@ const ListForm: React.FC<IListFormProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  // const context = useContext(ListContext);
 
   const handleColorSelect = (selectedColor: string) => {
     setListData((prevData) => ({

@@ -20,4 +20,30 @@ Reducers là các function nguyên thủy chúng lấy state hiện tại của 
 Store lưu trạng thái ứng dụng và nó là duy nhất trong bất kỳ một ứng dụng Redux nào. 
   Bạn có thể access các state được lưu, update state, và đăng ký or hủy đăng ký các listeners thông qua helper methods.
 
-  
+  // case UPDATE_LIST_NOTE_COUNT:
+    //   return {
+    //     ...state.listNote,
+    //     listNote: state.listNote.map((list: IListNote) =>
+    //       list.id === action.payload.listId
+    //         ? { ...list, totalCount: action.payload.newTotalCount }
+    //         : list
+    //     ),
+    //   };
+    // case UPDATE_LIST_TOTAL_COUNT:
+    //   return {
+    //     ...state.listNote,
+    //     listNote: state.listNote.map((list: IListNote) =>
+    //       list.id === state.selectedListId
+    //         ? { ...list, totalCount: action.payload.newTotalCount }
+    //         : list
+    //     ),
+    //   };
+    // case UPDATE_TOTAL_DONE:
+    //   return {
+    //     ...state.listNote,
+    //     listNote: state.listNote.map((list: IListNote) =>
+    //       list.id === state.selectedListId
+    //         ? { ...list, totalDone: action.payload.newTotalDone }
+    //         : list
+    //     ),
+    //   };

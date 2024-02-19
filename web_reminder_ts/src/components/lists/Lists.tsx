@@ -157,7 +157,6 @@ const Lists: React.FC<IListProps> = ({
 const mapStateToProps = (state: any) => {
   return {
     listNote: state.listReducer.listNote,
-    colors: state.listReducer.colors,
   };
 };
 const mapDispathToProps = (dispatch: any) => {

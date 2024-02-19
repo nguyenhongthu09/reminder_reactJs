@@ -3,9 +3,6 @@ import {
   ADD_LIST_NOTE,
   EDIT_LIST_NOTE,
   DELETE_LIST_NOTE,
-  UPDATE_LIST_NOTE_COUNT,
-  UPDATE_LIST_TOTAL_COUNT,
-  UPDATE_TOTAL_DONE,
   GET_COLORS,
 } from "../../../types/actionTypes.type";
 import { IListNote } from "../../../types/listNote.type";
@@ -53,34 +50,6 @@ const listReducer = (
         ...state,
         listNote: state.listNote.filter((list: IListNote) => list.id !== id),
       };
-
-    // case UPDATE_LIST_NOTE_COUNT:
-    //   return {
-    //     ...state.listNote,
-    //     listNote: state.listNote.map((list: IListNote) =>
-    //       list.id === action.payload.listId
-    //         ? { ...list, totalCount: action.payload.newTotalCount }
-    //         : list
-    //     ),
-    //   };
-    // case UPDATE_LIST_TOTAL_COUNT:
-    //   return {
-    //     ...state.listNote,
-    //     listNote: state.listNote.map((list: IListNote) =>
-    //       list.id === state.selectedListId
-    //         ? { ...list, totalCount: action.payload.newTotalCount }
-    //         : list
-    //     ),
-    //   };
-    // case UPDATE_TOTAL_DONE:
-    //   return {
-    //     ...state.listNote,
-    //     listNote: state.listNote.map((list: IListNote) =>
-    //       list.id === state.selectedListId
-    //         ? { ...list, totalDone: action.payload.newTotalDone }
-    //         : list
-    //     ),
-    //   };
 
     default:
       return state;
