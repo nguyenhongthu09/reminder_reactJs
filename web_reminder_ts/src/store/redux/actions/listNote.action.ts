@@ -14,6 +14,7 @@ import getColor from "../../../fetchApi/fetchColor";
 import { Dispatch } from "redux";
 import { IListNote } from "../../../types/listNote.type";
 import { IColor } from "../../../types/color.type";
+
 const getListNote = () => async (dispatch: Dispatch) => {
   try {
     const listData: IListNote[] = await getAllList();
@@ -23,6 +24,7 @@ const getListNote = () => async (dispatch: Dispatch) => {
     console.error("Error fetching list data:", error);
   }
 };
+
 const getColors = () => async (dispatch: Dispatch) => {
   try {
     const listData: IColor[] = await getColor();
@@ -31,6 +33,7 @@ const getColors = () => async (dispatch: Dispatch) => {
     console.error("Error fetching list data:", error);
   }
 };
+
 const addListNote = (list: IListNote) => async (dispatch: Dispatch) => {
   try {
     const newList = { ...list };
@@ -46,6 +49,7 @@ const addListNote = (list: IListNote) => async (dispatch: Dispatch) => {
     console.error("Error adding list:", error);
   }
 };
+
 const updateListNote =
   (updatedList: IListNote) => async (dispatch: Dispatch) => {
     try {

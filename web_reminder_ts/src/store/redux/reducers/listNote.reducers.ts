@@ -8,22 +8,23 @@ import {
 import { IListNote } from "../../../types/listNote.type";
 import { IColor } from "../../../types/color.type";
 
-const initialState: IListState = {
+const initialState: IInitialState = {
   listNote: [],
   colors: [],
 };
-interface IListState {
+interface IInitialState {
   listNote: IListNote[];
   colors: IColor[];
 }
 
 const listReducer = (
-  state: IListState = initialState,
+  state: IInitialState = initialState,
   action: { type: string; payload: any }
 ) => {
   console.log(state, action, "action");
   const { type, payload } = action;
   switch (type) {
+    
     case GET_LIST_NOTE:
       return { ...state, listNote: payload };
 

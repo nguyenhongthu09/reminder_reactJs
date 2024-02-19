@@ -69,7 +69,6 @@ const ListForm: React.FC<IListFormProps> = ({
       if (formType === "edit") {
         await updateListNote(listData);
         console.log(listData, "chinh sua");
-
         setIsListForm(false);
       } else {
         await addListNote(listData);

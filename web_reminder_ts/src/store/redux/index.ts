@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import listReducer from "./reducers/listNote.reducers"; // import your reducers
+import listReducer from "./reducers/listNote.reducers"; 
 
 const rootReducer = combineReducers({
   listReducer,

@@ -159,6 +159,7 @@ const mapStateToProps = (state: any) => {
     listNote: state.listReducer.listNote,
   };
 };
+
 const mapDispathToProps = (dispatch: any) => {
   return {
     getListNote: () => dispatch(getListNote()),
