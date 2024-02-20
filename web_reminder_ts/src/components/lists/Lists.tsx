@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import List from "./atomics/List";
 import ListForm from "./ListForm";
 import Reminders from "../reminders/Reminders";
@@ -13,7 +13,7 @@ import {
   getColors,
 } from "../../store/redux/actions/listNote.action";
 import { connect } from "react-redux";
-import { ListContext } from "../../store/context/listNote.context";
+
 interface IListProps {
   listNote: IListNote[];
   getListNote: () => Promise<void>;
@@ -37,14 +37,14 @@ const Lists: React.FC<IListProps> = ({
     name: "",
     isColor: "",
   });
+  const [selectedListId, setSelectedListId] = useState<string>("");
   const [nameList, setNameList] = useState<string>("");
-  const context = useContext(ListContext);
   const setFormTypeHandler = (type: string) => {
     setIsListForm(type === "add" || type === "edit");
     setFormType(type);
   };
 
-  const handleListNoteClick = (listNote: IListNote) => {
+  const handleListNoteEditClick = (listNote: IListNote) => {
     setFormTypeHandler("edit");
     setListData(listNote);
   };
@@ -61,9 +61,10 @@ const Lists: React.FC<IListProps> = ({
     }
   };
 
-  const handleListNoteItemClick = (listNote: IListNote) => {
+  const handleReminderOpenClick = (listNote: IListNote) => {
     setIsReminders(true);
-    context.setSelectedListId(listNote.id);
+    setSelectedListId(listNote.id);
+    console.log(setSelectedListId(listNote.id), "log thu set");
     setNameList(listNote.name);
   };
 
@@ -109,10 +110,10 @@ const Lists: React.FC<IListProps> = ({
           {listNote.map((list: IListNote) => (
             <List
               key={list.id}
-              onListNoteClick={handleListNoteClick}
+              onListDataFormEdit={handleListNoteEditClick}
               listNote={list}
-              onListNoteItemClick={handleListNoteItemClick}
-              onListDeleteSuccess={deleListNote}
+              onOpenReminderClickListNote={handleReminderOpenClick}
+              onDeleteListNote={deleListNote}
             />
           ))}
         </div>
@@ -146,7 +147,11 @@ const Lists: React.FC<IListProps> = ({
       )}
 
       {isReminders && (
-        <Reminders onListsBackClick={handleBackList} nameList={nameList} />
+        <Reminders
+          onListsBackClick={handleBackList}
+          nameList={nameList}
+          selectedListId={selectedListId}
+        />
       )}
 
       {isReminderForm && <ReminderForm setIsReminderForm={setIsReminderForm} />}

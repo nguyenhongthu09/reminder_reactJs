@@ -4,6 +4,7 @@ import {
   EDIT_LIST_NOTE,
   DELETE_LIST_NOTE,
   GET_COLORS,
+  UPDATE_LIST_TOTAL_COUNT,
 } from "../../../types/actionTypes.type";
 import { IListNote } from "../../../types/listNote.type";
 import { IColor } from "../../../types/color.type";
@@ -24,14 +25,13 @@ const listReducer = (
   console.log(state, action, "action");
   const { type, payload } = action;
   switch (type) {
-    
     case GET_LIST_NOTE:
       return { ...state, listNote: payload };
 
     case GET_COLORS:
       return {
         ...state,
-        colors: action.payload,
+        colors: payload,
       };
 
     case ADD_LIST_NOTE:
@@ -51,6 +51,17 @@ const listReducer = (
         ...state,
         listNote: state.listNote.filter((list: IListNote) => list.id !== id),
       };
+    case UPDATE_LIST_TOTAL_COUNT:
+      const updatedListNote = state.listNote.map((list: IListNote) => {
+        if (list.id === payload.listId) {
+          return {
+            ...list,
+            totalCount: list.totalCount ? list.totalCount + 1 : 1,
+          };
+        }
+        return list;
+      });
+      return { ...state, listNote: updatedListNote };
 
     default:
       return state;

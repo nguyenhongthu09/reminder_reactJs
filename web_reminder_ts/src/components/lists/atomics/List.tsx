@@ -6,21 +6,22 @@ import { IListNote } from "../../../types/listNote.type";
 import { IAction } from "../../../types/action.type";
 interface IListProps {
   listNote: IListNote;
-  onListNoteItemClick?: (list: IListNote) => void;
+  onOpenReminderClickListNote?: (list: IListNote) => void;
   onListSelect?: (list: IListNote) => void;
-  onListNoteClick?: (list: IListNote) => void;
-  onListDeleteSuccess?: (id: string) => void;
+  onListDataFormEdit?: (list: IListNote) => void;
+  onDeleteListNote?: (id: string) => void;
 }
 
 const List: React.FC<IListProps> = ({
   listNote,
-  onListNoteItemClick,
-  onListNoteClick,
-  onListDeleteSuccess,
+  onOpenReminderClickListNote,
+  onListDataFormEdit,
+  onDeleteListNote,
   onListSelect,
+  
 }) => {
   const handleCLickNote = (): void => {
-    onListNoteItemClick && onListNoteItemClick(listNote);
+    onOpenReminderClickListNote && onOpenReminderClickListNote(listNote);
   };
 
   const handleChooseNameList = (): void => {
@@ -52,11 +53,10 @@ const List: React.FC<IListProps> = ({
 
   const handleButtonClick = (actionId: number): void => {
     if (actionId === 2) {
-      onListNoteClick && onListNoteClick(listNote);
+      onListDataFormEdit && onListDataFormEdit(listNote);
     } else if (actionId === 1) {
       console.log(listNote.id, " id xoa");
-      
-      onListDeleteSuccess && onListDeleteSuccess(listNote.id);
+      onDeleteListNote && onDeleteListNote(listNote.id);
     }
   };
 

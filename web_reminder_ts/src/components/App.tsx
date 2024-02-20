@@ -10,9 +10,9 @@ function App() {
     <div className="App">
       <Provider store={store}>
       <ListNoteProvider>
-        <ReminderProvider>
+        {/* <ReminderProvider> */}
           <Lists />
-        </ReminderProvider>
+        {/* </ReminderProvider> */}
       </ListNoteProvider>
       </Provider>
     </div>

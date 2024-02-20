@@ -4,6 +4,8 @@ import {
   EDIT_LIST_NOTE,
   DELETE_LIST_NOTE,
   GET_COLORS,
+  UPDATE_LIST_TOTAL_COUNT,
+  SET_SELECTED_LIST_ID,
 } from "../../../types/actionTypes.type";
 import getAllList, {
   addNewList,
@@ -72,4 +74,18 @@ const deleteListNote = (listId: string) => async (dispatch: Dispatch) => {
   }
 };
 
-export { getListNote, addListNote, updateListNote, deleteListNote, getColors };
+const updateListTotalCount = (listId: string) => ({
+  type: UPDATE_LIST_TOTAL_COUNT,
+  payload: { listId },
+});
+
+
+export {
+  updateListTotalCount,
+  getListNote,
+  addListNote,
+  updateListNote,
+  deleteListNote,
+  getColors,
+  // setSelectedListId,
+};

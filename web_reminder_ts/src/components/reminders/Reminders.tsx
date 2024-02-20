@@ -1,33 +1,51 @@
-import React, { useState, useEffect, memo, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Reminder from "./atomics/Reminder";
 import Button from "../core/Button";
-import getAllList from "../../fetchApi/fetchApiList";
 import Loading from "../core/Loading";
 import ReminderFormInList from "./ReminderFormInList";
-import { ReminderContext } from "../../context/reminder.context";
-import { ListContext } from "../../context/listNote.context";
 import { IReminderType } from "../../types/reminder.type";
+import { getListNote } from "../../store/redux/actions/listNote.action";
+import { connect } from "react-redux";
+import {
+  getReminders,
+  deleteReminder,
+  updateReminder,
+} from "../../store/redux/actions/reminder.action";
 
 interface IRemindersProps {
   nameList: string;
   onListsBackClick?: () => void;
+  getListNote: () => Promise<void>;
+  getReminders: (selectedListId: string) => Promise<void>;
+  reminders: IReminderType[];
+  deleteReminder: (idDeleReminder: string, status: boolean) => Promise<void>;
+  updateReminder: (
+    idEditReminder: string,
+    newData: string | boolean,
+    updateType: string
+  ) => Promise<void>;
+  selectedListId: string;
 }
 
 const Reminders: React.FC<IRemindersProps> = ({
   nameList,
   onListsBackClick,
+  getListNote,
+  getReminders,
+  reminders,
+  deleteReminder,
+  updateReminder,
+  selectedListId,
 }) => {
   const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] =
     useState<boolean>(true);
-  const contextReminder = useContext(ReminderContext);
-  const contextList = useContext(ListContext);
-
+  
   const hanldeBackList = async (): Promise<void> => {
     if (onListsBackClick) {
       setLoading(true);
-      await getAllList();
+      await getListNote();
       onListsBackClick();
       setLoading(false);
     }
@@ -37,10 +55,14 @@ const Reminders: React.FC<IRemindersProps> = ({
     setIsReminderForm(true);
   };
   //DELETE REMIDNER
-  const deleteReminder = async (id: string, status: boolean): Promise<void> => {
+  const deleReminder = async (
+    idDeleReminder: string,
+    status: boolean
+  ): Promise<void> => {
     try {
       setLoading(true);
-      contextReminder.deleteReminder(id, status);
+      await deleteReminder(idDeleReminder, status);
+      console.log(idDeleReminder, status, "xoa reminder");
     } catch (error) {
       console.error("Error fetching reminder:");
     } finally {
@@ -49,17 +71,24 @@ const Reminders: React.FC<IRemindersProps> = ({
   };
 
   useEffect(() => {
-    setLoading(true);
-    contextReminder.getAllReminders().then(() => setLoading(false));
+    const fetchData = async (): Promise<void> => {
+      try {
+        setLoading(true);
+        console.log(selectedListId, " id cua remidner");
+        await getReminders(selectedListId);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error loading data:");
+        console.log(error);
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const hasReminderData: boolean = contextReminder.reminders.length === 0;
-  const sortedReminders: IReminderType[] = contextReminder.reminders
-    .slice()
-    .sort((a, b) => {
-      return a.status === b.status ? 0 : a.status ? 1 : -1;
-    });
+  const hasReminderData: boolean = reminders.length === 0;
+  const sortedReminders: IReminderType[] = reminders.slice().sort((a, b) => {
+    return a.status === b.status ? 0 : a.status ? 1 : -1;
+  });
 
   return (
     <div>
@@ -82,13 +111,13 @@ const Reminders: React.FC<IRemindersProps> = ({
           {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
           {sortedReminders.map(
             (note) =>
-              note.idlist === contextList.selectedListId && (
+              note.idlist === selectedListId && (
                 <Reminder
                   key={note.id}
                   reminder={note}
                   setIsDoneButtonDisabled={setIsDoneButtonDisabled}
-                  onDeleteReminder={deleteReminder}
-                  onUpdateReminder={contextReminder.updateReminder}
+                  onDeleteReminder={deleReminder}
+                  onUpdateReminder={updateReminder}
                 />
               )
           )}
@@ -97,6 +126,7 @@ const Reminders: React.FC<IRemindersProps> = ({
           <ReminderFormInList
             setIsDoneButtonDisabled={setIsDoneButtonDisabled}
             setIsReminderForm={setIsReminderForm}
+            selectedListId={selectedListId}
           />
         )}
 
@@ -112,4 +142,25 @@ const Reminders: React.FC<IRemindersProps> = ({
   );
 };
 
-export default memo(Reminders);
+const mapStateToProps = (state: any) => {
+  return {
+    reminders: state.reminderReducer.reminders,
+  };
+};
+
+const mapDispathToProps = (dispatch: any) => {
+  return {
+    getListNote: () => dispatch(getListNote()),
+    getReminders: (selectedListId: string) =>
+      dispatch(getReminders(selectedListId)),
+    deleteReminder: (idDeleReminder: string, status: boolean) =>
+      dispatch(deleteReminder(idDeleReminder, status)),
+    updateReminder: (
+      idEditReminder: string,
+      newData: string | boolean,
+      updateType: string
+    ) => dispatch(updateReminder(idEditReminder, newData, updateType)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispathToProps)(Reminders);

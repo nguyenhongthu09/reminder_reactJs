@@ -1,23 +1,24 @@
-import React, { useState, useContext, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import Checkbox from "../core/Checkbox";
 import Input from "../core/Input";
-
-import { ReminderContext } from "../../context/reminder.context";
 import { generateRandomStringId } from "../../utils/common";
-import { ListContext } from "../../context/listNote.context";
 import { IReminderType } from "../../types/reminder.type";
+import { addReminder } from "../../store/redux/actions/reminder.action";
+import { connect } from "react-redux";
 interface IReminderFormInListProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDoneButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  addReminder: (newReminder: IReminderType) => Promise<void>;
+  selectedListId: string;
 }
 
 const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   setIsReminderForm,
   setIsDoneButtonDisabled,
+  addReminder,
+  selectedListId,
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
-  const contextReminder = useContext(ReminderContext);
-  const contextList = useContext(ListContext);
   const handleBlur = async (): Promise<void> => {
     if (reminderTitle.trim() === "") {
       setIsReminderForm(false);
@@ -27,9 +28,10 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
         id: generateRandomStringId(),
         title: reminderTitle,
         status: false,
-        idlist: contextList.selectedListId,
+        idlist: selectedListId,
       };
-      await contextReminder.addReminder(newReminder);
+      await addReminder(newReminder);
+      console.log(newReminder, "them moi o form");
 
       setReminderTitle("");
       setIsReminderForm(false);
@@ -54,4 +56,13 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   );
 };
 
-export default ReminderFormInList;
+
+
+const mapDispathToProps = (dispatch: any) => {
+  return {
+    addReminder: (newReminder: IReminderType) =>
+      dispatch(addReminder(newReminder)),
+  };
+};
+
+export default connect(null, mapDispathToProps)(ReminderFormInList);

@@ -49,7 +49,6 @@ const Reminder: React.FC<IReminderProps> = ({
   const handleEditValue = (noteId: string, newValue: string) => {
     setEditedNote({ ...reminder, title: newValue });
     setIsDoneButtonDisabled(true);
-    console.log("updateType in handleEditValue:", "title");
     onUpdateReminder(noteId, newValue, "title");
   };
 

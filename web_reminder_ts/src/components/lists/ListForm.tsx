@@ -92,6 +92,9 @@ const ListForm: React.FC<IListFormProps> = ({
     document.addEventListener("keydown", handleKeyDown);
     submitButtonRef.current?.focus();
     inputRef.current?.focus();
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   const handleCancelClick = () => {

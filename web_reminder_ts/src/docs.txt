@@ -20,30 +20,25 @@ Reducers là các function nguyên thủy chúng lấy state hiện tại của 
 Store lưu trạng thái ứng dụng và nó là duy nhất trong bất kỳ một ứng dụng Redux nào. 
   Bạn có thể access các state được lưu, update state, và đăng ký or hủy đăng ký các listeners thông qua helper methods.
 
-  // case UPDATE_LIST_NOTE_COUNT:
-    //   return {
-    //     ...state.listNote,
-    //     listNote: state.listNote.map((list: IListNote) =>
-    //       list.id === action.payload.listId
-    //         ? { ...list, totalCount: action.payload.newTotalCount }
-    //         : list
-    //     ),
-    //   };
-    // case UPDATE_LIST_TOTAL_COUNT:
-    //   return {
-    //     ...state.listNote,
-    //     listNote: state.listNote.map((list: IListNote) =>
-    //       list.id === state.selectedListId
-    //         ? { ...list, totalCount: action.payload.newTotalCount }
-    //         : list
-    //     ),
-    //   };
-    // case UPDATE_TOTAL_DONE:
-    //   return {
-    //     ...state.listNote,
-    //     listNote: state.listNote.map((list: IListNote) =>
-    //       list.id === state.selectedListId
-    //         ? { ...list, totalDone: action.payload.newTotalDone }
-    //         : list
-    //     ),
-    //   };
+/////
+const deleteListNote = (listId: string) => async (dispatch: Dispatch) => {
+  try {
+    await delList(listId);
+    dispatch({ type: DELETE_LIST_NOTE, payload: { listId } });
+    console.log(listId, "xoa thanh cong");
+  } catch (error) {
+    console.error("Error deleting list:", error);
+  }
+};
+
+const updateListTotalCount = (listId: string) => ({
+  type: UPDATE_LIST_TOTAL_COUNT,
+  payload: { listId },
+});
+
+Cả hai hàm deleteListNote và updateListTotalCount đều là action creators trong Redux. Tuy nhiên, chúng được cài đặt khác nhau về cách trả về action object.
+
+deleteListNote:Hàm này thực hiện gọi API để xóa một list theo listId. Sau khi xóa thành công, nó dispatch một action object với type là DELETE_LIST_NOTE và payload chứa listId.
+Vì hàm này không cần phải trả về bất kỳ giá trị nào (như là một action object), nó có thể trả về một async function.
+updateListTotalCount:Hàm này không thực hiện bất kỳ thao tác bất đồng bộ nào, chỉ đơn giản là trả về một action object.
+Do không cần phải sử dụng async/await, nó được triển khai dưới dạng một hàm đồng bộ thông thường, trả về ngay một action object.
