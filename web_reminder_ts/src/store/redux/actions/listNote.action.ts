@@ -5,7 +5,6 @@ import {
   DELETE_LIST_NOTE,
   GET_COLORS,
   UPDATE_LIST_TOTAL_COUNT,
-  SET_SELECTED_LIST_ID,
 } from "../../../types/actionTypes.type";
 import getAllList, {
   addNewList,
@@ -79,7 +78,6 @@ const updateListTotalCount = (listId: string) => ({
   payload: { listId },
 });
 
-
 export {
   updateListTotalCount,
   getListNote,
@@ -87,5 +85,4 @@ export {
   updateListNote,
   deleteListNote,
   getColors,
-  // setSelectedListId,
 };

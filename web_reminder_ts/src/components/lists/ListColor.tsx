@@ -1,17 +1,19 @@
-import React, { useState, useContext } from "react";
-import { ListContext } from "../../context/listNote.context";
+import React, { useState } from "react";
 import { IColor } from "../../types/color.type";
 import { getColors } from "../../store/redux/actions/listNote.action";
 import { connect } from "react-redux";
 interface IColorProps {
   onColorClick: (color: string) => void;
-  colors : IColor[];
-  getColors : () => Promise<void>;
+  colors: IColor[];
+  getColors: () => Promise<void>;
 }
 
-const ListColor: React.FC<IColorProps> = ({ onColorClick,colors,getColors }) => {
+const ListColor: React.FC<IColorProps> = ({
+  onColorClick,
+  colors,
+  getColors,
+}) => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  // const context = useContext(ListContext);
   const handleColorClick = (color: string) => {
     setSelectedColor(color);
     onColorClick(color);
@@ -44,4 +46,4 @@ const mapDispathToProps = (dispatch: any) => {
   };
 };
 
-export default connect (mapStateToProps, mapDispathToProps) (ListColor);
+export default connect(mapStateToProps, mapDispathToProps)(ListColor);

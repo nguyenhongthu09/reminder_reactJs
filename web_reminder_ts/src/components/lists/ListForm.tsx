@@ -16,7 +16,7 @@ import Input from "../core/Input";
 import Icon from "../core/Icon";
 import Loading from "../core/Loading";
 import { connect } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
 interface IListFormProps {
   formType: string;
   listData: IListNote;
@@ -38,7 +38,7 @@ const ListForm: React.FC<IListFormProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const navigate = useNavigate();
   const handleColorSelect = (selectedColor: string) => {
     setListData((prevData) => ({
       ...prevData,
@@ -69,12 +69,12 @@ const ListForm: React.FC<IListFormProps> = ({
       if (formType === "edit") {
         await updateListNote(listData);
         console.log(listData, "chinh sua");
-        setIsListForm(false);
       } else {
         await addListNote(listData);
         console.log(listData, "them may");
-        setIsListForm(false);
       }
+      setIsListForm(false);
+      navigate("/");
     } catch (error) {
       console.error("Error submitting form:");
     } finally {
@@ -99,6 +99,7 @@ const ListForm: React.FC<IListFormProps> = ({
 
   const handleCancelClick = () => {
     setIsListForm(false);
+    navigate("/");
   };
 
   return (
@@ -140,7 +141,7 @@ const ListForm: React.FC<IListFormProps> = ({
           style={{ backgroundColor: listData.isColor }}
         >
           <span className="fill-color">
-            <Icon type="notelist"></Icon>
+            <Icon type="notelist" />
           </span>
         </div>
         <Input

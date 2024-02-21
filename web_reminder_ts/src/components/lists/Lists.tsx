@@ -13,7 +13,8 @@ import {
   getColors,
 } from "../../store/redux/actions/listNote.action";
 import { connect } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 interface IListProps {
   listNote: IListNote[];
   getListNote: () => Promise<void>;
@@ -39,6 +40,9 @@ const Lists: React.FC<IListProps> = ({
   });
   const [selectedListId, setSelectedListId] = useState<string>("");
   const [nameList, setNameList] = useState<string>("");
+
+  const navigate = useNavigate();
+
   const setFormTypeHandler = (type: string) => {
     setIsListForm(type === "add" || type === "edit");
     setFormType(type);
@@ -47,6 +51,7 @@ const Lists: React.FC<IListProps> = ({
   const handleListNoteEditClick = (listNote: IListNote) => {
     setFormTypeHandler("edit");
     setListData(listNote);
+    navigate(`/lists/${listNote.id}/editList`);
   };
 
   const handleAddFormListClick = (source: string) => {
@@ -58,6 +63,7 @@ const Lists: React.FC<IListProps> = ({
         name: "",
         isColor: "",
       });
+      navigate("/lists/addList");
     }
   };
 
@@ -66,6 +72,7 @@ const Lists: React.FC<IListProps> = ({
     setSelectedListId(listNote.id);
     console.log(setSelectedListId(listNote.id), "log thu set");
     setNameList(listNote.name);
+    navigate(`/lists/${listNote.id}/reminders`);
   };
 
   const handleBackList = () => {
@@ -74,6 +81,7 @@ const Lists: React.FC<IListProps> = ({
 
   const handleFormAddReminder = (openForm: boolean) => {
     setIsReminderForm(openForm);
+    navigate("/formAddReminder");
   };
 
   //DELETE LISTNOTE
@@ -137,24 +145,61 @@ const Lists: React.FC<IListProps> = ({
         </div>
       </div>
 
-      {isListForm && (
+      {/* {isListForm && (
         <ListForm
           formType={formType}
           listData={listData}
           setIsListForm={setIsListForm}
           setListData={setListData}
         />
-      )}
+      )} */}
+      <Routes>
+        {isListForm && (
+          <Route
+            path={`/lists/${formType === "add" ? "addList" : ":id/editList"}`}
+            element={
+              <ListForm
+                formType={formType}
+                listData={listData}
+                setIsListForm={setIsListForm}
+                setListData={setListData}
+              />
+            }
+          />
+        )}
+      </Routes>
 
+      <Routes>
+        {isReminders && (
+          <Route
+            path={`/lists/:id/reminders`}
+            element={
+              <Reminders
+                onListsBackClick={handleBackList}
+                nameList={nameList}
+                selectedListId={selectedListId}
+              />
+            }
+          />
+        )}
+      </Routes>
+      {/* 
       {isReminders && (
         <Reminders
           onListsBackClick={handleBackList}
           nameList={nameList}
           selectedListId={selectedListId}
         />
-      )}
-
-      {isReminderForm && <ReminderForm setIsReminderForm={setIsReminderForm} />}
+      )} */}
+      <Routes>
+        {isReminderForm && (
+          <Route
+            path={`/formAddReminder`}
+            element={<ReminderForm setIsReminderForm={setIsReminderForm} />}
+          />
+        )}
+      </Routes>
+      {/* {isReminderForm && <ReminderForm setIsReminderForm={setIsReminderForm} />} */}
     </>
   );
 };

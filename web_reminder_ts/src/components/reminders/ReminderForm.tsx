@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import List from "../lists/atomics/List";
 import Button from "../core/Button";
 import Input from "../core/Input";
 import Loading from "../core/Loading";
-import { ReminderContext } from "../../context/reminder.context";
 import { generateRandomStringId } from "../../utils/common";
 import { IListNote } from "../../types/listNote.type";
 import { connect } from "react-redux";
 import { addReminder } from "../../store/redux/actions/reminder.action";
 import { IReminderType } from "../../types/reminder.type";
+import { useNavigate } from "react-router-dom";
 interface IReminderFormProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   listNote: IListNote[];
@@ -25,7 +25,7 @@ const ReminderForm: React.FC<IReminderFormProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedList, setSelectedList] = useState<IListNote | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -68,6 +68,7 @@ const ReminderForm: React.FC<IReminderFormProps> = ({
       setLoading(true);
       await addReminder(newReminder);
       setIsReminderForm(false);
+      navigate("/");
       setLoading(false);
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {
@@ -77,6 +78,7 @@ const ReminderForm: React.FC<IReminderFormProps> = ({
 
   const handleCancelForm = () => {
     setIsReminderForm(false);
+    navigate("/");
   };
 
   return (
