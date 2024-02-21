@@ -5,7 +5,7 @@ import {
   DELETE_LIST_NOTE,
   GET_COLORS,
   UPDATE_LIST_TOTAL_COUNT,
-} from "../../../types/actionTypes.type";
+} from "../../../types/actionTypesListNote.type";
 import { IListNote } from "../../../types/listNote.type";
 import { IColor } from "../../../types/color.type";
 

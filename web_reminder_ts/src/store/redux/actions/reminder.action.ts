@@ -44,7 +44,7 @@ const addReminder =
   };
 
 const deleteReminder =
-  (idDeleReminder: string, status: boolean) => async (dispatch: Dispatch) => {
+  (idDeleReminder: string) => async (dispatch: Dispatch) => {
     try {
       await delREminder(idDeleReminder);
       dispatch({ type: DELETE_REMINDER, payload: { id: idDeleReminder } });

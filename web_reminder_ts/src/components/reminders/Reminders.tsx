@@ -19,7 +19,7 @@ interface IRemindersProps {
   getListNote: () => Promise<void>;
   getReminders: (selectedListId: string) => Promise<void>;
   reminders: IReminderType[];
-  deleteReminder: (idDeleReminder: string, status: boolean) => Promise<void>;
+  deleteReminder: (idDeleReminder: string) => Promise<void>;
   updateReminder: (
     idEditReminder: string,
     newData: string | boolean,
@@ -56,14 +56,11 @@ const Reminders: React.FC<IRemindersProps> = ({
     setIsReminderForm(true);
   };
   //DELETE REMIDNER
-  const deleReminder = async (
-    idDeleReminder: string,
-    status: boolean
-  ): Promise<void> => {
+  const deleReminder = async (idDeleReminder: string): Promise<void> => {
     try {
       setLoading(true);
-      await deleteReminder(idDeleReminder, status);
-      console.log(idDeleReminder, status, "xoa reminder");
+      await deleteReminder(idDeleReminder);
+      console.log(idDeleReminder, "xoa reminder");
     } catch (error) {
       console.error("Error fetching reminder:");
     } finally {
@@ -152,8 +149,8 @@ const mapDispathToProps = (dispatch: any) => {
     getListNote: () => dispatch(getListNote()),
     getReminders: (selectedListId: string) =>
       dispatch(getReminders(selectedListId)),
-    deleteReminder: (idDeleReminder: string, status: boolean) =>
-      dispatch(deleteReminder(idDeleReminder, status)),
+    deleteReminder: (idDeleReminder: string) =>
+      dispatch(deleteReminder(idDeleReminder)),
     updateReminder: (
       idEditReminder: string,
       newData: string | boolean,
