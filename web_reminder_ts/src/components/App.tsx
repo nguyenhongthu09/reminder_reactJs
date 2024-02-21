@@ -12,7 +12,7 @@ function App() {
         <Provider store={store}>
           <ListNoteProvider>
             <Routes>
-              <Route path="*" element={<Lists />}></Route>
+              <Route path="/" element={<Lists />} />
             </Routes>
           </ListNoteProvider>
         </Provider>
