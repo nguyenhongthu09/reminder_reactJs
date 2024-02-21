@@ -3,15 +3,18 @@ import { Provider } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Lists from "./lists/Lists";
 import { store } from "../store";
+import { ListNoteProvider } from "../store/context/listNote.context";
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Provider store={store}>
-          <Routes>
-            <Route path="*" element={<Lists />}></Route>
-          </Routes>
+          <ListNoteProvider>
+            <Routes>
+              <Route path="*" element={<Lists />}></Route>
+            </Routes>
+          </ListNoteProvider>
         </Provider>
       </div>
     </Router>

@@ -1,24 +1,24 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useContext } from "react";
 import Checkbox from "../core/Checkbox";
 import Input from "../core/Input";
 import { generateRandomStringId } from "../../utils/common";
 import { IReminderType } from "../../types/reminder.type";
 import { addReminder } from "../../store/redux/actions/reminder.action";
 import { connect } from "react-redux";
+import { ListContext } from "../../store/context/listNote.context";
 interface IReminderFormInListProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDoneButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   addReminder: (newReminder: IReminderType) => Promise<void>;
-  selectedListId: string;
 }
 
 const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   setIsReminderForm,
   setIsDoneButtonDisabled,
   addReminder,
-  selectedListId,
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
+  const context = useContext(ListContext);
   const handleBlur = async (): Promise<void> => {
     if (reminderTitle.trim() === "") {
       setIsReminderForm(false);
@@ -28,7 +28,7 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
         id: generateRandomStringId(),
         title: reminderTitle,
         status: false,
-        idlist: selectedListId,
+        idlist: context.selectedListId,
       };
       await addReminder(newReminder);
       console.log(newReminder, "them moi o form");
@@ -55,8 +55,6 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
     </div>
   );
 };
-
-
 
 const mapDispathToProps = (dispatch: any) => {
   return {

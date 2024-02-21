@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import List from "./atomics/List";
 import ListForm from "./ListForm";
 import Reminders from "../reminders/Reminders";
@@ -14,7 +14,8 @@ import {
 } from "../../store/redux/actions/listNote.action";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { ListContext } from "../../store/context/listNote.context";
 interface IListProps {
   listNote: IListNote[];
   getListNote: () => Promise<void>;
@@ -38,11 +39,12 @@ const Lists: React.FC<IListProps> = ({
     name: "",
     isColor: "",
   });
-  const [selectedListId, setSelectedListId] = useState<string>("");
+
   const [nameList, setNameList] = useState<string>("");
-
+  const context = useContext(ListContext);
   const navigate = useNavigate();
-
+  const location = useLocation();
+  console.log(location);
   const setFormTypeHandler = (type: string) => {
     setIsListForm(type === "add" || type === "edit");
     setFormType(type);
@@ -69,8 +71,7 @@ const Lists: React.FC<IListProps> = ({
 
   const handleReminderOpenClick = (listNote: IListNote) => {
     setIsReminders(true);
-    setSelectedListId(listNote.id);
-    console.log(setSelectedListId(listNote.id), "log thu set");
+    context.setSelectedListId(listNote.id);
     setNameList(listNote.name);
     navigate(`/lists/${listNote.id}/reminders`);
   };
@@ -177,7 +178,6 @@ const Lists: React.FC<IListProps> = ({
               <Reminders
                 onListsBackClick={handleBackList}
                 nameList={nameList}
-                selectedListId={selectedListId}
               />
             }
           />
