@@ -146,14 +146,6 @@ const Lists: React.FC<IListProps> = ({
         </div>
       </div>
 
-      {/* {isListForm && (
-        <ListForm
-          formType={formType}
-          listData={listData}
-          setIsListForm={setIsListForm}
-          setListData={setListData}
-        />
-      )} */}
       <Routes>
         {isListForm && (
           <Route
@@ -183,14 +175,7 @@ const Lists: React.FC<IListProps> = ({
           />
         )}
       </Routes>
-      {/* 
-      {isReminders && (
-        <Reminders
-          onListsBackClick={handleBackList}
-          nameList={nameList}
-          selectedListId={selectedListId}
-        />
-      )} */}
+
       <Routes>
         {isReminderForm && (
           <Route
@@ -199,7 +184,6 @@ const Lists: React.FC<IListProps> = ({
           />
         )}
       </Routes>
-      {/* {isReminderForm && <ReminderForm setIsReminderForm={setIsReminderForm} />} */}
     </>
   );
 };
