@@ -6,6 +6,7 @@ import Icon from "../../core/Icon";
 import Checkbox from "../../core/Checkbox";
 import { IReminderType } from "../../../types/reminder.type";
 import { IAction } from "../../../types/action.type";
+import Loading from "../../core/Loading";
 
 interface IReminderProps {
   reminder: IReminderType;
@@ -30,7 +31,7 @@ const Reminder: React.FC<IReminderProps> = ({
     status: false,
     idlist: "",
   });
-
+  const [loading, setLoading] = useState<boolean>(false);
   const action: IAction[] = [
     {
       id: 1,
@@ -46,15 +47,19 @@ const Reminder: React.FC<IReminderProps> = ({
     },
   ];
 
-  const handleEditValue = (noteId: string, newValue: string) => {
+  const handleEditValue = async (noteId: string, newValue: string) => {
     setEditedNote({ ...reminder, title: newValue });
     setIsDoneButtonDisabled(true);
-    onUpdateReminder(noteId, newValue, "title");
+    setLoading(true);
+    await onUpdateReminder(noteId, newValue, "title");
+    setLoading(false);
   };
 
-  const handleStatus = (noteId: string, newStatus: boolean) => {
+  const handleStatus = async (noteId: string, newStatus: boolean) => {
     setEditedNote({ ...reminder, status: newStatus });
-    onUpdateReminder(noteId, newStatus, "status");
+    setLoading(true);
+    await onUpdateReminder(noteId, newStatus, "status");
+    setLoading(false);
   };
 
   const handleButtonClick = (id: string, status: boolean) => {
@@ -75,6 +80,7 @@ const Reminder: React.FC<IReminderProps> = ({
         id={reminder.id}
         data-listnote-id={reminder.idlist}
       >
+        {loading && <Loading />}
         <div className="items-list-reminder">
           <div className="form-check item-reminder">
             <Checkbox

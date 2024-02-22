@@ -6,6 +6,7 @@ import { IReminderType } from "../../types/reminder.type";
 import { addReminder } from "../../store/redux/actions/reminder.action";
 import { connect } from "react-redux";
 import { ListContext } from "../../store/context/listNote.context";
+import Loading from "../core/Loading";
 interface IReminderFormInListProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDoneButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,6 +19,7 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   addReminder,
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const context = useContext(ListContext);
   const handleBlur = async (): Promise<void> => {
     if (reminderTitle.trim() === "") {
@@ -30,9 +32,10 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
         status: false,
         idlist: context.selectedListId,
       };
+      setLoading(true);
       await addReminder(newReminder);
       console.log(newReminder, "them moi o form");
-
+      setLoading(false);
       setReminderTitle("");
       setIsReminderForm(false);
     }
@@ -47,7 +50,9 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   };
 
   return (
+    
     <div className="new-reminder">
+       {loading && <Loading />}
       <div className="form-check item-reminders">
         <Checkbox />
         <Input autoFocus onBlur={handleBlur} onChange={handleChange} />
