@@ -9,23 +9,26 @@ import { connect } from "react-redux";
 import { addReminder } from "../../store/redux/actions/reminder.action";
 import { IReminderType } from "../../types/reminder.type";
 import { useNavigate } from "react-router-dom";
+import { getListNote } from "../../store/redux/actions/listNote.action";
 interface IReminderFormProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   listNote: IListNote[];
   addReminder: (newReminder: IReminderType) => Promise<void>;
+  getListNote: () => Promise<void>;
 }
 
 const ReminderForm: React.FC<IReminderFormProps> = ({
   setIsReminderForm,
   listNote,
   addReminder,
+  getListNote
 }) => {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState<boolean>(true);
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedList, setSelectedList] = useState<IListNote | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -68,7 +71,7 @@ const ReminderForm: React.FC<IReminderFormProps> = ({
       setLoading(true);
       await addReminder(newReminder);
       setIsReminderForm(false);
-      navigate("/");
+      navigate("/")
       setLoading(false);
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {
@@ -78,8 +81,11 @@ const ReminderForm: React.FC<IReminderFormProps> = ({
 
   const handleCancelForm = () => {
     setIsReminderForm(false);
-    navigate("/");
+    navigate("/")
   };
+  useEffect(() => {
+    getListNote(); // Gọi hàm getColors khi component được render lần đầu tiên
+  }, [getListNote]);
 
   return (
     <>
@@ -146,6 +152,7 @@ const mapStateToProps = (state: any) => {
 
 const mapDispathToProps = (dispatch: any) => {
   return {
+    getListNote: () => dispatch(getListNote()),
     addReminder: (newReminder: IReminderType) =>
       dispatch(addReminder(newReminder)),
   };

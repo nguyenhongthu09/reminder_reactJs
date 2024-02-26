@@ -42,3 +42,16 @@ deleteListNote:Hàm này thực hiện gọi API để xóa một list theo list
 Vì hàm này không cần phải trả về bất kỳ giá trị nào (như là một action object), nó có thể trả về một async function.
 updateListTotalCount:Hàm này không thực hiện bất kỳ thao tác bất đồng bộ nào, chỉ đơn giản là trả về một action object.
 Do không cần phải sử dụng async/await, nó được triển khai dưới dạng một hàm đồng bộ thông thường, trả về ngay một action object.
+////////////////////////////////
+Redux Toolkit là thư viện được phát triển bởi ReduxJS, giúp viết mã Redux nhanh chóng, toàn diện và tuân thủ chuẩn mực.
+ Nó giải quyết vấn đề phức tạp của Redux và cung cấp API tiện ích để viết mã ngắn gọn, dễ đọc hơn và tuân theo các mẫu thiết kế tốt nhất.
+
+ Redux và Redux Toolkit đều giúp quản lý trạng thái ứng dụng, nhưng RTK mang đến nhiều lợi ích đáng kể so với Redux thuần túy.
+Đơn giản hóa cú pháp: Trong Redux, bạn cần tạo ra action types, action creators, và reducers riêng biệt cho mỗi trạng thái. 
+  Trong khi đó, RTK sử dụng hàm createSlice để tự động tạo ra cả ba.
+Cấu hình cơ sở dữ liệu giảm thiểu: RTK đi kèm với Redux Thunk và Redux DevTools, giúp giảm thiểu công việc cấu hình.
+Immutability trực tiếp: Redux yêu cầu sử dụng cú pháp "immutable" để thay đổi trạng thái. 
+  RTK cho phép bạn viết code "mutable" thực tế mà vẫn giữ được tính "immutable".
+  +createSlice là một hàm mạnh mẽ giúp tự động hóa việc tạo ra action types, action creators và reducers. Bạn chỉ cần định nghĩa tên slice, trạng thái ban đầu và một đối tượng chứa các reducers, sau đó createSlice sẽ tạo ra một slice reducer với các action tương ứng.
+  +createAsyncThunk là một hàm giúp xử lý các actions async một cách đơn giản. Nó tự động dispatch actions tại các giai đoạn khởi đầu, thành công và thất bại của promise.
+  

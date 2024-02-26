@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IColor } from "../../types/color.type";
 import { getColors } from "../../store/redux/actions/listNote.action";
 import { connect } from "react-redux";
@@ -18,6 +18,9 @@ const ListColor: React.FC<IColorProps> = ({
     setSelectedColor(color);
     onColorClick(color);
   };
+  useEffect(() => {
+    getColors();
+  }, [getColors]);
 
   return (
     <>

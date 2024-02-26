@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Reminder from "./atomics/Reminder";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
 import ReminderFormInList from "./ReminderFormInList";
 import { IReminderType } from "../../types/reminder.type";
-import { getListNote } from "../../store/redux/actions/listNote.action";
 import { connect } from "react-redux";
 import {
   getReminders,
@@ -12,11 +11,9 @@ import {
   updateReminder,
 } from "../../store/redux/actions/reminder.action";
 import { useNavigate } from "react-router-dom";
-import { ListContext } from "../../store/context/listNote.context";
+import { useParams, Link } from "react-router-dom";
 interface IRemindersProps {
-  nameList: string;
   onListsBackClick?: () => void;
-  getListNote: () => Promise<void>;
   getReminders: (selectedListId: string) => Promise<void>;
   reminders: IReminderType[];
   deleteReminder: (idDeleReminder: string) => Promise<void>;
@@ -28,9 +25,7 @@ interface IRemindersProps {
 }
 
 const Reminders: React.FC<IRemindersProps> = ({
-  nameList,
   onListsBackClick,
-  getListNote,
   getReminders,
   reminders,
   deleteReminder,
@@ -41,25 +36,28 @@ const Reminders: React.FC<IRemindersProps> = ({
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] =
     useState<boolean>(true);
   const navigate = useNavigate();
-  const context = useContext(ListContext);
-  const hanldeBackList = async (): Promise<void> => {
+  const params = useParams();
+  const [, setNameList] = useState<string>("");
+  const { name, id } = useParams<{ name: string; id: string }>();
+  const hanldeBackList = () => {
     if (onListsBackClick) {
       setLoading(true);
-      await getListNote();
+      navigate("/");
       onListsBackClick();
       setLoading(false);
-      navigate("/");
     }
   };
 
   const showReminderForm = () => {
     setIsReminderForm(true);
+    navigate("reminderFormAddInList");
   };
   //DELETE REMIDNER
   const deleReminder = async (idDeleReminder: string): Promise<void> => {
     try {
       setLoading(true);
       await deleteReminder(idDeleReminder);
+      navigate(`/lists/${params.id}/reminders/${params.name}`);
       console.log(idDeleReminder, "xoa reminder");
     } catch (error) {
       console.error("Error fetching reminder:");
@@ -72,7 +70,8 @@ const Reminders: React.FC<IRemindersProps> = ({
     const fetchData = async (): Promise<void> => {
       try {
         setLoading(true);
-        await getReminders(context.selectedListId);
+        if (name) setNameList(name);
+        if (id) await getReminders(id);
         setLoading(false);
       } catch (error) {
         console.error("Error loading data:");
@@ -81,7 +80,7 @@ const Reminders: React.FC<IRemindersProps> = ({
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getReminders, id, setNameList, name]);
   const hasReminderData: boolean = reminders.length === 0;
   const sortedReminders: IReminderType[] = reminders.slice().sort((a, b) => {
     return a.status === b.status ? 0 : a.status ? 1 : -1;
@@ -104,35 +103,37 @@ const Reminders: React.FC<IRemindersProps> = ({
             </Button>
           </div>
           {loading && <Loading />}
-          <h1 className="title-list">{nameList}</h1>
+          <h1 className="title-list">{name}</h1>
           {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
           {sortedReminders.map(
             (note) =>
-              note.idlist === context.selectedListId && (
-                <Reminder
-                  key={note.id}
-                  reminder={note}
-                  setIsDoneButtonDisabled={setIsDoneButtonDisabled}
-                  onDeleteReminder={deleReminder}
-                  onUpdateReminder={updateReminder}
-                />
+              note.idlist === id && (
+                <Link key={note.id} to={`reminder/${note.id}`}>
+                  <Reminder
+                    reminder={note}
+                    setIsDoneButtonDisabled={setIsDoneButtonDisabled}
+                    onDeleteReminder={deleReminder}
+                    onUpdateReminder={updateReminder}
+                  />
+                </Link>
               )
           )}
-        </div>
-        {isReminderForm && (
-          <ReminderFormInList
-            setIsDoneButtonDisabled={setIsDoneButtonDisabled}
-            setIsReminderForm={setIsReminderForm}
-          />
-        )}
 
-        <Button
-          className="add__reminders"
-          id="btnNewNote"
-          onClick={showReminderForm}
-        >
-          New Reminder
-        </Button>
+          <Button
+            className="add__reminders"
+            id="btnNewNote"
+            onClick={showReminderForm}
+          >
+            New Reminder
+          </Button>
+
+          {isReminderForm && (
+            <ReminderFormInList
+              setIsDoneButtonDisabled={setIsDoneButtonDisabled}
+              setIsReminderForm={setIsReminderForm}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -141,12 +142,12 @@ const Reminders: React.FC<IRemindersProps> = ({
 const mapStateToProps = (state: any) => {
   return {
     reminders: state.reminderReducer.reminders,
+    nameList: state.listReducer.nameList,
   };
 };
 
 const mapDispathToProps = (dispatch: any) => {
   return {
-    getListNote: () => dispatch(getListNote()),
     getReminders: (selectedListId: string) =>
       dispatch(getReminders(selectedListId)),
     deleteReminder: (idDeleReminder: string) =>

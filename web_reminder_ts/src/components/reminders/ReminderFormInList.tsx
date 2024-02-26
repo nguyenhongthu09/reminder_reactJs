@@ -1,12 +1,12 @@
-import React, { useState, ChangeEvent, useContext } from "react";
+import React, { useState, ChangeEvent } from "react";
 import Checkbox from "../core/Checkbox";
 import Input from "../core/Input";
 import { generateRandomStringId } from "../../utils/common";
 import { IReminderType } from "../../types/reminder.type";
 import { addReminder } from "../../store/redux/actions/reminder.action";
 import { connect } from "react-redux";
-import { ListContext } from "../../store/context/listNote.context";
 import Loading from "../core/Loading";
+import { useNavigate, useParams } from "react-router-dom";
 interface IReminderFormInListProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDoneButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,20 +20,27 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const context = useContext(ListContext);
+  const navigate = useNavigate();
+  const params = useParams();
   const handleBlur = async (): Promise<void> => {
+    if (!params.id) {
+      console.error("ID is undefined");
+      return;
+    }
     if (reminderTitle.trim() === "") {
       setIsReminderForm(false);
+      navigate(`/lists/${params.id}/reminders/${params.name}`);
       return;
     } else {
       const newReminder: IReminderType = {
         id: generateRandomStringId(),
         title: reminderTitle,
         status: false,
-        idlist: context.selectedListId,
+        idlist: params.id,
       };
       setLoading(true);
       await addReminder(newReminder);
+      navigate(`/lists/${params.id}/reminders/${params.name}`);
       console.log(newReminder, "them moi o form");
       setLoading(false);
       setReminderTitle("");
@@ -50,9 +57,8 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   };
 
   return (
-    
     <div className="new-reminder">
-       {loading && <Loading />}
+      {loading && <Loading />}
       <div className="form-check item-reminders">
         <Checkbox />
         <Input autoFocus onBlur={handleBlur} onChange={handleChange} />

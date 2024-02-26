@@ -13,20 +13,17 @@ import {
   getColors,
 } from "../../store/redux/actions/listNote.action";
 import { connect } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { Routes, Route, useLocation } from "react-router-dom";
 import { ListContext } from "../../store/context/listNote.context";
+import { useNavigate } from "react-router-dom";
 interface IListProps {
   listNote: IListNote[];
   getListNote: () => Promise<void>;
-  getColors: () => Promise<void>;
   deleteListNote: (listId: string) => Promise<void>;
 }
 
 const Lists: React.FC<IListProps> = ({
   listNote,
   getListNote,
-  getColors,
   deleteListNote,
 }) => {
   const [isListForm, setIsListForm] = useState<boolean>(false);
@@ -39,12 +36,9 @@ const Lists: React.FC<IListProps> = ({
     name: "",
     isColor: "",
   });
-
-  const [nameList, setNameList] = useState<string>("");
-  const context = useContext(ListContext);
   const navigate = useNavigate();
-  const location = useLocation();
-  console.log(location);
+
+  const context = useContext(ListContext);
   const setFormTypeHandler = (type: string) => {
     setIsListForm(type === "add" || type === "edit");
     setFormType(type);
@@ -53,27 +47,28 @@ const Lists: React.FC<IListProps> = ({
   const handleListNoteEditClick = (listNote: IListNote) => {
     setFormTypeHandler("edit");
     setListData(listNote);
-    navigate(`/lists/${listNote.id}/editList`);
+    navigate(`/lists/editlist/${listNote.id}`, {
+      state: { listData: listNote },
+    });
   };
 
   const handleAddFormListClick = (source: string) => {
     setFormTypeHandler("add");
     if (source === "button") {
       setIsListForm(true);
-      setListData({
-        id: generateRandomStringId(),
-        name: "",
-        isColor: "",
+      navigate("/lists/addList", {
+        state: {
+          listData: { id: generateRandomStringId(), name: "", isColor: "" },
+        },
       });
-      navigate("/lists/addList");
     }
   };
 
   const handleReminderOpenClick = (listNote: IListNote) => {
     setIsReminders(true);
     context.setSelectedListId(listNote.id);
-    setNameList(listNote.name);
-    navigate(`/lists/${listNote.id}/reminders`);
+    context.setNameList(listNote.name);
+    navigate(`/lists/${listNote.id}/reminders/${listNote.name}`);
   };
 
   const handleBackList = () => {
@@ -99,7 +94,6 @@ const Lists: React.FC<IListProps> = ({
       try {
         setIsLoading(true);
         await getListNote();
-        await getColors();
         setIsLoading(false);
       } catch (error) {
         console.error("Error loading data:");
@@ -146,44 +140,18 @@ const Lists: React.FC<IListProps> = ({
         </div>
       </div>
 
-      <Routes>
-        {isListForm && (
-          <Route
-            path={`/lists/${formType === "add" ? "addList" : ":id/editList"}`}
-            element={
-              <ListForm
-                formType={formType}
-                listData={listData}
-                setIsListForm={setIsListForm}
-                setListData={setListData}
-              />
-            }
-          />
-        )}
-      </Routes>
+      {isListForm && (
+        <ListForm
+          formType={formType}
+          listData={listData}
+          setIsListForm={setIsListForm}
+          setListData={setListData}
+        />
+      )}
 
-      <Routes>
-        {isReminders && (
-          <Route
-            path={`/lists/:id/reminders`}
-            element={
-              <Reminders
-                onListsBackClick={handleBackList}
-                nameList={nameList}
-              />
-            }
-          />
-        )}
-      </Routes>
+      {isReminders && <Reminders onListsBackClick={handleBackList} />}
 
-      <Routes>
-        {isReminderForm && (
-          <Route
-            path={`/formAddReminder`}
-            element={<ReminderForm setIsReminderForm={setIsReminderForm} />}
-          />
-        )}
-      </Routes>
+      {isReminderForm && <ReminderForm setIsReminderForm={setIsReminderForm} />}
     </>
   );
 };

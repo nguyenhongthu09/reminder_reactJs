@@ -7,7 +7,7 @@ import Checkbox from "../../core/Checkbox";
 import { IReminderType } from "../../../types/reminder.type";
 import { IAction } from "../../../types/action.type";
 import Loading from "../../core/Loading";
-
+import { useNavigate, useParams } from "react-router-dom";
 interface IReminderProps {
   reminder: IReminderType;
   setIsDoneButtonDisabled: (disabled: boolean) => void;
@@ -32,6 +32,8 @@ const Reminder: React.FC<IReminderProps> = ({
     idlist: "",
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const params = useParams();
   const action: IAction[] = [
     {
       id: 1,
@@ -52,6 +54,7 @@ const Reminder: React.FC<IReminderProps> = ({
     setIsDoneButtonDisabled(true);
     setLoading(true);
     await onUpdateReminder(noteId, newValue, "title");
+    navigate(`/lists/${params.id}/reminders/${params.name}`);
     setLoading(false);
   };
 
@@ -59,6 +62,7 @@ const Reminder: React.FC<IReminderProps> = ({
     setEditedNote({ ...reminder, status: newStatus });
     setLoading(true);
     await onUpdateReminder(noteId, newStatus, "status");
+    navigate(`/lists/${params.id}/reminders/${params.name}`);
     setLoading(false);
   };
 
