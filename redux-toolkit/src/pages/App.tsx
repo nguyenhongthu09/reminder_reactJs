@@ -1,7 +1,7 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { store } from "../store";
+// import { store } from "../store";
 import { ListNoteProvider } from "../store/context/listNote.context";
 import HomeLists from "./home/Lists";
 import FormList from "./list-form/ListForm";
@@ -9,7 +9,7 @@ import ReminderFormAdd from "./reminder-add-form/ReminderFormAdd";
 import RemindersPage from "./reminders/Reminders";
 import ReminderFormAddInList from "./reminders/ReminderFormAddInList";
 import ReminderFormEdit from "./reminders/ReminderFormEdit";
-// import store from "../redux-toolkit/store/store";
+import store from "../redux-toolkit/store/store";
 
 function App() {
   return (

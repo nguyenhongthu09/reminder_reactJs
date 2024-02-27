@@ -7,26 +7,16 @@ import Button from "../core/Button";
 import Loading from "../core/Loading";
 import { generateRandomStringId } from "../../utils/common";
 import { IListNote } from "../../types/listNote.type";
+import { ListContext } from "../../store/context/listNote.context";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../../redux-toolkit/store/store";
 import {
   getListNote,
   deleteListNote,
-  getColors,
-} from "../../store/redux/actions/listNote.action";
-import { connect } from "react-redux";
-import { ListContext } from "../../store/context/listNote.context";
-import { useNavigate } from "react-router-dom";
-import { getList } from "../../redux-toolkit/action/actionListNote";
-interface IListProps {
-  listNote: IListNote[];
-  getListNote: () => Promise<void>;
-  deleteListNote: (listId: string) => Promise<void>;
-}
+} from "../../redux-toolkit/action/actionListNote";
 
-const Lists: React.FC<IListProps> = ({
-  listNote,
-  getListNote,
-  deleteListNote,
-}) => {
+const Lists: React.FC = () => {
   const [isListForm, setIsListForm] = useState<boolean>(false);
   const [formType, setFormType] = useState<string>("");
   const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
@@ -38,6 +28,8 @@ const Lists: React.FC<IListProps> = ({
     isColor: "",
   });
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const listNote = useSelector((state: RootState) => state.listNote.listNote);
 
   const context = useContext(ListContext);
   const setFormTypeHandler = (type: string) => {
@@ -84,17 +76,15 @@ const Lists: React.FC<IListProps> = ({
   //DELETE LISTNOTE
   const deleListNote = async (listId: string): Promise<void> => {
     setIsLoading(true);
-    console.log(listId, " id");
-    await deleteListNote(listId);
+    await dispatch(deleteListNote(listId));
     setIsLoading(false);
-    console.log(listId, "id cua listnot via xoa");
   };
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         setIsLoading(true);
-        await getListNote();
+        await dispatch(getListNote());
         setIsLoading(false);
       } catch (error) {
         console.error("Error loading data:");
@@ -103,7 +93,7 @@ const Lists: React.FC<IListProps> = ({
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -157,18 +147,4 @@ const Lists: React.FC<IListProps> = ({
   );
 };
 
-const mapStateToProps = (state: any) => {
-  return {
-    listNote: state.listReducer.listNote,
-  };
-};
-
-const mapDispathToProps = (dispatch: any) => {
-  return {
-    getListNote: () => dispatch(getListNote()),
-    getColors: () => dispatch(getColors()),
-    deleteListNote: (listId: string) => dispatch(deleteListNote(listId)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispathToProps)(Lists);
+export default Lists;
