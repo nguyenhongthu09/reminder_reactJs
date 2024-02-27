@@ -80,7 +80,7 @@ const Reminders: React.FC<IRemindersProps> = ({
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getReminders, id, setNameList, name]);
+  }, []);
   const hasReminderData: boolean = reminders.length === 0;
   const sortedReminders: IReminderType[] = reminders.slice().sort((a, b) => {
     return a.status === b.status ? 0 : a.status ? 1 : -1;

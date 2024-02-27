@@ -21,14 +21,14 @@ const ReminderForm: React.FC<IReminderFormProps> = ({
   setIsReminderForm,
   listNote,
   addReminder,
-  getListNote
+  getListNote,
 }) => {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState<boolean>(true);
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedList, setSelectedList] = useState<IListNote | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -71,7 +71,7 @@ const ReminderForm: React.FC<IReminderFormProps> = ({
       setLoading(true);
       await addReminder(newReminder);
       setIsReminderForm(false);
-      navigate("/")
+      navigate("/");
       setLoading(false);
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {
@@ -81,11 +81,12 @@ const ReminderForm: React.FC<IReminderFormProps> = ({
 
   const handleCancelForm = () => {
     setIsReminderForm(false);
-    navigate("/")
+    navigate("/");
   };
   useEffect(() => {
-    getListNote(); // Gọi hàm getColors khi component được render lần đầu tiên
-  }, [getListNote]);
+    getListNote();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

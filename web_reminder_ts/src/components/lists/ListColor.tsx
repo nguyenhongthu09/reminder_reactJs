@@ -20,7 +20,8 @@ const ListColor: React.FC<IColorProps> = ({
   };
   useEffect(() => {
     getColors();
-  }, [getColors]);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
