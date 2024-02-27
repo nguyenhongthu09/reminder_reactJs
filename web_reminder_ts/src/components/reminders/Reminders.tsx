@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Reminder from "./atomics/Reminder";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
@@ -10,8 +10,8 @@ import {
   deleteReminder,
   updateReminder,
 } from "../../store/redux/actions/reminder.action";
-import { useNavigate } from "react-router-dom";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { ListContext } from "../../store/context/listNote.context";
 interface IRemindersProps {
   onListsBackClick?: () => void;
   getReminders: (selectedListId: string) => Promise<void>;
@@ -36,8 +36,8 @@ const Reminders: React.FC<IRemindersProps> = ({
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] =
     useState<boolean>(true);
   const navigate = useNavigate();
+  const context = useContext(ListContext);
   const params = useParams();
-  const [, setNameList] = useState<string>("");
   const { name, id } = useParams<{ name: string; id: string }>();
   const hanldeBackList = () => {
     if (onListsBackClick) {
@@ -70,7 +70,7 @@ const Reminders: React.FC<IRemindersProps> = ({
     const fetchData = async (): Promise<void> => {
       try {
         setLoading(true);
-        if (name) setNameList(name);
+        if (name) context.setNameList(name);
         if (id) await getReminders(id);
         setLoading(false);
       } catch (error) {
@@ -142,7 +142,6 @@ const Reminders: React.FC<IRemindersProps> = ({
 const mapStateToProps = (state: any) => {
   return {
     reminders: state.reminderReducer.reminders,
-    nameList: state.listReducer.nameList,
   };
 };
 

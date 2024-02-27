@@ -1,8 +1,8 @@
 import ListForm from "../../components/lists/ListForm";
 import React, { useState } from "react";
 import { IListNote } from "../../types/listNote.type";
-import { useParams } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
+
 export default function FormList() {
   const location = useLocation();
   const { state } = location;
