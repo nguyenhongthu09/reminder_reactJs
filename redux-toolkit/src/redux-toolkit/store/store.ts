@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import listReducer from "../reducer/listReducer";
-import reminderReducer from "../reducer/reminderReducer";
+import listNoteSlice from "../reducer/listReducer";
+import reminderSlice from "../reducer/reminderReducer";
+import globalState from "../globalState/loading";
 import { useDispatch } from "react-redux";
 const store = configureStore({
   reducer: {
-    listNote: listReducer,
-    reminders: reminderReducer,
+    listNote: listNoteSlice,
+    reminders: reminderSlice,
+    loading: globalState,
   },
 });
 

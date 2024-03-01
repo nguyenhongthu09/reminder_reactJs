@@ -18,7 +18,7 @@ const initialState: IInitialState = {
   colors: [],
 };
 
-const listReducer = createSlice({
+const listNoteSlice = createSlice({
   name: "listNote",
   initialState,
   reducers: {},
@@ -51,4 +51,4 @@ const listReducer = createSlice({
   },
 });
 
-export default listReducer.reducer;
+export default listNoteSlice.reducer;

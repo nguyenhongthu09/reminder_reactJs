@@ -19,7 +19,7 @@ interface IRemindersProps {
 
 const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
   const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] =
     useState<boolean>(true);
   const navigate = useNavigate();
@@ -30,12 +30,11 @@ const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
   const reminders = useSelector(
     (state: RootState) => state.reminders.reminders
   );
+  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const hanldeBackList = () => {
     if (onListsBackClick) {
-      setLoading(true);
       navigate("/");
       onListsBackClick();
-      setLoading(false);
     }
   };
 
@@ -46,14 +45,12 @@ const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
   //DELETE REMIDNER
   const deleReminder = async (idDeleReminder: string): Promise<void> => {
     try {
-      setLoading(true);
       await dispatch(deleteReminder(idDeleReminder));
       navigate(`/lists/${params.id}/reminders/${params.name}`);
       console.log(idDeleReminder, "xoa reminder");
     } catch (error) {
       console.error("Error fetching reminder:");
     } finally {
-      setLoading(false);
     }
   };
 
@@ -63,7 +60,6 @@ const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
     updateType: string
   ): Promise<void> => {
     try {
-      setLoading(true);
       await dispatch(
         updateReminder({
           idEditReminder: noteId,
@@ -76,17 +72,14 @@ const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
     } catch (error) {
       console.error("Error fetching reminder:");
     } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        setLoading(true);
         if (name) context.setNameList(name);
         if (id) await dispatch(getReminders(id));
-        setLoading(false);
       } catch (error) {
         console.error("Error loading data:");
         console.log(error);
@@ -116,7 +109,7 @@ const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
               Done
             </Button>
           </div>
-          {loading && <Loading />}
+          {isLoading && <Loading />}
           <h1 className="title-list">{name}</h1>
           {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
           {sortedReminders.map(

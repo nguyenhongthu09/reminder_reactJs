@@ -18,12 +18,12 @@ interface IReminderFormProps {
 const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState<boolean>(true);
   const [reminderTitle, setReminderTitle] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const [selectedList, setSelectedList] = useState<IListNote | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const listNote = useSelector((state: RootState) => state.listNote.listNote);
+  const isLoading = useSelector((state: RootState) => state.loading.loading);
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -63,11 +63,9 @@ const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
     };
 
     try {
-      setLoading(true);
       await dispatch(addReminder(newReminder));
       setIsReminderForm(false);
       navigate("/");
-      setLoading(false);
       console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {
       console.error("Lỗi khi thêm mới reminder:");
@@ -91,7 +89,7 @@ const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
         className="form--add__notes"
         onSubmit={handleSubmit}
       >
-        {loading && <Loading />}
+        {isLoading && <Loading />}
         <div className="button-detail-list">
           <Button className="btn-back-note" onClick={handleCancelForm}>
             Cancel

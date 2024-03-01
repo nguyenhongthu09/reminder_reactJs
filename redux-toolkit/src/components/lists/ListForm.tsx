@@ -17,6 +17,8 @@ import {
   editListNote,
 } from "../../redux-toolkit/action/actionListNote";
 import { useAppDispatch } from "../../redux-toolkit/store/store";
+import { RootState } from "../../redux-toolkit/store/store";
+import { useSelector } from "react-redux";
 interface IListFormProps {
   formType: string;
   listData: IListNote;
@@ -31,11 +33,11 @@ const ListForm: React.FC<IListFormProps> = ({
   setListData,
 }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const handleColorSelect = (selectedColor: string) => {
     setListData((prevData) => ({
       ...prevData,
@@ -62,7 +64,6 @@ const ListForm: React.FC<IListFormProps> = ({
   ): Promise<void> => {
     event.preventDefault();
     try {
-      setLoading(true);
       if (formType === "edit") {
         await dispatch(editListNote(listData));
         console.log(listData, "chinh sua");
@@ -75,7 +76,6 @@ const ListForm: React.FC<IListFormProps> = ({
     } catch (error) {
       console.error("Error submitting form:");
     } finally {
-      setLoading(false);
     }
   };
 
@@ -106,7 +106,7 @@ const ListForm: React.FC<IListFormProps> = ({
       action=""
       className={`form-edit-list ${formType}`}
     >
-      {loading && <Loading />}
+      {isLoading && <Loading />}
       <div className="form__edit__list">
         <Button
           ref={submitButtonRef}

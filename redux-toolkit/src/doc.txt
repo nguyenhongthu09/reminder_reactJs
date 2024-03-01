@@ -1,0 +1,6 @@
+configureStore sẽ mặc định thiết lập cho phép sử dụng redux devtool để debug và theo dõi quá trình cập nhật state cũng như thiết lập sẵn một số middleware.
+redux toolkit cung cap san cac ham va setup san
+sinh ra để giải quyết:
+		+ việc cấu hình redux phức tạp
+		+ phải cài đăt thủ công khá nhiều packages để redux có thể hoạt động hiệu quả như : redux thunk, redux devtool
+		+ redux yêu cầu rất nhìu boilerplate code( code lặp đi lặp lại rất nhìu lần)

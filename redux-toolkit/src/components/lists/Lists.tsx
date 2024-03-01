@@ -21,7 +21,6 @@ const Lists: React.FC = () => {
   const [formType, setFormType] = useState<string>("");
   const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
   const [isReminders, setIsReminders] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [listData, setListData] = useState<IListNote>({
     id: "",
     name: "",
@@ -30,7 +29,7 @@ const Lists: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const listNote = useSelector((state: RootState) => state.listNote.listNote);
-
+  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const context = useContext(ListContext);
   const setFormTypeHandler = (type: string) => {
     setIsListForm(type === "add" || type === "edit");
@@ -75,17 +74,13 @@ const Lists: React.FC = () => {
 
   //DELETE LISTNOTE
   const deleListNote = async (listId: string): Promise<void> => {
-    setIsLoading(true);
     await dispatch(deleteListNote(listId));
-    setIsLoading(false);
   };
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        setIsLoading(true);
         await dispatch(getListNote());
-        setIsLoading(false);
       } catch (error) {
         console.error("Error loading data:");
         console.log(error);

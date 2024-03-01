@@ -6,7 +6,8 @@ import { IReminderType } from "../../types/reminder.type";
 import Loading from "../core/Loading";
 import { useNavigate, useParams } from "react-router-dom";
 import { addReminder } from "../../redux-toolkit/action/actionReminder";
-import { useAppDispatch } from "../../redux-toolkit/store/store";
+import { useAppDispatch, RootState } from "../../redux-toolkit/store/store";
+import { useSelector } from "react-redux";
 interface IReminderFormInListProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDoneButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,10 +18,10 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   setIsDoneButtonDisabled,
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useAppDispatch();
+  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const handleBlur = async (): Promise<void> => {
     if (!params.id) {
       console.error("ID is undefined");
@@ -37,11 +38,10 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
         status: false,
         idlist: params.id,
       };
-      setLoading(true);
+
       await dispatch(addReminder(newReminder));
       navigate(`/lists/${params.id}/reminders/${params.name}`);
       console.log(newReminder, "them moi o form");
-      setLoading(false);
       setReminderTitle("");
       setIsReminderForm(false);
     }
@@ -57,7 +57,7 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
 
   return (
     <div className="new-reminder">
-      {loading && <Loading />}
+      {isLoading && <Loading />}
       <div className="form-check item-reminders">
         <Checkbox />
         <Input autoFocus onBlur={handleBlur} onChange={handleChange} />

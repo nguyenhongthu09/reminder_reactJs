@@ -14,7 +14,7 @@ const initialState: IInitialState = {
   reminders: [],
 };
 
-const reminderReducer = createSlice({
+const reminderSlice = createSlice({
   name: "reminder",
   initialState,
   reducers: {},
@@ -52,4 +52,4 @@ const reminderReducer = createSlice({
   },
 });
 
-export default reminderReducer.reducer;
+export default reminderSlice.reducer;

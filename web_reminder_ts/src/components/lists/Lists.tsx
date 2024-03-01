@@ -15,7 +15,7 @@ import {
 import { connect } from "react-redux";
 import { ListContext } from "../../store/context/listNote.context";
 import { useNavigate } from "react-router-dom";
-import { getList } from "../../redux-toolkit/action/actionListNote";
+
 interface IListProps {
   listNote: IListNote[];
   getListNote: () => Promise<void>;

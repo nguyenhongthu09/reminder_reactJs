@@ -51,6 +51,7 @@ export const addNewList = async (list: IListNote): Promise<IListNote> => {
     if (response.status === 201) {
       console.log("Thêm mới thành công");
       const createdListNote = response.data;
+      
       console.log("Dữ liệu trả về từ server:", createdListNote);
       return createdListNote;
     } else {

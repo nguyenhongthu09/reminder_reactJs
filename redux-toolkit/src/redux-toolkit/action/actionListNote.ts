@@ -28,7 +28,7 @@ export const getColors = createAsyncThunk(
 
 export const createList = createAsyncThunk(
   "listNote/createList",
-  async (list: IListNote) => {
+  async (list: IListNote, thunkAPI) => {
     const newList: IListNote = { ...list };
     const createdListNote = await addNewList(newList);
     return { ...createdListNote, totalDone: 0, totalCount: 0 };
@@ -37,14 +37,14 @@ export const createList = createAsyncThunk(
 
 export const deleteListNote = createAsyncThunk(
   "listNote/deleteListNote",
-  async (listId: string) => {
+  async (listId: string, thunkAPI) => {
     await delList(listId);
   }
 );
 
 export const editListNote = createAsyncThunk(
   "listNote/editListNote",
-  async (updatedList: IListNote) => {
+  async (updatedList: IListNote, thunkAPI) => {
     const { id, totalDone, totalCount, ...updateList } = updatedList;
     return await updateListData(id, updateList.name, updateList.isColor);
   }
