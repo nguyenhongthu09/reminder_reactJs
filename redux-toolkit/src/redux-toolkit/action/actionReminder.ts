@@ -6,12 +6,15 @@ import {
   updateReminderData,
 } from "../../fetchApi/fetchApiREminder";
 import { IReminderType } from "../../types/reminder.type";
+import { setLoading } from "../globalState/loading";
 
 export const getReminders = createAsyncThunk(
   "reminders/getReminders",
   async (selectedListId: string, thunkAPI) => {
     if (selectedListId) {
+      thunkAPI.dispatch(setLoading(true));
       const reminderData: IReminderType[] = await getReminder(selectedListId);
+      thunkAPI.dispatch(setLoading(false));
       console.log(reminderData, "reminder");
       return reminderData;
     }
@@ -21,6 +24,7 @@ export const getReminders = createAsyncThunk(
 export const addReminder = createAsyncThunk(
   "reminders/addReminder",
   async (newReminder: IReminderType, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
     const newNote = {
       id: newReminder.id,
       title: newReminder.title,
@@ -28,6 +32,7 @@ export const addReminder = createAsyncThunk(
       idlist: newReminder.idlist,
     };
     const createdReminder = await addNewReminder(newNote);
+    thunkAPI.dispatch(setLoading(false));
     console.log(newReminder, "successfully added");
     return createdReminder;
   }
@@ -36,7 +41,9 @@ export const addReminder = createAsyncThunk(
 export const deleteReminder = createAsyncThunk(
   "reminders/deleteReminder",
   async (idDeleReminder: string, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
     await delREminder(idDeleReminder);
+    thunkAPI.dispatch(setLoading(false));
     console.log(idDeleReminder, "deleted reminder action");
   }
 );
@@ -56,7 +63,7 @@ export const updateReminder = createAsyncThunk(
     thunkAPI
   ) => {
     let updatedReminder: IReminderType | undefined;
-
+    thunkAPI.dispatch(setLoading(true));
     if (updateType === "title") {
       updatedReminder = await updateReminderData(idEditReminder, {
         title: newData as string,
@@ -68,7 +75,7 @@ export const updateReminder = createAsyncThunk(
     } else {
       throw new Error("Invalid update type");
     }
-
+    thunkAPI.dispatch(setLoading(false));
     console.log(idEditReminder, newData, updateType, "edit action");
     return updatedReminder;
   }
