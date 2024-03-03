@@ -11,11 +11,8 @@ import { getListNote } from "../../redux-toolkit/action/actionListNote";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux-toolkit/store/store";
 import { addReminder } from "../../redux-toolkit/action/actionReminder";
-interface IReminderFormProps {
-  setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
-const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
+const ReminderForm: React.FC = () => {
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState<boolean>(true);
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const [selectedList, setSelectedList] = useState<IListNote | null>(null);
@@ -64,18 +61,16 @@ const ReminderForm: React.FC<IReminderFormProps> = ({ setIsReminderForm }) => {
 
     try {
       await dispatch(addReminder(newReminder));
-      setIsReminderForm(false);
       navigate("/");
-      console.log("Đã thêm mới reminder thành công.", newReminder);
     } catch (error) {
       console.error("Lỗi khi thêm mới reminder:");
     }
   };
 
   const handleCancelForm = () => {
-    setIsReminderForm(false);
     navigate("/");
   };
+
   useEffect(() => {
     dispatch(getListNote());
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -24,12 +24,11 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   const isLoading = useSelector((state: RootState) => state.loading.loading);
   const handleBlur = async (): Promise<void> => {
     if (!params.id) {
-      console.error("ID is undefined");
       return;
     }
     if (reminderTitle.trim() === "") {
       setIsReminderForm(false);
-      navigate(`/lists/${params.id}/reminders/${params.name}`);
+      navigate(`/lists/${params.id}/reminders`);
       return;
     } else {
       const newReminder: IReminderType = {
@@ -40,8 +39,7 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
       };
 
       await dispatch(addReminder(newReminder));
-      navigate(`/lists/${params.id}/reminders/${params.name}`);
-      console.log(newReminder, "them moi o form");
+      navigate(`/lists/${params.id}/reminders`);
       setReminderTitle("");
       setIsReminderForm(false);
     }

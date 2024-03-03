@@ -7,7 +7,8 @@ import Checkbox from "../../core/Checkbox";
 import { IReminderType } from "../../../types/reminder.type";
 import { IAction } from "../../../types/action.type";
 import Loading from "../../core/Loading";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux-toolkit/store/store";
 interface IReminderProps {
   reminder: IReminderType;
   setIsDoneButtonDisabled: (disabled: boolean) => void;
@@ -25,13 +26,14 @@ const Reminder: React.FC<IReminderProps> = ({
   onDeleteReminder,
   onUpdateReminder,
 }) => {
+  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const [editedNote, setEditedNote] = useState<IReminderType>({
     id: "",
     title: "",
     status: false,
     idlist: "",
   });
-  const [loading, setLoading] = useState<boolean>(false);
+
   const action: IAction[] = [
     {
       id: 1,
@@ -50,20 +52,15 @@ const Reminder: React.FC<IReminderProps> = ({
   const handleEditValue = async (noteId: string, newValue: string) => {
     setEditedNote({ ...reminder, title: newValue });
     setIsDoneButtonDisabled(true);
-    setLoading(true);
     await onUpdateReminder(noteId, newValue, "title");
-    setLoading(false);
   };
 
   const handleStatus = async (noteId: string, newStatus: boolean) => {
     setEditedNote({ ...reminder, status: newStatus });
-    setLoading(true);
     await onUpdateReminder(noteId, newStatus, "status");
-    setLoading(false);
   };
 
   const handleButtonClick = (id: string, status: boolean) => {
-    console.log(id, " xoa thanh cong");
     onDeleteReminder(id, status);
   };
 
@@ -80,7 +77,7 @@ const Reminder: React.FC<IReminderProps> = ({
         id={reminder.id}
         data-listnote-id={reminder.idlist}
       >
-        {loading && <Loading />}
+        {isLoading && <Loading />}
         <div className="items-list-reminder">
           <div className="form-check item-reminder">
             <Checkbox

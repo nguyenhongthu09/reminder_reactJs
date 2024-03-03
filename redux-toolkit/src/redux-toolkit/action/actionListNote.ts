@@ -3,6 +3,7 @@ import getAllList, {
   addNewList,
   updateListData,
   delList,
+  getDetailListNote,
 } from "../../fetchApi/fetchApiList";
 import getColor from "../../fetchApi/fetchColor";
 import { IColor } from "../../types/color.type";
@@ -16,6 +17,15 @@ export const getListNote = createAsyncThunk(
     const res: IListNote[] = await getAllList();
     thunkAPI.dispatch(setLoading(false));
     console.log(res, " API list");
+    return res;
+  }
+);
+
+export const getDetailList = createAsyncThunk(
+  "listNote/getListNoteById",
+  async (list:  IListNote) => {
+    const res: IListNote = await getDetailListNote(list);
+    console.log(res, " listnote detail");
     return res;
   }
 );

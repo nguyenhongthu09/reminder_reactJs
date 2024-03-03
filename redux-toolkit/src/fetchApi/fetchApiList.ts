@@ -44,6 +44,19 @@ export const getAllList = async (): Promise<IListNote[]> => {
   }
 };
 
+export const getDetailListNote = async (
+  list: IListNote
+): Promise<IListNote> => {
+  const response = await apiClient.get(`/listNote/${list.id}`);
+  if (response.status !== 200) {
+    throw new Error(`Error fetching listNote: Status code ${response.status}`);
+  }
+  const listNote: IListNote = response.data;
+  console.log(listNote, "API");
+
+  return listNote;
+};
+
 export const addNewList = async (list: IListNote): Promise<IListNote> => {
   try {
     const response = await apiClient.post("/listNote", list);

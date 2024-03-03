@@ -7,15 +7,18 @@ import {
   createList,
   editListNote,
   deleteListNote,
+  getDetailList,
 } from "../action/actionListNote";
 interface IInitialState {
   listNote: IListNote[];
   colors: IColor[];
+  detailList: IListNote | null;
 }
 
 const initialState: IInitialState = {
   listNote: [],
   colors: [],
+  detailList: null,
 };
 
 const listNoteSlice = createSlice({
@@ -26,6 +29,9 @@ const listNoteSlice = createSlice({
     builder
       .addCase(getListNote.fulfilled, (state, action) => {
         state.listNote = action.payload;
+      })
+      .addCase(getDetailList.fulfilled, (state, action) => {
+        state.detailList = action.payload;
       })
       .addCase(getColors.fulfilled, (state, action) => {
         state.colors = action.payload;

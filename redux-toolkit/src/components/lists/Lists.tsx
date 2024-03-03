@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import List from "./atomics/List";
 import ListForm from "./ListForm";
 import Reminders from "../reminders/Reminders";
@@ -7,7 +7,6 @@ import Button from "../core/Button";
 import Loading from "../core/Loading";
 import { generateRandomStringId } from "../../utils/common";
 import { IListNote } from "../../types/listNote.type";
-import { ListContext } from "../../store/context/listNote.context";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux-toolkit/store/store";
@@ -19,10 +18,10 @@ import {
 const Lists: React.FC = () => {
   const [isListForm, setIsListForm] = useState<boolean>(false);
   const [formType, setFormType] = useState<string>("");
-  const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
-  const [isReminders, setIsReminders] = useState<boolean>(false);
+  const [isReminderForm] = useState<boolean>(false);
+  const [isReminders] = useState<boolean>(false);
   const [listData, setListData] = useState<IListNote>({
-    id: "",
+    id: generateRandomStringId(),
     name: "",
     isColor: "",
   });
@@ -30,45 +29,29 @@ const Lists: React.FC = () => {
   const dispatch = useAppDispatch();
   const listNote = useSelector((state: RootState) => state.listNote.listNote);
   const isLoading = useSelector((state: RootState) => state.loading.loading);
-  const context = useContext(ListContext);
+
   const setFormTypeHandler = (type: string) => {
     setIsListForm(type === "add" || type === "edit");
     setFormType(type);
   };
 
-  const handleListNoteEditClick = (listNote: IListNote) => {
+  const handleListNoteEditClick = async (listNote: IListNote) => {
     setFormTypeHandler("edit");
-    setListData(listNote);
-    navigate(`/lists/editlist/${listNote.id}`, {
-      state: { listData: listNote },
-    });
+    navigate(`/lists/editlist/${listNote.id}`);
   };
 
   const handleAddFormListClick = (source: string) => {
     setFormTypeHandler("add");
     if (source === "button") {
-      setIsListForm(true);
-      navigate("/lists/addList", {
-        state: {
-          listData: { id: generateRandomStringId(), name: "", isColor: "" },
-        },
-      });
+      navigate("/lists/addList");
     }
   };
 
   const handleReminderOpenClick = (listNote: IListNote) => {
-    setIsReminders(true);
-    context.setSelectedListId(listNote.id);
-    context.setNameList(listNote.name);
-    navigate(`/lists/${listNote.id}/reminders/${listNote.name}`);
-  };
-
-  const handleBackList = () => {
-    setIsReminders(false);
+    navigate(`/lists/${listNote.id}/reminders`);
   };
 
   const handleFormAddReminder = (openForm: boolean) => {
-    setIsReminderForm(openForm);
     navigate("/formAddReminder");
   };
 
@@ -130,14 +113,12 @@ const Lists: React.FC = () => {
         <ListForm
           formType={formType}
           listData={listData}
-          setIsListForm={setIsListForm}
           setListData={setListData}
         />
       )}
 
-      {isReminders && <Reminders onListsBackClick={handleBackList} />}
-
-      {isReminderForm && <ReminderForm setIsReminderForm={setIsReminderForm} />}
+      {isReminders && <Reminders />}
+      {isReminderForm && <ReminderForm />}
     </>
   );
 };

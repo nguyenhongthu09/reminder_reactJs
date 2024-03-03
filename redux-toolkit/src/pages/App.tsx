@@ -22,7 +22,7 @@ function App() {
               <Route path="/lists/editlist/:id" element={<FormList />} />
               <Route path="/formAddReminder" element={<ReminderFormAdd />} />
               <Route
-                path="/lists/:id/reminders/:name"
+                path="/lists/:id/reminders"
                 element={<RemindersPage />}
               >
                 <Route

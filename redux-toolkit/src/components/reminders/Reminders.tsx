@@ -13,29 +13,25 @@ import {
   updateReminder,
 } from "../../redux-toolkit/action/actionReminder";
 import { useSelector } from "react-redux";
-interface IRemindersProps {
-  onListsBackClick?: () => void;
-}
+import { getDetailList } from "../../redux-toolkit/action/actionListNote";
+import { IListNote } from "../../types/listNote.type";
+import { unwrapResult } from "@reduxjs/toolkit";
 
-const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
+const Reminders: React.FC = () => {
   const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
-  // const [loading, setLoading] = useState<boolean>(false);
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] =
     useState<boolean>(true);
   const navigate = useNavigate();
   const context = useContext(ListContext);
   const params = useParams();
-  const { name, id } = useParams<{ name: string; id: string }>();
+  const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const reminders = useSelector(
     (state: RootState) => state.reminders.reminders
   );
   const isLoading = useSelector((state: RootState) => state.loading.loading);
   const hanldeBackList = () => {
-    if (onListsBackClick) {
-      navigate("/");
-      onListsBackClick();
-    }
+    navigate("/");
   };
 
   const showReminderForm = () => {
@@ -46,8 +42,7 @@ const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
   const deleReminder = async (idDeleReminder: string): Promise<void> => {
     try {
       await dispatch(deleteReminder(idDeleReminder));
-      navigate(`/lists/${params.id}/reminders/${params.name}`);
-      console.log(idDeleReminder, "xoa reminder");
+      navigate(`/lists/${params.id}/reminders`);
     } catch (error) {
       console.error("Error fetching reminder:");
     } finally {
@@ -68,21 +63,25 @@ const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
         })
       );
 
-      navigate(`/lists/${params.id}/reminders/${params.name}`);
+      navigate(`/lists/${params.id}/reminders`);
     } catch (error) {
       console.error("Error fetching reminder:");
-    } finally {
     }
   };
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
-      try {
-        if (name) context.setNameList(name);
-        if (id) await dispatch(getReminders(id));
-      } catch (error) {
-        console.error("Error loading data:");
-        console.log(error);
+      if (id) {
+        await dispatch(getReminders(id));
+        const listNote: IListNote = { id, name: "", isColor: "" };
+        dispatch(getDetailList(listNote))
+          .then((data: any) => {
+            const list = unwrapResult(data);
+            context.setNameList(list.name);
+          })
+          .catch((error: any) => {
+            console.error("Error:", error);
+          });
       }
     };
     fetchData();
@@ -110,7 +109,7 @@ const Reminders: React.FC<IRemindersProps> = ({ onListsBackClick }) => {
             </Button>
           </div>
           {isLoading && <Loading />}
-          <h1 className="title-list">{name}</h1>
+          <h1 className="title-list">{context.nameList}</h1>
           {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
           {sortedReminders.map(
             (note) =>

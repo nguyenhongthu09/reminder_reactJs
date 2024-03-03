@@ -19,17 +19,18 @@ import {
 import { useAppDispatch } from "../../redux-toolkit/store/store";
 import { RootState } from "../../redux-toolkit/store/store";
 import { useSelector } from "react-redux";
+import { getDetailList } from "../../redux-toolkit/action/actionListNote";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { useParams } from "react-router-dom";
 interface IListFormProps {
   formType: string;
   listData: IListNote;
-  setIsListForm: React.Dispatch<React.SetStateAction<boolean>>;
   setListData: React.Dispatch<React.SetStateAction<IListNote>>;
 }
 
 const ListForm: React.FC<IListFormProps> = ({
   formType,
   listData,
-  setIsListForm,
   setListData,
 }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
@@ -38,6 +39,8 @@ const ListForm: React.FC<IListFormProps> = ({
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isLoading = useSelector((state: RootState) => state.loading.loading);
+  const { id } = useParams<{ id: string }>();
+
   const handleColorSelect = (selectedColor: string) => {
     setListData((prevData) => ({
       ...prevData,
@@ -66,17 +69,17 @@ const ListForm: React.FC<IListFormProps> = ({
     try {
       if (formType === "edit") {
         await dispatch(editListNote(listData));
-        console.log(listData, "chinh sua");
       } else {
         await dispatch(createList(listData));
-        console.log(listData, "them may");
       }
-      setIsListForm(false);
       navigate("/");
     } catch (error) {
       console.error("Error submitting form:");
     } finally {
     }
+  };
+  const handleCancelClick = () => {
+    navigate("/");
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -94,10 +97,21 @@ const ListForm: React.FC<IListFormProps> = ({
     };
   }, []);
 
-  const handleCancelClick = () => {
-    setIsListForm(false);
-    navigate("/");
-  };
+  useEffect(() => {
+    if (id) {
+      const listNote: IListNote = { id, name: "", isColor: "" };
+      console.log(listNote, " data ban dau");
+      dispatch(getDetailList(listNote))
+        .then((data: any) => {
+          const list = unwrapResult(data);
+          setListData(list);
+        })
+        .catch((error: any) => {
+          console.error("Error:", error);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <form
