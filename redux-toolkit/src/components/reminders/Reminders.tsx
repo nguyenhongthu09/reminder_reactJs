@@ -4,7 +4,7 @@ import Button from "../core/Button";
 import Loading from "../core/Loading";
 import ReminderFormInList from "./ReminderFormInList";
 import { IReminderType } from "../../types/reminder.type";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ListContext } from "../../store/context/listNote.context";
 import { RootState, useAppDispatch } from "../../redux-toolkit/store/store";
 import {
@@ -37,16 +37,13 @@ const Reminders: React.FC<RemindersProps> = ({ idParam }) => {
 
   const showReminderForm = () => {
     setIsReminderForm(true);
-    navigate("reminderFormAddInList");
   };
-  //DELETE REMIDNER
+
   const deleReminder = async (idDeleReminder: string): Promise<void> => {
     try {
       await dispatch(deleteReminder(idDeleReminder));
-      navigate(`/lists/${idParam}/reminders`);
     } catch (error) {
       console.error("Error fetching reminder:");
-    } finally {
     }
   };
 
@@ -63,8 +60,6 @@ const Reminders: React.FC<RemindersProps> = ({ idParam }) => {
           updateType: updateType,
         })
       );
-
-      navigate(`/lists/${idParam}/reminders`);
     } catch (error) {
       console.error("Error fetching reminder:");
     }
@@ -115,14 +110,13 @@ const Reminders: React.FC<RemindersProps> = ({ idParam }) => {
           {sortedReminders.map(
             (note) =>
               note.idlist === idParam && (
-                <Link key={note.id} to={`reminder/${note.id}`}>
-                  <Reminder
-                    reminder={note}
-                    setIsDoneButtonDisabled={setIsDoneButtonDisabled}
-                    onDeleteReminder={deleReminder}
-                    onUpdateReminder={editReminder}
-                  />
-                </Link>
+                <Reminder
+                  key={note.id}
+                  reminder={note}
+                  setIsDoneButtonDisabled={setIsDoneButtonDisabled}
+                  onDeleteReminder={deleReminder}
+                  onUpdateReminder={editReminder}
+                />
               )
           )}
 

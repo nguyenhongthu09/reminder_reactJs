@@ -1,5 +1,5 @@
 import ListForm from "../../components/lists/ListForm";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function FormList() {

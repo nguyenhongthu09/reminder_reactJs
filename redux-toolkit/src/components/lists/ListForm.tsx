@@ -99,7 +99,6 @@ const ListForm: React.FC<IListFormProps> = ({ formType, idParam }) => {
   useEffect(() => {
     if (idParam) {
       const listNote: IListNote = { id: idParam, name: "", isColor: "" };
-      console.log(listNote, " data ban dau");
       dispatch(getDetailList(listNote))
         .then((data: any) => {
           const list = unwrapResult(data);

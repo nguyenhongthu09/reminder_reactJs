@@ -4,7 +4,6 @@ import Input from "../core/Input";
 import { generateRandomStringId } from "../../utils/common";
 import { IReminderType } from "../../types/reminder.type";
 import Loading from "../core/Loading";
-import { useNavigate } from "react-router-dom";
 import { addReminder } from "../../redux-toolkit/action/actionReminder";
 import { useAppDispatch, RootState } from "../../redux-toolkit/store/store";
 import { useSelector } from "react-redux";
@@ -20,7 +19,6 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   idParam,
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isLoading = useSelector((state: RootState) => state.loading.loading);
   const handleBlur = async (): Promise<void> => {
@@ -29,7 +27,6 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
     }
     if (reminderTitle.trim() === "") {
       setIsReminderForm(false);
-      navigate(`/lists/${idParam}/reminders`);
       return;
     } else {
       const newReminder: IReminderType = {
@@ -40,7 +37,6 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
       };
 
       await dispatch(addReminder(newReminder));
-      navigate(`/lists/${idParam}/reminders`);
       setReminderTitle("");
       setIsReminderForm(false);
     }
