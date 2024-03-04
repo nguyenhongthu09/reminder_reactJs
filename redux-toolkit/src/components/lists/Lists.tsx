@@ -14,7 +14,10 @@ import {
   deleteListNote,
 } from "../../redux-toolkit/action/actionListNote";
 
-const Lists: React.FC = () => {
+interface ListNoteProps {
+  idParam?: string;
+}
+const Lists: React.FC<ListNoteProps> = ({ idParam }) => {
   const [isListForm] = useState<boolean>(false);
   const [formType, setFormType] = useState<string>("");
   const [isReminderForm] = useState<boolean>(false);
@@ -102,9 +105,9 @@ const Lists: React.FC = () => {
         </div>
       </div>
 
-      {isListForm && <ListForm formType={formType} />}
+      {isListForm && <ListForm formType={formType} idParam={idParam} />}
 
-      {isReminders && <Reminders />}
+      {isReminders && <Reminders idParam={idParam} />}
       {isReminderForm && <ReminderForm />}
     </>
   );

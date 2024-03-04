@@ -4,42 +4,43 @@ import Input from "../core/Input";
 import { generateRandomStringId } from "../../utils/common";
 import { IReminderType } from "../../types/reminder.type";
 import Loading from "../core/Loading";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { addReminder } from "../../redux-toolkit/action/actionReminder";
 import { useAppDispatch, RootState } from "../../redux-toolkit/store/store";
 import { useSelector } from "react-redux";
 interface IReminderFormInListProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDoneButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  idParam?: string;
 }
 
 const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
   setIsReminderForm,
   setIsDoneButtonDisabled,
+  idParam,
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const navigate = useNavigate();
-  const params = useParams();
   const dispatch = useAppDispatch();
   const isLoading = useSelector((state: RootState) => state.loading.loading);
   const handleBlur = async (): Promise<void> => {
-    if (!params.id) {
+    if (!idParam) {
       return;
     }
     if (reminderTitle.trim() === "") {
       setIsReminderForm(false);
-      navigate(`/lists/${params.id}/reminders`);
+      navigate(`/lists/${idParam}/reminders`);
       return;
     } else {
       const newReminder: IReminderType = {
         id: generateRandomStringId(),
         title: reminderTitle,
         status: false,
-        idlist: params.id,
+        idlist: idParam,
       };
 
       await dispatch(addReminder(newReminder));
-      navigate(`/lists/${params.id}/reminders`);
+      navigate(`/lists/${idParam}/reminders`);
       setReminderTitle("");
       setIsReminderForm(false);
     }

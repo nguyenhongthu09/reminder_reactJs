@@ -4,7 +4,7 @@ import Button from "../core/Button";
 import Loading from "../core/Loading";
 import ReminderFormInList from "./ReminderFormInList";
 import { IReminderType } from "../../types/reminder.type";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ListContext } from "../../store/context/listNote.context";
 import { RootState, useAppDispatch } from "../../redux-toolkit/store/store";
 import {
@@ -17,14 +17,15 @@ import { getDetailList } from "../../redux-toolkit/action/actionListNote";
 import { IListNote } from "../../types/listNote.type";
 import { unwrapResult } from "@reduxjs/toolkit";
 
-const Reminders: React.FC = () => {
+interface RemindersProps {
+  idParam?: string;
+}
+const Reminders: React.FC<RemindersProps> = ({ idParam }) => {
   const [isReminderForm, setIsReminderForm] = useState<boolean>(false);
   const [isDoneButtonDisabled, setIsDoneButtonDisabled] =
     useState<boolean>(true);
   const navigate = useNavigate();
   const context = useContext(ListContext);
-  const params = useParams();
-  const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const reminders = useSelector(
     (state: RootState) => state.reminders.reminders
@@ -42,7 +43,7 @@ const Reminders: React.FC = () => {
   const deleReminder = async (idDeleReminder: string): Promise<void> => {
     try {
       await dispatch(deleteReminder(idDeleReminder));
-      navigate(`/lists/${params.id}/reminders`);
+      navigate(`/lists/${idParam}/reminders`);
     } catch (error) {
       console.error("Error fetching reminder:");
     } finally {
@@ -63,7 +64,7 @@ const Reminders: React.FC = () => {
         })
       );
 
-      navigate(`/lists/${params.id}/reminders`);
+      navigate(`/lists/${idParam}/reminders`);
     } catch (error) {
       console.error("Error fetching reminder:");
     }
@@ -71,9 +72,9 @@ const Reminders: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
-      if (id) {
-        await dispatch(getReminders(id));
-        const listNote: IListNote = { id, name: "", isColor: "" };
+      if (idParam) {
+        await dispatch(getReminders(idParam));
+        const listNote: IListNote = { id: idParam, name: "", isColor: "" };
         dispatch(getDetailList(listNote))
           .then((data: any) => {
             const list = unwrapResult(data);
@@ -113,7 +114,7 @@ const Reminders: React.FC = () => {
           {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
           {sortedReminders.map(
             (note) =>
-              note.idlist === id && (
+              note.idlist === idParam && (
                 <Link key={note.id} to={`reminder/${note.id}`}>
                   <Reminder
                     reminder={note}
@@ -137,6 +138,7 @@ const Reminders: React.FC = () => {
             <ReminderFormInList
               setIsDoneButtonDisabled={setIsDoneButtonDisabled}
               setIsReminderForm={setIsReminderForm}
+              idParam={idParam}
             />
           )}
         </div>

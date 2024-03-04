@@ -8,7 +8,7 @@ export default function FormList() {
 
   return (
     <div>
-      <ListForm formType={formType} />
+      <ListForm formType={formType} idParam={id} />
     </div>
   );
 }

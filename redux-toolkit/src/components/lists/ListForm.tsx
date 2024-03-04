@@ -21,13 +21,13 @@ import { RootState } from "../../redux-toolkit/store/store";
 import { useSelector } from "react-redux";
 import { getDetailList } from "../../redux-toolkit/action/actionListNote";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { useParams } from "react-router-dom";
 import { generateRandomStringId } from "../../utils/common";
 interface IListFormProps {
   formType: string;
+  idParam?: string;
 }
 
-const ListForm: React.FC<IListFormProps> = ({ formType }) => {
+const ListForm: React.FC<IListFormProps> = ({ formType, idParam }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -39,7 +39,6 @@ const ListForm: React.FC<IListFormProps> = ({ formType }) => {
     isColor: "",
   });
   const isLoading = useSelector((state: RootState) => state.loading.loading);
-  const { id } = useParams<{ id: string }>();
 
   const handleColorSelect = (selectedColor: string) => {
     setListData((prevData) => ({
@@ -98,8 +97,8 @@ const ListForm: React.FC<IListFormProps> = ({ formType }) => {
   }, []);
 
   useEffect(() => {
-    if (id) {
-      const listNote: IListNote = { id, name: "", isColor: "" };
+    if (idParam) {
+      const listNote: IListNote = { id: idParam, name: "", isColor: "" };
       console.log(listNote, " data ban dau");
       dispatch(getDetailList(listNote))
         .then((data: any) => {
