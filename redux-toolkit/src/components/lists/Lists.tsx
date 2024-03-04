@@ -5,7 +5,6 @@ import Reminders from "../reminders/Reminders";
 import ReminderForm from "../reminders/ReminderForm";
 import Button from "../core/Button";
 import Loading from "../core/Loading";
-import { generateRandomStringId } from "../../utils/common";
 import { IListNote } from "../../types/listNote.type";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -16,22 +15,16 @@ import {
 } from "../../redux-toolkit/action/actionListNote";
 
 const Lists: React.FC = () => {
-  const [isListForm, setIsListForm] = useState<boolean>(false);
+  const [isListForm] = useState<boolean>(false);
   const [formType, setFormType] = useState<string>("");
   const [isReminderForm] = useState<boolean>(false);
   const [isReminders] = useState<boolean>(false);
-  const [listData, setListData] = useState<IListNote>({
-    id: generateRandomStringId(),
-    name: "",
-    isColor: "",
-  });
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const listNote = useSelector((state: RootState) => state.listNote.listNote);
   const isLoading = useSelector((state: RootState) => state.loading.loading);
 
   const setFormTypeHandler = (type: string) => {
-    setIsListForm(type === "add" || type === "edit");
     setFormType(type);
   };
 
@@ -51,7 +44,7 @@ const Lists: React.FC = () => {
     navigate(`/lists/${listNote.id}/reminders`);
   };
 
-  const handleFormAddReminder = (openForm: boolean) => {
+  const handleFormAddReminder = () => {
     navigate("/formAddReminder");
   };
 
@@ -92,7 +85,7 @@ const Lists: React.FC = () => {
         <div className="button-home">
           <Button
             className="add-reminder btn__add--reminder"
-            onClick={() => handleFormAddReminder(true)}
+            onClick={() => handleFormAddReminder()}
           >
             New Reminder
           </Button>
@@ -109,13 +102,7 @@ const Lists: React.FC = () => {
         </div>
       </div>
 
-      {isListForm && (
-        <ListForm
-          formType={formType}
-          listData={listData}
-          setListData={setListData}
-        />
-      )}
+      {isListForm && <ListForm formType={formType} />}
 
       {isReminders && <Reminders />}
       {isReminderForm && <ReminderForm />}

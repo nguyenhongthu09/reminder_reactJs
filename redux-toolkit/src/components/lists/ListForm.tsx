@@ -22,22 +22,22 @@ import { useSelector } from "react-redux";
 import { getDetailList } from "../../redux-toolkit/action/actionListNote";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useParams } from "react-router-dom";
+import { generateRandomStringId } from "../../utils/common";
 interface IListFormProps {
   formType: string;
-  listData: IListNote;
-  setListData: React.Dispatch<React.SetStateAction<IListNote>>;
 }
 
-const ListForm: React.FC<IListFormProps> = ({
-  formType,
-  listData,
-  setListData,
-}) => {
+const ListForm: React.FC<IListFormProps> = ({ formType }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [listData, setListData] = useState<IListNote>({
+    id: generateRandomStringId(),
+    name: "",
+    isColor: "",
+  });
   const isLoading = useSelector((state: RootState) => state.loading.loading);
   const { id } = useParams<{ id: string }>();
 
