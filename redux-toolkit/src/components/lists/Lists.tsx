@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import List from "./atomics/List";
 import Button from "../core/Button";
-import Loading from "../core/Loading";
 import { IListNote } from "../../types/listNote.type";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -16,7 +15,6 @@ const Lists: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const listNote = useSelector((state: RootState) => state.listNote.listNote);
-  const isLoading = useSelector((state: RootState) => state.loading.loading);
 
   const setFormTypeHandler = (type: string) => {
     setFormType(type);
@@ -61,7 +59,6 @@ const Lists: React.FC = () => {
 
   return (
     <div className="menu-list-notes">
-      {isLoading && <Loading />}
       <div className="menu-list-note" id="renderlist-home">
         <h1>My List</h1>
         {listNote.map((list: IListNote) => (

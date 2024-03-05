@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import List from "../lists/atomics/List";
 import Button from "../core/Button";
 import Input from "../core/Input";
-import Loading from "../core/Loading";
 import { generateRandomStringId } from "../../utils/common";
 import { IListNote } from "../../types/listNote.type";
 import { IReminderType } from "../../types/reminder.type";
@@ -20,7 +19,6 @@ const ReminderForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const listNote = useSelector((state: RootState) => state.listNote.listNote);
-  const isLoading = useSelector((state: RootState) => state.loading.loading);
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -84,7 +82,6 @@ const ReminderForm: React.FC = () => {
         className="form--add__notes"
         onSubmit={handleSubmit}
       >
-        {isLoading && <Loading />}
         <div className="button-detail-list">
           <Button className="btn-back-note" onClick={handleCancelForm}>
             Cancel

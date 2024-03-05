@@ -10,15 +10,12 @@ import { IListNote } from "../../types/listNote.type";
 import ListColor from "./ListColor";
 import Input from "../core/Input";
 import Icon from "../core/Icon";
-import Loading from "../core/Loading";
 import { useNavigate } from "react-router-dom";
 import {
   createList,
   editListNote,
 } from "../../redux-toolkit/action/actionListNote";
 import { useAppDispatch } from "../../redux-toolkit/store/store";
-import { RootState } from "../../redux-toolkit/store/store";
-import { useSelector } from "react-redux";
 import { getDetailList } from "../../redux-toolkit/action/actionListNote";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { generateRandomStringId } from "../../utils/common";
@@ -38,7 +35,6 @@ const ListForm: React.FC<IListFormProps> = ({ formType, idParam }) => {
     name: "",
     isColor: "",
   });
-  const isLoading = useSelector((state: RootState) => state.loading.loading);
 
   const handleColorSelect = (selectedColor: string) => {
     setListData((prevData) => ({
@@ -118,7 +114,6 @@ const ListForm: React.FC<IListFormProps> = ({ formType, idParam }) => {
       action=""
       className={`form-edit-list ${formType}`}
     >
-      {isLoading && <Loading />}
       <div className="form__edit__list">
         <Button
           ref={submitButtonRef}

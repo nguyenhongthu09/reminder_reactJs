@@ -3,10 +3,8 @@ import Checkbox from "../core/Checkbox";
 import Input from "../core/Input";
 import { generateRandomStringId } from "../../utils/common";
 import { IReminderType } from "../../types/reminder.type";
-import Loading from "../core/Loading";
 import { addReminder } from "../../redux-toolkit/action/actionReminder";
-import { useAppDispatch, RootState } from "../../redux-toolkit/store/store";
-import { useSelector } from "react-redux";
+import { useAppDispatch } from "../../redux-toolkit/store/store";
 interface IReminderFormInListProps {
   setIsReminderForm: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDoneButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,7 +18,6 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
 }) => {
   const [reminderTitle, setReminderTitle] = useState<string>("");
   const dispatch = useAppDispatch();
-  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const handleBlur = async (): Promise<void> => {
     if (!idParam) {
       return;
@@ -52,7 +49,6 @@ const ReminderFormInList: React.FC<IReminderFormInListProps> = ({
 
   return (
     <div className="new-reminder">
-      {isLoading && <Loading />}
       <div className="form-check item-reminders">
         <Checkbox />
         <Input autoFocus onBlur={handleBlur} onChange={handleChange} />

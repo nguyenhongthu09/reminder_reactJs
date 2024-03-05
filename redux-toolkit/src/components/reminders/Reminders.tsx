@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import Reminder from "./atomics/Reminder";
 import Button from "../core/Button";
-import Loading from "../core/Loading";
 import ReminderFormInList from "./ReminderFormInList";
 import { IReminderType } from "../../types/reminder.type";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +29,6 @@ const Reminders: React.FC<RemindersProps> = ({ idParam }) => {
   const reminders = useSelector(
     (state: RootState) => state.reminders.reminders
   );
-  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const hanldeBackList = () => {
     navigate("/");
   };
@@ -104,7 +102,6 @@ const Reminders: React.FC<RemindersProps> = ({ idParam }) => {
               Done
             </Button>
           </div>
-          {isLoading && <Loading />}
           <h1 className="title-list">{context.nameList}</h1>
           {hasReminderData && <div className="thong-bao">Empty list !!!</div>}
           {sortedReminders.map(

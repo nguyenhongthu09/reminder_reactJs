@@ -6,9 +6,6 @@ import Icon from "../../core/Icon";
 import Checkbox from "../../core/Checkbox";
 import { IReminderType } from "../../../types/reminder.type";
 import { IAction } from "../../../types/action.type";
-import Loading from "../../core/Loading";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux-toolkit/store/store";
 interface IReminderProps {
   reminder: IReminderType;
   setIsDoneButtonDisabled: (disabled: boolean) => void;
@@ -26,7 +23,6 @@ const Reminder: React.FC<IReminderProps> = ({
   onDeleteReminder,
   onUpdateReminder,
 }) => {
-  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const [editedNote, setEditedNote] = useState<IReminderType>({
     id: "",
     title: "",
@@ -77,7 +73,6 @@ const Reminder: React.FC<IReminderProps> = ({
         id={reminder.id}
         data-listnote-id={reminder.idlist}
       >
-        {isLoading && <Loading />}
         <div className="items-list-reminder">
           <div className="form-check item-reminder">
             <Checkbox
